@@ -52,7 +52,6 @@ export default function Maintenance() {
             <Button
               asChild
               variant="ghost"
-              size="sm"
               className="text-blue-600 hover:text-blue-700"
             >
               <Link href="https://twitter.com/AlertinoApp" target="_blank">

@@ -39,7 +39,6 @@ export function FilterCard({ filter }: FilterCardProps) {
             <div className="flex space-x-2">
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={() => setIsEditModalOpen(true)}
                 className="h-8 w-8 p-0 hover:bg-gray-100"
               >
@@ -47,7 +46,6 @@ export function FilterCard({ filter }: FilterCardProps) {
               </Button>
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={handleDelete}
                 disabled={isDeleting}
                 className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"

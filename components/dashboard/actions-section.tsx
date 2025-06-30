@@ -50,7 +50,6 @@ export function ActionsSection() {
             <Button
               onClick={handleRunAlerts}
               disabled={isRunning}
-              size="lg"
               className="bg-green-600 hover:bg-green-700 text-white px-8"
             >
               {isRunning ? (

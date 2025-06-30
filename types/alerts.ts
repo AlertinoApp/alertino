@@ -6,4 +6,5 @@ export interface Alert {
   city: string;
   link: string;
   created_at: string;
+  status?: "active" | "not_interested";
 }

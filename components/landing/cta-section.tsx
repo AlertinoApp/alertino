@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function CTASection() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
@@ -13,14 +13,18 @@ export function CTASection() {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-center mb-6">
             <Sparkles className="w-8 h-8 text-blue-200 mr-3" />
-            <span className="text-blue-200 font-medium">Ready to get started?</span>
+            <span className="text-blue-200 font-medium">
+              Ready to get started?
+            </span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Start Finding Your Perfect Apartment Today</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            Start Finding Your Perfect Apartment Today
+          </h2>
 
           <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-            Join hundreds of satisfied users who found their dream apartments with Alertino. Set up your first alert in
-            under 2 minutes.
+            Join hundreds of satisfied users who found their dream apartments
+            with Alertino. Set up your first alert in under 2 minutes.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -41,9 +45,11 @@ export function CTASection() {
             </Button>
           </div>
 
-          <div className="mt-8 text-blue-200 text-sm">No credit card required • Free to start • Cancel anytime</div>
+          <div className="mt-8 text-blue-200 text-sm">
+            No credit card required • Free to start • Cancel anytime
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

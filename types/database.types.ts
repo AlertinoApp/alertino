@@ -17,6 +17,7 @@ export type Database = {
           link: string
           price: number
           rooms: number
+          status: string
           title: string
           user_id: string
         }
@@ -27,6 +28,7 @@ export type Database = {
           link: string
           price: number
           rooms: number
+          status?: string
           title: string
           user_id: string
         }
@@ -37,6 +39,7 @@ export type Database = {
           link?: string
           price?: number
           rooms?: number
+          status?: string
           title?: string
           user_id?: string
         }

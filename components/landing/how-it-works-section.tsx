@@ -1,6 +1,6 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { UserPlus, Filter, Bell, Home } from "lucide-react"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { UserPlus, Filter, Bell, Home } from "lucide-react";
 
 const steps = [
   {
@@ -13,32 +13,36 @@ const steps = [
     step: 2,
     icon: Filter,
     title: "Set Your Filters",
-    description: "Define your perfect apartment criteria: city, price range, rooms, and more.",
+    description:
+      "Define your perfect apartment criteria: city, price range, rooms, and more.",
   },
   {
     step: 3,
     icon: Bell,
     title: "Get Notified",
-    description: "Receive instant alerts when new apartments match your requirements.",
+    description:
+      "Receive instant alerts when new apartments match your requirements.",
   },
   {
     step: 4,
     icon: Home,
     title: "Find Your Home",
-    description: "Browse matching listings and contact landlords before others do.",
+    description:
+      "Browse matching listings and contact landlords before others do.",
   },
-]
+];
 
 export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge className="mb-4 bg-green-100 text-green-800 border-green-200">Simple Process</Badge>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Alertino Works</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            How Alertino Works
+          </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Getting started with Alertino is simple. Follow these four easy steps to never miss your perfect apartment
-            again.
+            Getting started with Alertino is simple. Follow these four easy
+            steps to never miss your perfect apartment again.
           </p>
         </div>
 
@@ -53,8 +57,12 @@ export function HowItWorksSection() {
                   <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-4">
                     {step.step}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">{step.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {step.description}
+                  </p>
                 </CardContent>
               </Card>
 
@@ -70,5 +78,5 @@ export function HowItWorksSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
