@@ -7,14 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Edit2, Trash2, MapPin, DollarSign, Home } from "lucide-react";
 import { deleteFilterAction } from "@/lib/actions/filter-actions";
 import { EditFilterModal } from "./edit-filter-modal";
-
-interface Filter {
-  id: string;
-  city: string;
-  max_price: number;
-  min_rooms: number;
-  created_at: string;
-}
+import { Filter } from "@/types/filters";
 
 interface FilterCardProps {
   filter: Filter;

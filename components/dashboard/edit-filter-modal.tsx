@@ -11,14 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { updateFilterAction } from "@/lib/actions/filter-actions";
-
-interface Filter {
-  id: string;
-  city: string;
-  max_price: number;
-  min_rooms: number;
-  created_at: string;
-}
+import { Filter } from "@/types/filters";
 
 interface EditFilterModalProps {
   filter: Filter;

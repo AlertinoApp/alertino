@@ -5,14 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
-
-interface Filter {
-  id: string;
-  city: string;
-  max_price: number;
-  min_rooms: number;
-  created_at: string;
-}
+import { Filter } from "@/types/filters";
 
 interface FiltersSectionProps {
   filters: Filter[];
