@@ -15,7 +15,7 @@ export default async function ProtectedLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-4xl mx-auto p-4">{children}</main>
+      <main className="mx-auto">{children}</main>
     </div>
   );
 }
