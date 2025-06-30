@@ -10,6 +10,7 @@ import {
 import { LogOut, UserIcon } from "lucide-react";
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 interface DashboardHeaderProps {
   user: User;
@@ -31,7 +32,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-blue-600">Alertino</h1>
+            <Link href="/dashboard">
+              <h1 className="text-2xl font-bold text-blue-600">Alertino</h1>
+            </Link>
           </div>
 
           {/* User Menu */}
@@ -53,10 +56,13 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end">
-                <DropdownMenuItem className="flex items-center">
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  <span>{user.email}</span>
+                <DropdownMenuItem asChild>
+                  <a href="/profile" className="flex items-center w-full">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </a>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <form action={signOut}>
                     <button type="submit" className="flex items-center w-full">

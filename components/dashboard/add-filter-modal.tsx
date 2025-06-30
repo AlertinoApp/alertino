@@ -47,7 +47,7 @@ export function AddFilterModal({
             <Input
               id="city"
               name="city"
-              placeholder="e.g. warszawa"
+              placeholder="e.g. Warszawa"
               required
               className="w-full"
             />

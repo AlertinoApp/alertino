@@ -12,8 +12,6 @@ export async function updateAlertStatus(
     data: { session },
   } = await supabase.auth.getSession();
 
-  console.log(session?.user.id);
-
   if (!session) {
     throw new Error("Not authenticated");
   }

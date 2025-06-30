@@ -1,0 +1,64 @@
+import { createClientForServer } from "@/app/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { ProfileHeader } from "@/components/profile/profile-header";
+import { ActivitySummary } from "@/components/profile/activity-summary";
+import { PersonalInformation } from "@/components/profile/personal-information";
+import { NotificationSettings } from "@/components/profile/notification-settings";
+import { DangerZone } from "@/components/profile/danger-zone";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+
+export default async function ProfilePage() {
+  const supabase = await createClientForServer();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  // Fetch user profile data
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  // Fetch user filters
+  const { data: filters } = await supabase
+    .from("filters")
+    .select("*")
+    .eq("user_id", session.user.id);
+
+  // Fetch user alerts
+  const { data: alerts } = await supabase
+    .from("alerts")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .eq("status", "active")
+    .order("created_at", { ascending: false });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <DashboardHeader user={session.user} />
+
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          <ProfileHeader user={session.user} profile={profile} />
+
+          <ActivitySummary
+            alertsCount={alerts?.length || 0}
+            filtersCount={filters?.length || 0}
+            lastLogin={session.user.last_sign_in_at}
+          />
+
+          <PersonalInformation user={session.user} profile={profile} />
+
+          <NotificationSettings profile={profile} />
+
+          <DangerZone />
+        </div>
+      </main>
+    </div>
+  );
+}
