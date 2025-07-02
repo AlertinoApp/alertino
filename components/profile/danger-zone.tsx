@@ -66,7 +66,7 @@ export function DangerZone() {
 
               <div className="space-y-2">
                 <Label htmlFor="confirmation" className="text-red-900">
-                  Type "DELETE" to confirm:
+                  Type &quot;DELETE&quot; to confirm:
                 </Label>
                 <Input
                   id="confirmation"

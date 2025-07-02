@@ -64,7 +64,7 @@ export function ActivitySummary({
               <Clock className="w-6 h-6 text-purple-600" />
             </div>
             <div className="text-lg font-bold text-purple-600 mb-2">
-              {formatLastLogin(lastLogin)}
+              {formatLastLogin(lastLogin ?? null)}
             </div>
             <div className="text-sm font-medium text-purple-700">
               Last Login

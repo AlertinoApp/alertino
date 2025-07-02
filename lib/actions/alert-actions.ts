@@ -2,8 +2,7 @@
 
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { scrapeOlx } from "@/lib/scraper/olx";
-import { matchListingsToFilter } from "@/lib/scraper/match";
+import { getMatchedListings } from "@/lib/scraper/match";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -51,8 +50,7 @@ export async function generateAlerts() {
   console.log("🔥 Running alerts...");
 
   for (const filter of filters) {
-    const listings = await scrapeOlx(filter.city.toLowerCase());
-    const matched = matchListingsToFilter(listings, filter);
+    const matched = await getMatchedListings(filter);
 
     if (matched.length === 0) continue;
 

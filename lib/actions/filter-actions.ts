@@ -19,7 +19,7 @@ export async function addFilterAction(formData: FormData) {
 
   const { error } = await supabase.from("filters").insert({
     user_id: session.user.id,
-    city: city.toLowerCase().trim(),
+    city: city.trim(),
     max_price,
     min_rooms,
   });
@@ -49,7 +49,7 @@ export async function updateFilterAction(formData: FormData) {
   const { error } = await supabase
     .from("filters")
     .update({
-      city: city.toLowerCase().trim(),
+      city: city.trim(),
       max_price,
       min_rooms,
     })
