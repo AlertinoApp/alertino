@@ -1,13 +1,11 @@
-"use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit2, Trash2, MapPin, DollarSign, Home } from "lucide-react";
-import { deleteFilterAction } from "@/lib/actions/filter-actions";
 import { EditFilterModal } from "./edit-filter-modal";
 import { Filter } from "@/types/filters";
+import { DeleteFilterDialog } from "./delete-filter-modal";
 
 interface FilterCardProps {
   filter: Filter;
@@ -15,15 +13,7 @@ interface FilterCardProps {
 
 export function FilterCard({ filter }: FilterCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this filter?")) {
-      setIsDeleting(true);
-      await deleteFilterAction(filter.id);
-      setIsDeleting(false);
-    }
-  };
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   return (
     <>
@@ -46,8 +36,7 @@ export function FilterCard({ filter }: FilterCardProps) {
               </Button>
               <Button
                 variant="ghost"
-                onClick={handleDelete}
-                disabled={isDeleting}
+                onClick={() => setIsDeleteDialogOpen(true)}
                 className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
               >
                 <Trash2 className="h-4 w-4" />
@@ -86,6 +75,12 @@ export function FilterCard({ filter }: FilterCardProps) {
         filter={filter}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
+      />
+
+      <DeleteFilterDialog
+        filterId={filter.id}
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
       />
     </>
   );

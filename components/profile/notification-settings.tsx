@@ -9,7 +9,7 @@ import { updateNotificationSettingsAction } from "@/lib/actions/profile-actions"
 import { Profile } from "@/types/users";
 
 interface NotificationSettingsProps {
-  profile: Profile | null;
+  profile: Profile;
 }
 
 export function NotificationSettings({ profile }: NotificationSettingsProps) {

@@ -14,11 +14,13 @@ export async function updateProfileAction(data: { full_name: string }) {
     throw new Error("Not authenticated");
   }
 
-  const { error } = await supabase.from("users").upsert({
-    id: session.user.id,
-    full_name: data.full_name,
-    updated_at: new Date().toISOString(),
-  });
+  const { error } = await supabase
+    .from("users")
+    .update({
+      full_name: data.full_name,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", session.user.id);
 
   if (error) {
     throw new Error("Failed to update profile");
@@ -39,11 +41,14 @@ export async function updateNotificationSettingsAction(data: {
     throw new Error("Not authenticated");
   }
 
-  const { error } = await supabase.from("users").upsert({
-    id: session.user.id,
-    email_notifications: data.email_notifications,
-    updated_at: new Date().toISOString(),
-  });
+  const { error } = await supabase
+    .from("users")
+    .update({
+      id: session.user.id,
+      email_notifications: data.email_notifications,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", session.user.id);
 
   if (error) {
     throw new Error("Failed to update notification settings");

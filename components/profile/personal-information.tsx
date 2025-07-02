@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit2, Save, X, Key } from "lucide-react";
+import { Edit2, Save, X } from "lucide-react";
 import { updateProfileAction } from "@/lib/actions/profile-actions";
 import { Profile } from "@/types/users";
 
 interface PersonalInformationProps {
   user: User;
-  profile: Profile | null;
+  profile: Profile;
 }
 
 export function PersonalInformation({
@@ -87,6 +87,7 @@ export function PersonalInformation({
                   }))
                 }
                 placeholder="Enter your full name"
+                className="h-auto py-3 px-3"
               />
             ) : (
               <div className="p-3 bg-gray-50 rounded-lg text-gray-900">

@@ -1,11 +1,11 @@
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { ProfileHeader } from "@/components/profile/profile-header";
 import { ActivitySummary } from "@/components/profile/activity-summary";
 import { PersonalInformation } from "@/components/profile/personal-information";
 import { NotificationSettings } from "@/components/profile/notification-settings";
 import { DangerZone } from "@/components/profile/danger-zone";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { ProfileHeader } from "@/components/profile/profile-header";
+import { Header } from "@/components/common/header";
 
 export default async function ProfilePage() {
   const supabase = await createClientForServer();
@@ -17,9 +17,9 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  // Fetch user profile data
-  const { data: profile } = await supabase
-    .from("profiles")
+  // Fetch user data
+  const { data: user } = await supabase
+    .from("users")
     .select("*")
     .eq("id", session.user.id)
     .single();
@@ -40,11 +40,11 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardHeader user={session.user} />
+      <Header user={session.user} profile={user} />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
-          <ProfileHeader user={session.user} profile={profile} />
+          <ProfileHeader user={session.user} profile={user} />
 
           <ActivitySummary
             alertsCount={alerts?.length || 0}
@@ -52,13 +52,13 @@ export default async function ProfilePage() {
             lastLogin={session.user.last_sign_in_at}
           />
 
-          <PersonalInformation user={session.user} profile={profile} />
+          <PersonalInformation user={session.user} profile={user} />
 
-          <NotificationSettings profile={profile} />
+          <NotificationSettings profile={user} />
 
           <DangerZone />
         </div>
-      </main>
+      </div>
     </div>
   );
 }
