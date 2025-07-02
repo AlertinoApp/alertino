@@ -22,6 +22,7 @@ export async function addFilterAction(formData: FormData) {
     city: city.trim(),
     max_price,
     min_rooms,
+    is_active: true,
   });
 
   if (error) {
@@ -81,6 +82,29 @@ export async function deleteFilterAction(filterId: string) {
 
   if (error) {
     throw new Error("Failed to delete filter");
+  }
+
+  revalidatePath("/dashboard");
+}
+
+export async function toggleFilterStatus(filterId: string, active: boolean) {
+  const supabase = await createClientForServer();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  const { error } = await supabase
+    .from("filters")
+    .update({ is_active: active })
+    .eq("id", filterId)
+    .eq("user_id", session.user.id);
+
+  if (error) {
+    throw new Error("Failed to update filter status");
   }
 
   revalidatePath("/dashboard");

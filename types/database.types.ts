@@ -58,6 +58,7 @@ export type Database = {
           city: string
           created_at: string | null
           id: string
+          is_active: boolean
           max_price: number
           min_rooms: number
           updated_at: string | null
@@ -67,6 +68,7 @@ export type Database = {
           city: string
           created_at?: string | null
           id?: string
+          is_active?: boolean
           max_price: number
           min_rooms: number
           updated_at?: string | null
@@ -76,6 +78,7 @@ export type Database = {
           city?: string
           created_at?: string | null
           id?: string
+          is_active?: boolean
           max_price?: number
           min_rooms?: number
           updated_at?: string | null

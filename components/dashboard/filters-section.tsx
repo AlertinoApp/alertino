@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import { Filter } from "@/types/filters";
@@ -15,12 +16,37 @@ interface FiltersSectionProps {
 export function FiltersSection({ filters, userId }: FiltersSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const activeFilters = filters.filter((filter) => filter.is_active !== false);
+  const inactiveFilters = filters.filter(
+    (filter) => filter.is_active === false
+  );
+
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Your Filters</h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <div className="flex items-center gap-3 mb-2">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Your Filters
+            </h2>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="secondary"
+                className="bg-green-50 text-green-700 border-green-200"
+              >
+                {activeFilters.length} Active
+              </Badge>
+              {inactiveFilters.length > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="bg-gray-100 text-gray-600 border-gray-200"
+                >
+                  {inactiveFilters.length} Inactive
+                </Badge>
+              )}
+            </div>
+          </div>
+          <p className="text-sm text-gray-600">
             Manage your apartment search criteria
           </p>
         </div>
@@ -34,10 +60,36 @@ export function FiltersSection({ filters, userId }: FiltersSectionProps) {
       </div>
 
       {filters.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filters.map((filter) => (
-            <FilterCard key={filter.id} filter={filter} />
-          ))}
+        <div className="space-y-6">
+          {/* Active Filters */}
+          {activeFilters.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <FilterIcon className="w-4 h-4 mr-2" />
+                Active Filters ({activeFilters.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {activeFilters.map((filter) => (
+                  <FilterCard key={filter.id} filter={filter} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Inactive Filters */}
+          {inactiveFilters.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 mb-3 flex items-center">
+                <FilterIcon className="w-4 h-4 mr-2" />
+                Inactive Filters ({inactiveFilters.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {inactiveFilters.map((filter) => (
+                  <FilterCard key={filter.id} filter={filter} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-center py-12">
