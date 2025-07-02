@@ -1,4 +1,4 @@
-import { generateAlerts } from "@/lib/alerts/generate";
+import { generateAlerts } from "@/lib/actions/alert-actions";
 import { NextResponse } from "next/server";
 
 export async function GET() {

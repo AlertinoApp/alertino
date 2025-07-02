@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Clock } from "lucide-react";
-import { runAlertsAction } from "@/lib/alerts/runAlerts";
+import { generateAlerts } from "@/lib/actions/alert-actions";
 
 export function ActionsSection() {
   const [isRunning, setIsRunning] = useState(false);
@@ -13,7 +13,7 @@ export function ActionsSection() {
   const handleRunAlerts = async () => {
     setIsRunning(true);
     try {
-      await runAlertsAction();
+      await generateAlerts();
       setLastRun(new Date());
     } finally {
       setIsRunning(false);

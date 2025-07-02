@@ -13,7 +13,9 @@ export function LandingHeader() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-blue-600">Alertino</h1>
+            <Link href="/">
+              <h1 className="text-2xl font-bold text-blue-600">Alertino</h1>
+            </Link>
           </div>
 
           {/* Navigation */}

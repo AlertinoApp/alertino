@@ -1,8 +1,8 @@
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { ActionsSection } from "@/components/dashboard/actions-section";
 import { AlertsSection } from "@/components/dashboard/alerts-section";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { FiltersSection } from "@/components/dashboard/filters-section";
+import { Header } from "@/components/common/header";
 
 export default async function DashboardPage() {
   const supabase = await createClientForServer();
@@ -11,6 +11,13 @@ export default async function DashboardPage() {
   } = await supabase.auth.getSession();
 
   if (!session) return null;
+
+  // Fetch user data
+  const { data: user } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
 
   // Fetch user filters
   const { data: filters } = await supabase
@@ -28,7 +35,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardHeader user={session.user} />
+      <Header user={session.user} profile={user} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
