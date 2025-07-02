@@ -14,9 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mail, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
+import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { loginSchema } from "@/schemas/auth";
 
 export function LoginForm() {
   const supabase = createClientForBrowser();
@@ -30,6 +30,14 @@ export function LoginForm() {
     e.preventDefault();
     setStatus("loading");
     setErrorMessage("");
+
+    const parsed = loginSchema.safeParse({ email });
+
+    if (!parsed.success) {
+      setErrorMessage(parsed.error.errors[0].message);
+      setStatus("error");
+      return;
+    }
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -127,20 +135,13 @@ export function LoginForm() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-              className="h-12"
+              className={`h-12 ${errorMessage ? "border-red-500 focus-visible:ring-red-300" : ""}`}
               disabled={status === "loading"}
             />
+            {errorMessage && (
+              <p className="text-red-500 text-sm">{errorMessage}</p>
+            )}
           </div>
-
-          {status === "error" && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                {errorMessage}
-              </AlertDescription>
-            </Alert>
-          )}
 
           <Button
             type="submit"

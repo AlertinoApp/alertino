@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit2, Save, X } from "lucide-react";
 import { updateProfileAction } from "@/lib/actions/profile-actions";
 import { Profile } from "@/types/users";
+import { profileSchema } from "@/schemas/profile";
 
 interface PersonalInformationProps {
   user: User;
@@ -24,14 +25,26 @@ export function PersonalInformation({
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || user.user_metadata?.full_name || "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSave = async () => {
     setIsLoading(true);
+    setErrorMessage("");
+
+    const parsed = profileSchema.safeParse(formData);
+
+    if (!parsed.success) {
+      setErrorMessage(parsed.error.errors[0].message);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await updateProfileAction(formData);
+      await updateProfileAction(parsed.data);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
+      setErrorMessage("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -77,18 +90,23 @@ export function PersonalInformation({
           <div className="space-y-2">
             <Label htmlFor="full_name">Full Name</Label>
             {isEditing ? (
-              <Input
-                id="full_name"
-                value={formData.full_name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    full_name: e.target.value,
-                  }))
-                }
-                placeholder="Enter your full name"
-                className="h-auto py-3 px-3"
-              />
+              <>
+                <Input
+                  id="full_name"
+                  value={formData.full_name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      full_name: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter your full name"
+                  className={`h-auto py-3 px-3 ${errorMessage ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+                />
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                )}
+              </>
             ) : (
               <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
                 {formData.full_name || "Not provided"}

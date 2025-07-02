@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { addFilterAction } from "@/lib/actions/filter-actions";
+import { filterSchema } from "@/schemas/filters";
 
 interface AddFilterModalProps {
   isOpen: boolean;
@@ -23,13 +24,59 @@ export function AddFilterModal({
   onClose,
   userId,
 }: AddFilterModalProps) {
+  const [formData, setFormData] = useState({
+    city: "",
+    max_price: "",
+    min_rooms: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{
+    city?: string;
+    max_price?: string;
+    min_rooms?: string;
+  }>({});
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
-    await addFilterAction(formData);
-    setIsSubmitting(false);
-    onClose();
+    setErrors({});
+
+    const parsed = filterSchema.safeParse({
+      city: formData.city,
+      max_price: Number(formData.max_price),
+      min_rooms: Number(formData.min_rooms),
+    });
+
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      parsed.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0]] = err.message;
+        }
+      });
+
+      setErrors(fieldErrors);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const serverData = new FormData();
+      serverData.append("userId", userId);
+      serverData.append("city", formData.city);
+      serverData.append("max_price", formData.max_price);
+      serverData.append("min_rooms", formData.min_rooms);
+
+      await addFilterAction(serverData);
+      onClose();
+
+      // Reset po zamknięciu
+      setFormData({ city: "", max_price: "", min_rooms: "" });
+    } catch (error) {
+      console.error("Failed to add filter:", error);
+      setErrors({ city: "Something went wrong. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -47,10 +94,16 @@ export function AddFilterModal({
             <Input
               id="city"
               name="city"
+              value={formData.city}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, city: e.target.value }))
+              }
               placeholder="e.g. Warszawa"
-              required
-              className="w-full"
+              className={`w-full ${errors.city ? "border-red-500 focus-visible:ring-red-300" : ""}`}
             />
+            {errors.city && (
+              <p className="text-red-500 text-sm">{errors.city}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -59,10 +112,16 @@ export function AddFilterModal({
               id="max_price"
               name="max_price"
               type="number"
+              value={formData.max_price}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, max_price: e.target.value }))
+              }
               placeholder="e.g. 3000"
-              required
-              className="w-full"
+              className={`w-full ${errors.max_price ? "border-red-500 focus-visible:ring-red-300" : ""}`}
             />
+            {errors.max_price && (
+              <p className="text-red-500 text-sm">{errors.max_price}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -71,11 +130,17 @@ export function AddFilterModal({
               id="min_rooms"
               name="min_rooms"
               type="number"
+              value={formData.min_rooms}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, min_rooms: e.target.value }))
+              }
               placeholder="e.g. 2"
-              required
               min="1"
-              className="w-full"
+              className={`w-full ${errors.min_rooms ? "border-red-500 focus-visible:ring-red-300" : ""}`}
             />
+            {errors.min_rooms && (
+              <p className="text-red-500 text-sm">{errors.min_rooms}</p>
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
