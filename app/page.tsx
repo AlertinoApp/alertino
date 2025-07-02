@@ -9,12 +9,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <LandingHeader />
-      <main>
+      <>
         <HeroSection />
         <FeaturesSection />
         <HowItWorksSection />
         <CTASection />
-      </main>
+      </>
       <LandingFooter />
     </div>
   );

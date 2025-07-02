@@ -13,6 +13,7 @@ import {
 import { updateFilterAction } from "@/lib/actions/filter-actions";
 import { Filter } from "@/types/filters";
 import { filterSchema } from "@/schemas/filters";
+import { toast } from "sonner";
 
 interface EditFilterModalProps {
   filter: Filter;
@@ -69,9 +70,11 @@ export function EditFilterModal({
 
       await updateFilterAction(serverData);
       onClose();
+
+      toast.success("Filter updated successfully!");
     } catch (error) {
       console.error("Failed to update filter:", error);
-      setErrors({ city: "Something went wrong. Please try again." });
+      toast.error("Failed to update filter. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

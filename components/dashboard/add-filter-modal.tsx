@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { addFilterAction } from "@/lib/actions/filter-actions";
 import { filterSchema } from "@/schemas/filters";
+import { toast } from "sonner";
 
 interface AddFilterModalProps {
   isOpen: boolean;
@@ -69,11 +70,12 @@ export function AddFilterModal({
       await addFilterAction(serverData);
       onClose();
 
-      // Reset po zamknięciu
       setFormData({ city: "", max_price: "", min_rooms: "" });
+
+      toast.success("Filter added successfully!");
     } catch (error) {
       console.error("Failed to add filter:", error);
-      setErrors({ city: "Something went wrong. Please try again." });
+      toast.error("Failed to add filter. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

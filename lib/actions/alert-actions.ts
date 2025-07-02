@@ -45,9 +45,11 @@ export async function generateAlerts() {
   const supabase = await createClientForServer();
   const { data: filters } = await supabase.from("filters").select("*");
 
-  if (!filters) return;
+  if (!filters) return { createdCount: 0 };
 
   console.log("🔥 Running alerts...");
+
+  let totalCreated = 0;
 
   for (const filter of filters) {
     const matched = await getMatchedListings(filter);
@@ -75,6 +77,8 @@ export async function generateAlerts() {
         rooms: listing.rooms,
         city: listing.city,
       });
+
+      totalCreated++;
     }
 
     const { data: user } = await supabase
@@ -91,7 +95,6 @@ export async function generateAlerts() {
       await resend.emails.send({
         from: "Alertino <onboarding@resend.dev>",
         to: "alertino.app@gmail.com",
-        // TODO: change when premium resend
         // to: user.email,
         subject: `New listings in ${filter.city}`,
         text: matched
@@ -106,4 +109,6 @@ export async function generateAlerts() {
 
     revalidatePath("/dashboard");
   }
+
+  return { createdCount: totalCreated };
 }

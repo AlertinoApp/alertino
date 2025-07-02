@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Clock } from "lucide-react";
 import { generateAlerts } from "@/lib/actions/alert-actions";
+import { toast } from "sonner";
 
 export function ActionsSection() {
   const [isRunning, setIsRunning] = useState(false);
@@ -12,9 +13,19 @@ export function ActionsSection() {
 
   const handleRunAlerts = async () => {
     setIsRunning(true);
+
     try {
-      await generateAlerts();
+      const result = await generateAlerts();
       setLastRun(new Date());
+
+      if (result.createdCount > 0) {
+        toast.success(`Found ${result.createdCount} new alert(s)!`);
+      } else {
+        toast.warning("No new alerts found.");
+      }
+    } catch (error) {
+      console.error("Failed to generate alerts:", error);
+      toast.error("Failed to generate alerts. Please try again.");
     } finally {
       setIsRunning(false);
     }

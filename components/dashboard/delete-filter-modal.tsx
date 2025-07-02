@@ -10,6 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { deleteFilterAction } from "@/lib/actions/filter-actions";
+import { toast } from "sonner";
 
 interface DeleteFilterDialogProps {
   filterId: string;
@@ -26,9 +27,16 @@ export function DeleteFilterDialog({
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    await deleteFilterAction(filterId);
-    setIsDeleting(false);
-    onClose();
+    try {
+      await deleteFilterAction(filterId);
+      toast.success("Filter deleted successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Failed to delete filter:", error);
+      toast.error("Failed to delete filter. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (

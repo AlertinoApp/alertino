@@ -131,7 +131,6 @@ export function LoginForm() {
             </Label>
             <Input
               id="email"
-              type="email"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

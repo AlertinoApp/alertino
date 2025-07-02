@@ -6,9 +6,9 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-white">
       <LandingHeader />
-      <main className="py-16">
+      <div className="py-16">
         <HelpCenter />
-      </main>
+      </div>
       <LandingFooter />
     </div>
   );
