@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Zap, Crown, Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const plans = [
   {
@@ -75,13 +76,39 @@ export function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
   const router = useRouter();
 
-  const handleGetStarted = (planName: string) => {
+  const handleGetStarted = async (planName: string) => {
     if (planName === "Free") {
       router.push("/login");
-    } else if (planName === "Business") {
+      return;
+    }
+
+    if (planName === "Business") {
       router.push("/contact");
-    } else {
-      router.push("/login"); // In real app, this would go to checkout
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/stripe/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          planId: planName.toLowerCase(),
+          interval: isYearly ? "yearly" : "monthly",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

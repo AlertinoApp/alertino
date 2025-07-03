@@ -46,7 +46,12 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <FiltersSection filters={filters || []} userId={session.user.id} />
+          <FiltersSection
+            filters={filters || []}
+            userId={session.user.id}
+            currentPlan={user?.plan || "free"}
+            filtersCount={filters?.length || 0}
+          />
 
           <AlertsSection alerts={alerts || []} />
 

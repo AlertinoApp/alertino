@@ -6,20 +6,37 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
+import { PLANS } from "@/lib/stripe/plans";
+import { UpgradePrompt } from "@/components/subscription/upgrade-prompt";
 import { Filter } from "@/types/filters";
 
 interface FiltersSectionProps {
   filters: Filter[];
   userId: string;
+  currentPlan?: string;
+  filtersCount?: number;
 }
 
-export function FiltersSection({ filters, userId }: FiltersSectionProps) {
+export function FiltersSection({
+  filters,
+  userId,
+  currentPlan = "free",
+  filtersCount = 0,
+}: FiltersSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const activeFilters = filters.filter((filter) => filter.is_active !== false);
   const inactiveFilters = filters.filter(
     (filter) => filter.is_active === false
   );
+
+  const plan = PLANS[currentPlan as keyof typeof PLANS] || PLANS.free;
+  const maxFilters = plan.maxFilters;
+  const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
+
+  const handleUpgrade = () => {
+    window.location.href = "/pricing";
+  };
 
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -53,6 +70,7 @@ export function FiltersSection({ filters, userId }: FiltersSectionProps) {
         <Button
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-600 hover:bg-blue-700"
+          disabled={isAtLimit}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Filter
@@ -117,6 +135,7 @@ export function FiltersSection({ filters, userId }: FiltersSectionProps) {
         onClose={() => setIsModalOpen(false)}
         userId={userId}
       />
+      {isAtLimit && <UpgradePrompt onUpgrade={handleUpgrade} />}
     </section>
   );
 }

@@ -1,0 +1,58 @@
+export const PLANS = {
+  free: {
+    id: "free",
+    name: "Free",
+    priceMonthly: 0,
+    priceYearly: 0,
+    stripePriceIdMonthly: "",
+    stripePriceIdYearly: "",
+    maxFilters: 3,
+    features: [
+      "Up to 3 active filters",
+      "Email notifications",
+      "Basic apartment alerts",
+      "Warsaw & Krakow coverage",
+      "Community support",
+    ],
+  },
+  premium: {
+    id: "premium",
+    name: "Premium",
+    priceMonthly: 19,
+    priceYearly: 190,
+    stripePriceIdMonthly: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
+    stripePriceIdYearly: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID!,
+    maxFilters: -1,
+    features: [
+      "Unlimited filters",
+      "Priority notifications (5min delay)",
+      "All Polish cities coverage",
+      "Advanced filter options",
+      "Email & SMS notifications",
+      "Priority support",
+      "Export alerts to CSV",
+      "Custom notification schedules",
+    ],
+  },
+  business: {
+    id: "business",
+    name: "Business",
+    priceMonthly: 49,
+    priceYearly: 490,
+    stripePriceIdMonthly: process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
+    stripePriceIdYearly: process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID!,
+    maxFilters: -1,
+    features: [
+      "Everything in Premium",
+      "Team collaboration (up to 5 users)",
+      "API access",
+      "White-label notifications",
+      "Advanced analytics",
+      "Dedicated account manager",
+      "Custom integrations",
+      "SLA guarantee",
+    ],
+  },
+} as const;
+
+export type PlanId = keyof typeof PLANS;
