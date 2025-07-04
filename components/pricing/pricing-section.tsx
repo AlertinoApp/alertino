@@ -31,7 +31,7 @@ const plans = [
     color: "gray",
   },
   {
-    name: "Pro",
+    name: "Premium",
     icon: Crown,
     price: { monthly: 19, yearly: 190 },
     description: "For serious apartment hunters who need more flexibility",
@@ -46,7 +46,7 @@ const plans = [
       "Custom notification schedules",
     ],
     limitations: [],
-    cta: "Start Pro Trial",
+    cta: "Start Premium Trial",
     popular: true,
     color: "blue",
   },
@@ -56,7 +56,7 @@ const plans = [
     price: { monthly: 49, yearly: 490 },
     description: "For real estate professionals and agencies",
     features: [
-      "Everything in Pro",
+      "Everything in Premium",
       "Team collaboration (up to 5 users)",
       "API access",
       "White-label notifications",
