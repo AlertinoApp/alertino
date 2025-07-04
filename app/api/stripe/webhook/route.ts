@@ -1,7 +1,10 @@
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe/config";
 import { type NextRequest, NextResponse } from "next/server";
-import { handleSubscriptionChange } from "@/lib/stripe/helpers";
+import {
+  handleCheckoutSessionCompleted,
+  handleSubscriptionChange,
+} from "@/lib/stripe/helpers";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -20,6 +23,9 @@ export async function POST(request: NextRequest) {
 
   switch (event.type) {
     case "checkout.session.completed":
+      await handleCheckoutSessionCompleted(
+        event.data.object as Stripe.Checkout.Session
+      );
       break;
 
     case "customer.subscription.updated":

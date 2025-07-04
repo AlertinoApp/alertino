@@ -8,17 +8,52 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-interface SubscriptionWithPeriodEnd extends StripeType.Subscription {
-  current_period_end: number;
+export async function handleCheckoutSessionCompleted(
+  session: StripeType.Checkout.Session
+) {
+  try {
+    const subscriptionId = session.subscription as string;
+    const customerId = session.customer as string;
+    const userId = session.metadata?.user_id;
+
+    if (!subscriptionId || !customerId || !userId) {
+      console.error("Missing data in checkout session");
+      return;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    const subItem = subscription.items.data[0];
+
+    await supabaseAdmin.from("subscriptions").upsert(
+      {
+        user_id: userId,
+        stripe_subscription_id: subscription.id,
+        stripe_customer_id: customerId,
+        plan: subItem.price.nickname || subItem.price.id || "unknown",
+        status: subscription.status,
+        current_period_end: subItem.current_period_end
+          ? new Date(subItem.current_period_end * 1000)
+          : null,
+        updated_at: new Date(),
+      },
+      { onConflict: "stripe_subscription_id" }
+    );
+
+    console.log(`✅ Subscription created/updated for user ${userId}`);
+  } catch (error) {
+    console.error("Error handling checkout.session.completed:", error);
+  }
 }
 
 export async function handleSubscriptionChange(
   subscription: StripeType.Subscription
 ) {
-  const s = subscription as SubscriptionWithPeriodEnd;
-  const subscriptionId = s.id;
-  const status = s.status;
-  const plan = s.items.data[0].price.nickname || "unknown";
+  const subscriptionId = subscription.id;
+  const status = subscription.status;
+
+  const subItem = subscription.items.data[0];
+  const plan = subItem.price.nickname || subItem.price.id || "unknown";
 
   const { data: subRecord, error } = await supabaseAdmin
     .from("subscriptions")
@@ -36,7 +71,9 @@ export async function handleSubscriptionChange(
     .update({
       plan,
       status,
-      current_period_end: new Date(s.current_period_end * 1000),
+      current_period_end: subItem.current_period_end
+        ? new Date(subItem.current_period_end * 1000)
+        : null,
       updated_at: new Date(),
     })
     .eq("stripe_subscription_id", subscriptionId);
