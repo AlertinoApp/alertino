@@ -25,8 +25,6 @@ export async function handleCheckoutSessionCompleted(
 
     const subItem = subscription.items.data[0];
 
-    console.log(subscription);
-
     await supabaseAdmin.from("subscriptions").upsert(
       {
         user_id: userId,

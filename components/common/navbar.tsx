@@ -9,10 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getSubscriptionConfig,
-  type SubscriptionPlan,
-} from "@/lib/subscription-utils";
+import { type SubscriptionPlan } from "@/lib/subscription-utils";
 import type { User } from "@supabase/supabase-js";
 import { LogOut, UserIcon, CreditCard, Home, Crown } from "lucide-react";
 import Link from "next/link";
@@ -42,9 +39,6 @@ export function Navbar({
   const subscriptionPlan = (subscription?.plan as SubscriptionPlan) || "free";
   const isPremium =
     subscriptionPlan === "premium" || subscriptionPlan === "business";
-
-  const subscriptionConfig = getSubscriptionConfig(subscriptionPlan);
-  console.log(subscriptionConfig);
 
   const userInitials =
     profile?.email?.charAt(0).toUpperCase() ||
