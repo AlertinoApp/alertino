@@ -1,5 +1,5 @@
 import type React from "react";
-import { LandingHeader } from "@/components/landing/landing-header";
+
 import { LandingFooter } from "@/components/landing/landing-footer";
 
 interface LegalPageLayoutProps {
@@ -8,15 +8,13 @@ interface LegalPageLayoutProps {
   children: React.ReactNode;
 }
 
-export function LegalPageLayout({
+export async function LegalPageLayout({
   title,
   lastUpdated,
   children,
 }: LegalPageLayoutProps) {
   return (
     <div className="min-h-screen bg-white">
-      <LandingHeader />
-
       <div className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">

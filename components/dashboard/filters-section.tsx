@@ -7,8 +7,8 @@ import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import { PLANS } from "@/lib/stripe/plans";
-import { UpgradePrompt } from "@/components/subscription/upgrade-prompt";
 import { Filter } from "@/types/filters";
+import { UpgradePrompt } from "../subscription/upgrade-prompt";
 
 interface FiltersSectionProps {
   filters: Filter[];

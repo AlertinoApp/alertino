@@ -25,12 +25,15 @@ export async function handleCheckoutSessionCompleted(
 
     const subItem = subscription.items.data[0];
 
+    console.log(subscription);
+
     await supabaseAdmin.from("subscriptions").upsert(
       {
         user_id: userId,
         stripe_subscription_id: subscription.id,
         stripe_customer_id: customerId,
-        plan: subItem.price.nickname || subItem.price.id || "unknown",
+        plan: subItem.price.nickname || "unknown",
+        interval: subItem.price.recurring?.interval || "unknown",
         status: subscription.status,
         current_period_end: subItem.current_period_end
           ? new Date(subItem.current_period_end * 1000)
