@@ -2,43 +2,7 @@
 
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
-
-export async function createCheckoutSessionAction(
-  planId: string,
-  interval: "monthly" | "yearly"
-) {
-  const supabase = await createClientForServer();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    throw new Error("Not authenticated");
-  }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/create-checkout-session`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify({
-        planId,
-        interval,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (data.url) {
-    redirect(data.url);
-  } else {
-    throw new Error("Failed to create checkout session");
-  }
-}
+import { stripe } from "../stripe/config";
 
 export async function createPortalSessionAction() {
   const supabase = await createClientForServer();
@@ -50,22 +14,24 @@ export async function createPortalSessionAction() {
     throw new Error("Not authenticated");
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/create-portal-session`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`,
-      },
-    }
-  );
+  const userId = session.user.id;
 
-  const data = await response.json();
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("stripe_customer_id")
+    .eq("user_id", userId)
+    .single();
 
-  if (data.url) {
-    redirect(data.url);
-  } else {
-    throw new Error("Failed to create portal session");
+  if (!subscription?.stripe_customer_id) {
+    throw new Error("No Stripe customer ID found");
   }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: subscription.stripe_customer_id,
+    return_url: `${baseUrl}/billing`,
+  });
+
+  redirect(portalSession.url);
 }

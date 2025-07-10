@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
+import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
 
 interface BillingOverviewProps {
   subscription: Subscription;
@@ -109,15 +110,17 @@ export function BillingOverview({
         icon: Crown,
         variant: "default" as const,
         className: "bg-blue-600 hover:bg-blue-700",
+        isForm: false,
       };
     }
 
     return {
       label: "Manage Subscription",
-      href: "#", // This would typically open a subscription management modal or external portal
+      href: "#",
       icon: Settings,
       variant: "default" as const,
       className: "bg-slate-900 hover:bg-slate-800",
+      isForm: true,
     };
   };
 
@@ -199,12 +202,24 @@ export function BillingOverview({
 
         {/* Primary Action */}
         <div className="flex gap-3">
-          <Button asChild className={`h-11 ${primaryAction.className}`}>
-            <Link href={primaryAction.href}>
-              <PrimaryIcon className="w-4 h-4 mr-2" />
-              {primaryAction.label}
-            </Link>
-          </Button>
+          {primaryAction.isForm ? (
+            <form action={createPortalSessionAction}>
+              <Button
+                type="submit"
+                className={`h-11 ${primaryAction.className}`}
+              >
+                <PrimaryIcon className="w-4 h-4 mr-2" />
+                {primaryAction.label}
+              </Button>
+            </form>
+          ) : (
+            <Button asChild className={`h-11 ${primaryAction.className}`}>
+              <Link href={primaryAction.href}>
+                <PrimaryIcon className="w-4 h-4 mr-2" />
+                {primaryAction.label}
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Status Alerts */}
