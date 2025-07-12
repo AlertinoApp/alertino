@@ -10,10 +10,10 @@ const supabaseAdmin = createClient(
 
 function mapStripePlanToSubscriptionPlan(priceId: string): SubscriptionPlan {
   const planMapping: Record<string, SubscriptionPlan> = {
-    [process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID!]: "premium",
-    [process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID!]: "premium",
-    [process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID!]: "business",
-    [process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID!]: "business",
+    [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!]: "premium",
+    [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!]: "premium",
+    [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!]: "business",
+    [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!]: "business",
   };
 
   return planMapping[priceId] || "free";
