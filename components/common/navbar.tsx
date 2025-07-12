@@ -9,12 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { type SubscriptionPlan } from "@/lib/subscription-utils";
 import type { User } from "@supabase/supabase-js";
 import { LogOut, UserIcon, CreditCard, Home, Crown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Subscription } from "@/types/subscription";
+import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
 import { signOut } from "@/lib/actions/auth-actions";

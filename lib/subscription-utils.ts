@@ -1,7 +1,6 @@
+import { SubscriptionPlan } from "@/types/subscription";
 import { Crown, Zap, Building2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-
-export type SubscriptionPlan = "free" | "premium" | "business";
 
 export interface SubscriptionConfig {
   name: string;

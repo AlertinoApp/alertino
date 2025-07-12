@@ -1,8 +1,34 @@
 "use server";
 
-import { createClientForServer } from "@/app/utils/supabase/server";
+import {
+  createCheckoutSession,
+  createCustomerPortalSession,
+} from "@/lib/stripe/helpers";
 import { redirect } from "next/navigation";
-import { stripe } from "../stripe/config";
+import { revalidatePath } from "next/cache";
+import { createClientForServer } from "@/app/utils/supabase/server";
+
+export async function createCheckoutSessionAction(priceId: string) {
+  const supabase = await createClientForServer();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const checkoutSession = await createCheckoutSession({
+    priceId,
+    userId: session.user.id,
+    userEmail: session.user.email!,
+    successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing?success=true`,
+    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+  });
+
+  redirect(checkoutSession.url!);
+}
 
 export async function createPortalSessionAction() {
   const supabase = await createClientForServer();
@@ -11,11 +37,12 @@ export async function createPortalSessionAction() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    throw new Error("Not authenticated");
+    redirect("/login");
   }
 
   const userId = session.user.id;
 
+  // Use subscriptions table instead of users table
   const { data: subscription } = await supabase
     .from("subscriptions")
     .select("stripe_customer_id")
@@ -28,10 +55,15 @@ export async function createPortalSessionAction() {
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  const portalSession = await stripe.billingPortal.sessions.create({
-    customer: subscription.stripe_customer_id,
-    return_url: `${baseUrl}/billing`,
-  });
+  const portalSession = await createCustomerPortalSession(
+    subscription.stripe_customer_id,
+    `${baseUrl}/billing`
+  );
 
   redirect(portalSession.url);
+}
+
+export async function refreshSubscriptionData() {
+  revalidatePath("/billing");
+  revalidatePath("/");
 }

@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
+import { getPlanConfig } from "@/lib/stripe/plans";
 
 interface BillingOverviewProps {
   subscription: Subscription;
@@ -25,6 +26,7 @@ export function BillingOverview({
   filtersCount,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
+  const planConfig = getPlanConfig(currentPlan);
   const planInterval = subscription?.interval || "";
   const subscriptionStatus = subscription?.status || "inactive";
   const currentPeriodEnd = subscription?.current_period_end
@@ -42,24 +44,22 @@ export function BillingOverview({
     }
   };
 
-  const getPlanInterval = () => {
-    switch (planInterval) {
-      case "month":
-        return "Monthly";
-      case "year":
-        return "Yearly";
-    }
-  };
+  const getPriceDisplay = () => {
+    if (currentPlan === "free") return null;
 
-  const getPlanPrice = () => {
-    switch (currentPlan) {
-      case "premium":
-        return planInterval === "year" ? "190" : "19";
-      case "business":
-        return planInterval === "year" ? "490" : "49";
-      default:
-        return "0";
-    }
+    const price =
+      planInterval === "year"
+        ? planConfig.price.yearly
+        : planConfig.price.monthly;
+
+    return (
+      <div className="text-right">
+        <div className="text-2xl font-bold text-slate-900">${price}</div>
+        <div className="text-sm font-normal text-slate-600">
+          per {planInterval}
+        </div>
+      </div>
+    );
   };
 
   const getStatusBadge = () => {
@@ -101,7 +101,6 @@ export function BillingOverview({
     }
   };
 
-  // Determine primary action based on user state
   const getPrimaryAction = () => {
     if (currentPlan === "free") {
       return {
@@ -129,34 +128,25 @@ export function BillingOverview({
 
   return (
     <Card className="border-0 shadow-sm">
-      <CardContent className="space-y-6">
-        {/* Plan Header */}
-        <div className="flex items-center justify-between">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-200">
               {getPlanIcon()}
             </div>
             <div>
               <h3 className="text-xl font-semibold text-slate-900 capitalize">
-                {currentPlan === "free"
-                  ? "Free Plan"
-                  : `${currentPlan} ${getPlanInterval()} Plan`}
+                {planConfig.name} Plan
               </h3>
               <div className="flex items-center gap-2 mt-1">
                 {getStatusBadge()}
               </div>
             </div>
           </div>
-          {currentPlan !== "free" && (
-            <div className="text-right">
-              <div className="text-2xl font-bold text-slate-900">
-                ${getPlanPrice()}
-              </div>
-              <div className="text-sm text-slate-600">per {planInterval}</div>
-            </div>
-          )}
-        </div>
-
+          {getPriceDisplay()}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
         {/* Subscription Details */}
         {currentPeriodEnd && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

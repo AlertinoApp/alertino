@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe/config";
 import { type NextRequest, NextResponse } from "next/server";
 import {
@@ -9,34 +9,60 @@ import {
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
-  const payload = await request.text();
-  const signature = request.headers.get("stripe-signature") as string;
-
-  let event: Stripe.Event;
-
   try {
-    event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
-  } catch (err) {
-    console.error("Webhook signature verification failed.", err);
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    const payload = await request.text();
+    const signature = request.headers.get("stripe-signature");
+
+    if (!signature) {
+      console.error("No Stripe signature found");
+      return NextResponse.json({ error: "No signature" }, { status: 400 });
+    }
+
+    let event: Stripe.Event;
+
+    try {
+      event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+    } catch (err) {
+      console.error("Webhook signature verification failed:", err);
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
+
+    console.log(`Processing webhook event: ${event.type}`);
+
+    switch (event.type) {
+      case "checkout.session.completed":
+        await handleCheckoutSessionCompleted(
+          event.data.object as Stripe.Checkout.Session
+        );
+        break;
+
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted":
+        await handleSubscriptionChange(
+          event.data.object as Stripe.Subscription
+        );
+        break;
+
+      case "invoice.payment_failed":
+        console.log("Payment failed for invoice:", event.data.object.id);
+        // Handle payment failure if needed
+        break;
+
+      case "invoice.payment_succeeded":
+        console.log("Payment succeeded for invoice:", event.data.object.id);
+        // Handle successful payment if needed
+        break;
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return NextResponse.json(
+      { error: "Webhook handler failed" },
+      { status: 500 }
+    );
   }
-
-  switch (event.type) {
-    case "checkout.session.completed":
-      await handleCheckoutSessionCompleted(
-        event.data.object as Stripe.Checkout.Session
-      );
-      break;
-
-    case "customer.subscription.updated":
-    case "customer.subscription.deleted":
-      const subscription = event.data.object as Stripe.Subscription;
-      await handleSubscriptionChange(subscription);
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  return NextResponse.json({ received: true });
 }

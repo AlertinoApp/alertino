@@ -6,14 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
-import { PLANS } from "@/lib/stripe/plans";
-import { Filter } from "@/types/filters";
+import type { Filter } from "@/types/filters";
 import { UpgradePrompt } from "../subscription/upgrade-prompt";
+import type { SubscriptionPlan } from "@/types/subscription";
+import { getPlanConfig } from "@/lib/stripe/plans";
 
 interface FiltersSectionProps {
   filters: Filter[];
   userId: string;
-  currentPlan?: string;
+  currentPlan?: SubscriptionPlan;
   filtersCount?: number;
 }
 
@@ -30,8 +31,8 @@ export function FiltersSection({
     (filter) => filter.is_active === false
   );
 
-  const plan = PLANS[currentPlan as keyof typeof PLANS] || PLANS.free;
-  const maxFilters = plan.maxFilters;
+  const planConfig = getPlanConfig(currentPlan);
+  const maxFilters = planConfig.maxFilters;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
   const handleUpgrade = () => {
@@ -66,6 +67,12 @@ export function FiltersSection({
           <p className="text-sm text-gray-600">
             Manage your apartment search criteria
           </p>
+          {maxFilters !== -1 && (
+            <p className="text-xs text-gray-500 mt-1">
+              {filtersCount} of {maxFilters} filters used ({planConfig.name}{" "}
+              plan)
+            </p>
+          )}
         </div>
         <Button
           onClick={() => setIsModalOpen(true)}

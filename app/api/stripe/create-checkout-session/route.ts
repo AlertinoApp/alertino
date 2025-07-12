@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClientForServer } from "@/app/utils/supabase/server";
 import { stripe } from "@/lib/stripe/config";
-import { PLANS } from "@/lib/stripe/plans";
+import type { SubscriptionPlan } from "@/types/subscription";
+import { createClientForServer } from "@/app/utils/supabase/server";
+import { getPlanConfig } from "@/lib/stripe/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,23 +20,23 @@ export async function POST(request: NextRequest) {
     const userId = session.user.id;
     const userEmail = session.user.email!;
 
-    const plan = PLANS[planId as keyof typeof PLANS];
-    if (!plan) {
+    const planConfig = getPlanConfig(planId as SubscriptionPlan);
+    if (!planConfig) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
 
     const priceId =
       interval === "yearly"
-        ? plan.stripePriceIdYearly
-        : plan.stripePriceIdMonthly;
+        ? planConfig.stripePriceIds.yearly
+        : planConfig.stripePriceIds.monthly;
 
-    const supaUser = await supabase
+    const { data: supaUser } = await supabase
       .from("users")
       .select("stripe_customer_id")
       .eq("id", userId)
       .single();
 
-    let customerId = supaUser.data?.stripe_customer_id;
+    let customerId = supaUser?.stripe_customer_id;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "subscription",
-      success_url: `${baseUrl}/subscription?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/pricing?canceled=true`,
       metadata: {
         user_id: userId,

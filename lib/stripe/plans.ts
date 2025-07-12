@@ -1,12 +1,11 @@
-export const PLANS = {
+import { PlanConfig, SubscriptionPlan } from "@/types/subscription";
+
+export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
   free: {
-    id: "free",
     name: "Free",
-    priceMonthly: 0,
-    priceYearly: 0,
-    stripePriceIdMonthly: "",
-    stripePriceIdYearly: "",
-    maxFilters: 3,
+    description: "Perfect for getting started with apartment hunting",
+    price: { monthly: 0, yearly: 0 },
+    stripePriceIds: { monthly: "", yearly: "" },
     features: [
       "Up to 3 active filters",
       "Email notifications",
@@ -14,15 +13,16 @@ export const PLANS = {
       "Warsaw & Krakow coverage",
       "Community support",
     ],
+    maxFilters: 3,
   },
   premium: {
-    id: "premium",
     name: "Premium",
-    priceMonthly: 19,
-    priceYearly: 190,
-    stripePriceIdMonthly: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
-    stripePriceIdYearly: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID!,
-    maxFilters: -1,
+    description: "For serious apartment hunters who need more flexibility",
+    price: { monthly: 19, yearly: 190 },
+    stripePriceIds: {
+      monthly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!,
+    },
     features: [
       "Unlimited filters",
       "Priority notifications (5min delay)",
@@ -33,15 +33,16 @@ export const PLANS = {
       "Export alerts to CSV",
       "Custom notification schedules",
     ],
+    maxFilters: -1, // unlimited
   },
   business: {
-    id: "business",
     name: "Business",
-    priceMonthly: 49,
-    priceYearly: 490,
-    stripePriceIdMonthly: process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
-    stripePriceIdYearly: process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID!,
-    maxFilters: -1,
+    description: "For real estate professionals and agencies",
+    price: { monthly: 49, yearly: 490 },
+    stripePriceIds: {
+      monthly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!,
+    },
     features: [
       "Everything in Premium",
       "Team collaboration (up to 5 users)",
@@ -52,7 +53,10 @@ export const PLANS = {
       "Custom integrations",
       "SLA guarantee",
     ],
+    maxFilters: -1, // unlimited
   },
-} as const;
+};
 
-export type PlanId = keyof typeof PLANS;
+export function getPlanConfig(plan: SubscriptionPlan): PlanConfig {
+  return PLAN_CONFIGS[plan];
+}
