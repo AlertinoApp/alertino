@@ -1,7 +1,6 @@
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { BillingOverview } from "@/components/billing/billing-overview";
-import { BillingHistory } from "@/components/billing/billing-history";
 import { PlanComparison } from "@/components/billing/plan-comparison";
 import { Navbar } from "@/components/common/navbar";
 
@@ -68,12 +67,14 @@ export default async function BillingPage() {
                 subscription={subscription}
                 filtersCount={filtersCount}
               />
-              <BillingHistory />
             </div>
 
             {/* Only show plan comparison for free users */}
             <div>
-              <PlanComparison subscription={subscription} />
+              <PlanComparison
+                user={session?.user}
+                subscription={subscription}
+              />
             </div>
           </div>
         </div>

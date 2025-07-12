@@ -45,7 +45,7 @@ export function UpgradeButton({
         return;
       }
       // For paid plans, redirect to signup/login
-      router.push("/login?redirect=pricing");
+      router.push("/login");
       return;
     }
 

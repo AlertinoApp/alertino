@@ -17,8 +17,8 @@ import { User } from "@supabase/supabase-js";
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
 interface PricingSectionProps {
-  user?: User | null;
-  subscription?: Subscription | null;
+  user: User;
+  subscription: Subscription;
 }
 
 export function PricingSection({ user, subscription }: PricingSectionProps) {
@@ -39,10 +39,10 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
 
   const getPrice = (plan: SubscriptionPlan) => {
     const planConfig = getPlanConfig(plan);
-    const price =
-      interval === "month" ? planConfig.price.monthly : planConfig.price.yearly;
-
-    if (price === 0) return "Free";
+    const isYearly = interval === "year";
+    const monthlyEquivalent = isYearly
+      ? Math.round((planConfig.price.yearly / 12) * 100) / 100
+      : planConfig.price.monthly;
 
     const yearlyDiscount =
       interval === "year"
@@ -53,10 +53,12 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
 
     return (
       <div className="flex items-baseline justify-center">
-        <span className="text-4xl font-bold text-gray-900">${price}</span>
-        <span className="text-gray-500 ml-2">/{interval}</span>
+        <span className="text-4xl font-bold text-gray-900">
+          ${monthlyEquivalent}
+        </span>
+        <span className="text-gray-500 ml-2">/month</span>
         {yearlyDiscount > 0 && (
-          <Badge variant="secondary" className="ml-2">
+          <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
             Save {yearlyDiscount}%
           </Badge>
         )}
@@ -138,7 +140,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                     {getPrice(plan)}
                     {interval === "year" && planConfig.price.monthly > 0 && (
                       <p className="text-sm text-gray-500 mt-1">
-                        ${planConfig.price.monthly}/month billed annually
+                        Billed ${planConfig.price.yearly} annually
                       </p>
                     )}
                   </div>
@@ -160,7 +162,6 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   <div className="space-y-4">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
                         What&apos;s included:
                       </h4>
                       <ul className="space-y-2">

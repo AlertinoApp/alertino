@@ -120,6 +120,9 @@ export async function handleSubscriptionChange(
           subscriptionItem.current_period_end * 1000
         ).toISOString(),
         cancel_at_period_end: subscription.cancel_at_period_end,
+        canceled_at: subscription.canceled_at
+          ? new Date(subscription.canceled_at * 1000).toISOString()
+          : null,
         updated_at: new Date().toISOString(),
       })
       .eq("stripe_subscription_id", subscriptionId);
@@ -256,5 +259,45 @@ export async function hasActiveSubscription(userId: string) {
   if (!subscription) return false;
 
   const activeStatuses: SubscriptionStatus[] = ["active", "trialing"];
-  return activeStatuses.includes(subscription.status);
+  const hasActiveStatus = activeStatuses.includes(subscription.status);
+
+  // If subscription is set to cancel at period end, it's still active until then
+  if (subscription.cancel_at_period_end && subscription.status === "active") {
+    const periodEnd = new Date(subscription.current_period_end);
+    const now = new Date();
+    return now < periodEnd; // Still active until period ends
+  }
+
+  return hasActiveStatus;
+}
+
+// Helper function to get subscription details with cancellation info
+export async function getSubscriptionDetails(userId: string) {
+  const subscription = await getUserSubscription(userId);
+
+  if (!subscription) {
+    return {
+      plan: "free" as SubscriptionPlan,
+      status: "incomplete" as SubscriptionStatus,
+      isActive: false,
+      willCancelAtPeriodEnd: false,
+      periodEnd: null,
+      canceledAt: null,
+    };
+  }
+
+  const isActive = await hasActiveSubscription(userId);
+
+  return {
+    plan: subscription.plan,
+    status: subscription.status,
+    isActive,
+    willCancelAtPeriodEnd: subscription.cancel_at_period_end,
+    periodEnd: subscription.current_period_end
+      ? new Date(subscription.current_period_end)
+      : null,
+    canceledAt: subscription.canceled_at
+      ? new Date(subscription.canceled_at)
+      : null,
+  };
 }

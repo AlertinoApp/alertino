@@ -42,8 +42,6 @@ export function PricingCard({
     const price =
       interval === "month" ? planConfig.price.monthly : planConfig.price.yearly;
 
-    if (price === 0) return "Free";
-
     const yearlyDiscount =
       interval === "year"
         ? Math.round(

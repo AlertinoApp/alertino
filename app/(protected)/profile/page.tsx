@@ -6,7 +6,6 @@ import { NotificationSettings } from "@/components/profile/notification-settings
 import { DangerZone } from "@/components/profile/danger-zone";
 import { ProfileHeader } from "@/components/profile/profile-header";
 import { Navbar } from "@/components/common/navbar";
-import { SubscriptionSection } from "@/components/profile/subscription-section";
 
 export default async function ProfilePage() {
   const supabase = await createClientForServer();
@@ -59,7 +58,7 @@ export default async function ProfilePage() {
         <div className="space-y-8">
           <ProfileHeader user={session.user} profile={user} />
 
-          <SubscriptionSection subscription={subscription} />
+          {/* <SubscriptionSection subscription={subscription} /> */}
 
           <ActivitySummary
             alertsCount={alerts?.length || 0}

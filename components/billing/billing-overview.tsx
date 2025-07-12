@@ -10,6 +10,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Settings,
+  Clock,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
@@ -32,6 +34,20 @@ export function BillingOverview({
   const currentPeriodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end)
     : null;
+  const cancelAtPeriodEnd = subscription?.cancel_at_period_end || false;
+  const canceledAt = subscription?.canceled_at
+    ? new Date(subscription.canceled_at)
+    : null;
+
+  // Determine if subscription is effectively active (including grace period)
+  const isEffectivelyActive = () => {
+    if (subscriptionStatus === "active") return true;
+    if (subscriptionStatus === "trialing") return true;
+    if (subscriptionStatus === "canceled" && currentPeriodEnd) {
+      return new Date() < currentPeriodEnd; // Still in grace period
+    }
+    return false;
+  };
 
   const getPlanIcon = () => {
     switch (currentPlan) {
@@ -63,6 +79,26 @@ export function BillingOverview({
   };
 
   const getStatusBadge = () => {
+    // Handle cancel at period end scenario
+    if (cancelAtPeriodEnd && subscriptionStatus === "active") {
+      return (
+        <Badge className="bg-orange-50 text-orange-700 border-orange-200 font-medium">
+          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1.5" />
+          Canceling Soon
+        </Badge>
+      );
+    }
+
+    // Handle canceled but still in grace period
+    if (subscriptionStatus === "canceled" && isEffectivelyActive()) {
+      return (
+        <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-medium">
+          <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5" />
+          Grace Period
+        </Badge>
+      );
+    }
+
     switch (subscriptionStatus) {
       case "active":
         return (
@@ -123,6 +159,19 @@ export function BillingOverview({
     };
   };
 
+  const getBillingDateLabel = () => {
+    if (cancelAtPeriodEnd && subscriptionStatus === "active") {
+      return "Cancels On";
+    }
+    if (subscriptionStatus === "canceled" && isEffectivelyActive()) {
+      return "Access Until";
+    }
+    if (subscriptionStatus === "trialing") {
+      return "Trial Ends";
+    }
+    return "Next Billing";
+  };
+
   const primaryAction = getPrimaryAction();
   const PrimaryIcon = primaryAction.icon;
 
@@ -157,9 +206,7 @@ export function BillingOverview({
                 </div>
                 <div>
                   <div className="font-medium text-slate-900 text-sm">
-                    {subscriptionStatus === "canceled"
-                      ? "Access Until"
-                      : "Next Billing"}
+                    {getBillingDateLabel()}
                   </div>
                   <div className="text-slate-600 text-sm">
                     {currentPeriodEnd.toLocaleDateString("en-US", {
@@ -213,6 +260,86 @@ export function BillingOverview({
         </div>
 
         {/* Status Alerts */}
+        {cancelAtPeriodEnd &&
+          subscriptionStatus === "active" &&
+          currentPeriodEnd && (
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-4 h-4 text-orange-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-orange-900 mb-1">
+                    Subscription Ending Soon
+                  </div>
+                  <p className="text-orange-800 text-sm">
+                    Your subscription will end on{" "}
+                    {currentPeriodEnd.toLocaleDateString()}. You can reactivate
+                    anytime before then by updating your subscription settings.
+                  </p>
+                  {canceledAt && (
+                    <p className="text-orange-700 text-xs mt-1">
+                      Canceled on {canceledAt.toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+        {subscriptionStatus === "canceled" &&
+          isEffectivelyActive() &&
+          currentPeriodEnd && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-4 h-4 text-amber-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-amber-900 mb-1">
+                    Grace Period Active
+                  </div>
+                  <p className="text-amber-800 text-sm">
+                    Your subscription was canceled but you still have access
+                    until {currentPeriodEnd.toLocaleDateString()}. You can
+                    reactivate anytime before then to continue your
+                    subscription.
+                  </p>
+                  {canceledAt && (
+                    <p className="text-amber-700 text-xs mt-1">
+                      Canceled on {canceledAt.toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+        {subscriptionStatus === "canceled" && !isEffectivelyActive() && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <XCircle className="w-4 h-4 text-red-600" />
+              </div>
+              <div>
+                <div className="font-medium text-red-900 mb-1">
+                  Subscription Ended
+                </div>
+                <p className="text-red-800 text-sm">
+                  Your subscription has ended and you&apos;ve been moved to the
+                  free plan. You can upgrade anytime to restore premium
+                  features.
+                </p>
+                {canceledAt && (
+                  <p className="text-red-700 text-xs mt-1">
+                    Canceled on {canceledAt.toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {subscriptionStatus === "past_due" && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
@@ -226,26 +353,6 @@ export function BillingOverview({
                 <p className="text-amber-800 text-sm">
                   Your payment is overdue. Please update your payment method to
                   continue using premium features.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {subscriptionStatus === "canceled" && currentPeriodEnd && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-4 h-4 text-red-600" />
-              </div>
-              <div>
-                <div className="font-medium text-red-900 mb-1">
-                  Subscription Canceled
-                </div>
-                <p className="text-red-800 text-sm">
-                  Your subscription will end on{" "}
-                  {currentPeriodEnd.toLocaleDateString()}. You can reactivate
-                  anytime before then to continue using premium features.
                 </p>
               </div>
             </div>
