@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Building2, Zap, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { UpgradeButton } from "@/components/subscription/upgrade-button";
+import { UpgradeButton } from "@/components/pricing/upgrade-button";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   Subscription,
@@ -134,7 +134,6 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
             const price = getPrice(plan);
             const yearlyDiscount = getYearlyDiscount(plan);
             const isPopular = plan === "premium";
-            const isCurrentPlan = currentPlan === plan;
 
             return (
               <div

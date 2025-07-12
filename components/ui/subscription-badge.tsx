@@ -1,9 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  getSubscriptionConfig,
-  type SubscriptionPlan,
-} from "@/lib/subscription-utils";
+import { getSubscriptionConfig } from "@/lib/subscription-utils";
 import { cn } from "@/lib/utils";
+import { SubscriptionPlan } from "@/types/subscription";
 
 interface SubscriptionBadgeProps {
   plan: SubscriptionPlan;

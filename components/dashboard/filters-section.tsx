@@ -7,7 +7,6 @@ import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import type { Filter } from "@/types/filters";
-import { UpgradePrompt } from "../subscription/upgrade-prompt";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { getPlanConfig } from "@/lib/stripe/plans";
 
@@ -34,10 +33,6 @@ export function FiltersSection({
   const planConfig = getPlanConfig(currentPlan);
   const maxFilters = planConfig.maxFilters;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
-
-  const handleUpgrade = () => {
-    window.location.href = "/pricing";
-  };
 
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -142,7 +137,6 @@ export function FiltersSection({
         onClose={() => setIsModalOpen(false)}
         userId={userId}
       />
-      {isAtLimit && <UpgradePrompt onUpgrade={handleUpgrade} />}
     </section>
   );
 }

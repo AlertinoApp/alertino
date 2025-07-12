@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Building2, Zap } from "lucide-react";
-import { UpgradeButton } from "@/components/subscription/upgrade-button";
+import { UpgradeButton } from "@/components/pricing/upgrade-button";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   SubscriptionPlan,
@@ -17,8 +17,8 @@ import { User } from "@supabase/supabase-js";
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
 interface PricingSectionProps {
-  user: User;
-  subscription: Subscription;
+  user?: User | null;
+  subscription?: Subscription | null;
 }
 
 export function PricingSection({ user, subscription }: PricingSectionProps) {
