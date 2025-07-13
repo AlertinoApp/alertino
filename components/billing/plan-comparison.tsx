@@ -12,6 +12,7 @@ import type {
   SubscriptionInterval,
 } from "@/types/subscription";
 import { User } from "@supabase/supabase-js";
+import { SwitchPlanButton } from "../subscription/switch-plan-button";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
@@ -21,10 +22,15 @@ interface PlanComparisonProps {
 }
 
 export function PlanComparison({ subscription, user }: PlanComparisonProps) {
-  const [interval, setInterval] = useState<SubscriptionInterval>("month");
+  const [interval, setInterval] = useState<SubscriptionInterval>(
+    subscription?.interval || "month"
+  );
   const currentPlan = subscription?.plan || "free";
+  const currentInterval = subscription?.interval || "month";
 
   const isLoggedIn = !!user;
+  const hasActiveSubscription =
+    subscription && subscription.status === "active";
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
@@ -84,6 +90,28 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
       : 0;
   };
 
+  const isCurrentPlanAndInterval = (
+    plan: SubscriptionPlan,
+    checkInterval: SubscriptionInterval
+  ) => {
+    return currentPlan === plan && currentInterval === checkInterval;
+  };
+
+  const isPlanChange = (plan: SubscriptionPlan) => {
+    return currentPlan !== plan;
+  };
+
+  const isIntervalChange = (checkInterval: SubscriptionInterval) => {
+    return currentInterval !== checkInterval;
+  };
+
+  const isAnyChange = (
+    plan: SubscriptionPlan,
+    checkInterval: SubscriptionInterval
+  ) => {
+    return isPlanChange(plan) || isIntervalChange(checkInterval);
+  };
+
   return (
     <Card className="border-0 shadow-sm">
       <CardHeader>
@@ -91,7 +119,7 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
           <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-slate-600" />
           </div>
-          Choose Your Plan
+          {hasActiveSubscription ? "Switch Your Plan" : "Choose Your Plan"}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -124,6 +152,11 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
             >
               Yearly
             </span>
+            {interval === "year" && (
+              <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                Save up to 20%
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -134,17 +167,30 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
             const price = getPrice(plan);
             const yearlyDiscount = getYearlyDiscount(plan);
             const isPopular = plan === "premium";
+            const isCurrent = isCurrentPlanAndInterval(plan, interval);
+            const needsChange =
+              hasActiveSubscription && isAnyChange(plan, interval);
 
             return (
               <div
                 key={plan}
                 className={`relative p-4 rounded-lg border transition-all ${
-                  isPopular
-                    ? "border-blue-500 bg-blue-50/50"
-                    : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                  isCurrent
+                    ? "border-green-500 bg-green-50/50"
+                    : isPopular
+                      ? "border-blue-500 bg-blue-50/50"
+                      : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
                 }`}
               >
-                {isPopular && (
+                {isCurrent && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-green-600 text-white border-green-600 text-xs font-medium">
+                      Current Plan
+                    </Badge>
+                  </div>
+                )}
+
+                {!isCurrent && isPopular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-blue-600 text-white border-blue-600 text-xs font-medium">
                       Most Popular
@@ -204,15 +250,36 @@ export function PlanComparison({ subscription, user }: PlanComparisonProps) {
                   </ul>
                 </div>
 
-                <UpgradeButton
-                  plan={plan}
-                  interval={interval}
-                  currentPlan={currentPlan}
-                  isLoggedIn={isLoggedIn}
-                  className={`w-full h-9 ${
-                    isPopular ? "bg-blue-600 hover:bg-blue-700 text-white" : ""
-                  }`}
-                />
+                {/* Button Logic */}
+                {isCurrent ? (
+                  <div className="w-full h-9 bg-green-100 border border-green-200 rounded-md flex items-center justify-center text-sm font-medium text-green-800">
+                    Current Plan
+                  </div>
+                ) : hasActiveSubscription && needsChange ? (
+                  <SwitchPlanButton
+                    plan={plan}
+                    interval={interval}
+                    currentPlan={currentPlan}
+                    currentInterval={currentInterval}
+                    className={`w-full h-9 ${
+                      isPopular
+                        ? "bg-blue-600 hover:bg-blue-700 text-white hover:text-white!"
+                        : ""
+                    }`}
+                  />
+                ) : (
+                  <UpgradeButton
+                    plan={plan}
+                    interval={interval}
+                    currentPlan={currentPlan}
+                    isLoggedIn={isLoggedIn}
+                    className={`w-full h-9 ${
+                      isPopular
+                        ? "bg-blue-600 hover:bg-blue-700 text-white hover:text-white!"
+                        : ""
+                    }`}
+                  />
+                )}
               </div>
             );
           })}

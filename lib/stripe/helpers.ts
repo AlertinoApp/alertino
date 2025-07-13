@@ -1,5 +1,9 @@
 import { stripe } from "./config";
-import { SubscriptionPlan, SubscriptionStatus } from "@/types/subscription";
+import {
+  SubscriptionPlan,
+  SubscriptionStatus,
+  SubscriptionInterval,
+} from "@/types/subscription";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
@@ -17,6 +21,196 @@ function mapStripePlanToSubscriptionPlan(priceId: string): SubscriptionPlan {
   };
 
   return planMapping[priceId] || "free";
+}
+
+// Updated function to handle free plan properly
+function getPriceIdFromPlanAndInterval(
+  plan: SubscriptionPlan,
+  interval: SubscriptionInterval
+): string | null {
+  // Guard clause: free plan doesn't have a price ID
+  if (plan === "free") {
+    return null;
+  }
+
+  const priceMapping: Record<string, string> = {
+    premium_month: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
+    premium_year: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!,
+    business_month: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
+    business_year: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!,
+  };
+
+  const key = `${plan}_${interval}`;
+  const priceId = priceMapping[key];
+
+  if (!priceId) {
+    throw new Error(
+      `No price ID found for plan: ${plan}, interval: ${interval}`
+    );
+  }
+
+  return priceId;
+}
+
+// Updated function to handle free plan cancellation
+export async function updateSubscriptionPlan(
+  subscriptionId: string,
+  newPlan: SubscriptionPlan,
+  newInterval: SubscriptionInterval
+) {
+  try {
+    console.log(
+      `Updating subscription ${subscriptionId} to ${newPlan} (${newInterval})`
+    );
+
+    // Get the new price ID (null for free plan)
+    const newPriceId = getPriceIdFromPlanAndInterval(newPlan, newInterval);
+
+    // Handle free plan: cancel subscription at period end
+    if (!newPriceId && newPlan === "free") {
+      console.log("Cancelling subscription for free plan downgrade");
+
+      const updatedSubscription = await stripe.subscriptions.update(
+        subscriptionId,
+        {
+          cancel_at_period_end: true,
+        }
+      );
+
+      // Update our database to reflect the cancellation
+      const { error } = await supabaseAdmin
+        .from("subscriptions")
+        .update({
+          cancel_at_period_end: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("stripe_subscription_id", subscriptionId);
+
+      if (error) {
+        console.error("Error updating subscription for cancellation:", error);
+        throw error;
+      }
+
+      console.log(
+        `✅ Subscription scheduled for cancellation: ${subscriptionId}`
+      );
+      return updatedSubscription;
+    }
+
+    // Handle paid plans: update subscription price
+    if (newPriceId) {
+      // Retrieve current subscription
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+      if (!subscription) {
+        throw new Error("Subscription not found");
+      }
+
+      // Get current subscription item
+      const currentItem = subscription.items.data[0];
+
+      if (!currentItem) {
+        throw new Error("No subscription items found");
+      }
+
+      // Update the subscription with the new price
+      const updatedSubscription = await stripe.subscriptions.update(
+        subscriptionId,
+        {
+          items: [
+            {
+              id: currentItem.id,
+              price: newPriceId,
+            },
+          ],
+          // Prorate the charges
+          proration_behavior: "create_prorations",
+          // Ensure subscription is not cancelled if it was previously set to cancel
+          cancel_at_period_end: false,
+        }
+      );
+
+      console.log(`✅ Subscription updated successfully: ${subscriptionId}`);
+
+      // The webhook will handle updating our database when Stripe sends the subscription.updated event
+      return updatedSubscription;
+    }
+
+    throw new Error("Invalid plan configuration");
+  } catch (error) {
+    console.error("Error updating subscription:", error);
+    throw error;
+  }
+}
+
+// New function to handle subscription cancellation
+export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
+  try {
+    console.log(`Cancelling subscription at period end: ${subscriptionId}`);
+
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscriptionId,
+      {
+        cancel_at_period_end: true,
+      }
+    );
+
+    // Update our database
+    const { error } = await supabaseAdmin
+      .from("subscriptions")
+      .update({
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("stripe_subscription_id", subscriptionId);
+
+    if (error) {
+      console.error("Error updating subscription for cancellation:", error);
+      throw error;
+    }
+
+    console.log(
+      `✅ Subscription scheduled for cancellation: ${subscriptionId}`
+    );
+    return updatedSubscription;
+  } catch (error) {
+    console.error("Error cancelling subscription:", error);
+    throw error;
+  }
+}
+
+// New function to reactivate a cancelled subscription
+export async function reactivateSubscription(subscriptionId: string) {
+  try {
+    console.log(`Reactivating subscription: ${subscriptionId}`);
+
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscriptionId,
+      {
+        cancel_at_period_end: false,
+      }
+    );
+
+    // Update our database
+    const { error } = await supabaseAdmin
+      .from("subscriptions")
+      .update({
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("stripe_subscription_id", subscriptionId);
+
+    if (error) {
+      console.error("Error updating subscription for reactivation:", error);
+      throw error;
+    }
+
+    console.log(`✅ Subscription reactivated: ${subscriptionId}`);
+    return updatedSubscription;
+  } catch (error) {
+    console.error("Error reactivating subscription:", error);
+    throw error;
+  }
 }
 
 export async function handleCheckoutSessionCompleted(
@@ -305,20 +499,21 @@ export async function getUserSubscription(userId: string) {
     throw new Error("User ID is required");
   }
 
-  const { data: subscription } = await supabaseAdmin
+  const { data: subscription, error } = await supabaseAdmin
     .from("subscriptions")
     .select("*")
     .eq("user_id", userId)
     .single();
 
-  if (!subscription?.stripe_customer_id) {
-    throw new Error("No Stripe customer ID found");
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 is "not found"
+    throw error;
   }
 
   return subscription;
 }
 
-// Helper function to check if user has active subscription
+// Updated function to handle cancelled subscriptions correctly
 export async function hasActiveSubscription(userId: string): Promise<boolean> {
   try {
     const subscription = await getUserSubscription(userId);
