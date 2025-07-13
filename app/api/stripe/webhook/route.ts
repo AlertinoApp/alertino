@@ -9,6 +9,8 @@ import {
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
+  let event: Stripe.Event;
+
   try {
     const payload = await request.text();
     const signature = request.headers.get("stripe-signature");
@@ -18,8 +20,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No signature" }, { status: 400 });
     }
 
-    let event: Stripe.Event;
-
     try {
       event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
     } catch (err) {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    console.log(`Processing webhook event: ${event.type}`);
+    console.log(`Processing webhook event: ${event.type} (${event.id})`);
 
     switch (event.type) {
       case "checkout.session.completed":
@@ -36,8 +36,22 @@ export async function POST(request: NextRequest) {
         );
         break;
 
+      case "customer.subscription.created":
+        console.log("New subscription created");
+        await handleSubscriptionChange(
+          event.data.object as Stripe.Subscription
+        );
+        break;
+
       case "customer.subscription.updated":
+        console.log("Subscription updated");
+        await handleSubscriptionChange(
+          event.data.object as Stripe.Subscription
+        );
+        break;
+
       case "customer.subscription.deleted":
+        console.log("Subscription deleted");
         await handleSubscriptionChange(
           event.data.object as Stripe.Subscription
         );
@@ -57,6 +71,7 @@ export async function POST(request: NextRequest) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
+    console.log(`Successfully processed webhook event: ${event.type}`);
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Webhook error:", error);

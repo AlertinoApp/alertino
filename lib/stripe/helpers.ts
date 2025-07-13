@@ -27,13 +27,20 @@ export async function handleCheckoutSessionCompleted(
     const customerId = session.customer as string;
     const userId = session.metadata?.user_id;
 
+    console.log("Processing checkout session completed:", {
+      sessionId: session.id,
+      subscriptionId,
+      customerId,
+      userId,
+    });
+
     if (!subscriptionId || !customerId || !userId) {
       console.error("Missing required data in checkout session:", {
         subscriptionId,
         customerId,
         userId,
       });
-      return;
+      throw new Error("Missing required data in checkout session");
     }
 
     // Retrieve the full subscription details from Stripe
@@ -44,10 +51,14 @@ export async function handleCheckoutSessionCompleted(
     const subscriptionItem = subscription.items.data[0];
     const price = subscriptionItem.price;
 
+    if (!price) {
+      throw new Error("No price found in subscription");
+    }
+
     const plan = mapStripePlanToSubscriptionPlan(price.id);
     const interval = price.recurring?.interval as "month" | "year";
 
-    // Upsert subscription record
+    // Use transaction to ensure data consistency
     const { error } = await supabaseAdmin.from("subscriptions").upsert(
       {
         user_id: userId,
@@ -63,6 +74,7 @@ export async function handleCheckoutSessionCompleted(
           subscriptionItem.current_period_end * 1000
         ).toISOString(),
         cancel_at_period_end: subscription.cancel_at_period_end,
+        canceled_at: null, // Reset canceled_at for new subscription
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id" }
@@ -70,12 +82,15 @@ export async function handleCheckoutSessionCompleted(
 
     if (error) {
       console.error("Error upserting subscription:", error);
-      return;
+      throw error;
     }
 
-    console.log(`✅ Subscription created/updated for user ${userId}`);
+    console.log(
+      `✅ Subscription created/updated for user ${userId} - Plan: ${plan}, Status: ${subscription.status}`
+    );
   } catch (error) {
     console.error("Error handling checkout.session.completed:", error);
+    throw error; // Re-throw to ensure webhook fails and gets retried
   }
 }
 
@@ -86,16 +101,26 @@ export async function handleSubscriptionChange(
     const subscriptionId = subscription.id;
     const status = subscription.status as SubscriptionStatus;
 
+    console.log("Processing subscription change:", {
+      subscriptionId,
+      status,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    });
+
     // Find the subscription record in our database
     const { data: subRecord, error: fetchError } = await supabaseAdmin
       .from("subscriptions")
-      .select("user_id")
+      .select("user_id, plan, status")
       .eq("stripe_subscription_id", subscriptionId)
       .single();
 
     if (fetchError || !subRecord) {
-      console.error("Subscription not found in database:", subscriptionId);
-      return;
+      console.error(
+        "Subscription not found in database:",
+        subscriptionId,
+        fetchError
+      );
+      throw new Error(`Subscription not found: ${subscriptionId}`);
     }
 
     const subscriptionItem = subscription.items.data[0];
@@ -103,33 +128,43 @@ export async function handleSubscriptionChange(
     const plan = mapStripePlanToSubscriptionPlan(price.id);
     const interval = price.recurring?.interval as "month" | "year";
 
-    // Handle cancellation - move to free plan if subscription is canceled
-    const finalPlan = status === "canceled" ? "free" : plan;
-    const finalStatus = status === "canceled" ? "canceled" : status;
+    // Determine final plan and status
+    let finalPlan: SubscriptionPlan;
+    let finalStatus: SubscriptionStatus;
+
+    if (status === "canceled") {
+      finalPlan = "free";
+      finalStatus = "canceled";
+    } else {
+      finalPlan = plan;
+      finalStatus = status;
+    }
+
+    const updateData = {
+      plan: finalPlan,
+      status: finalStatus,
+      interval: status === "canceled" ? null : interval,
+      current_period_start: new Date(
+        subscriptionItem.current_period_start * 1000
+      ).toISOString(),
+      current_period_end: new Date(
+        subscriptionItem.current_period_end * 1000
+      ).toISOString(),
+      cancel_at_period_end: subscription.cancel_at_period_end,
+      canceled_at: subscription.canceled_at
+        ? new Date(subscription.canceled_at * 1000).toISOString()
+        : null,
+      updated_at: new Date().toISOString(),
+    };
 
     const { error: updateError } = await supabaseAdmin
       .from("subscriptions")
-      .update({
-        plan: finalPlan,
-        status: finalStatus,
-        interval: status === "canceled" ? null : interval,
-        current_period_start: new Date(
-          subscriptionItem.current_period_start * 1000
-        ).toISOString(),
-        current_period_end: new Date(
-          subscriptionItem.current_period_end * 1000
-        ).toISOString(),
-        cancel_at_period_end: subscription.cancel_at_period_end,
-        canceled_at: subscription.canceled_at
-          ? new Date(subscription.canceled_at * 1000).toISOString()
-          : null,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq("stripe_subscription_id", subscriptionId);
 
     if (updateError) {
       console.error("Error updating subscription:", updateError);
-      return;
+      throw updateError;
     }
 
     console.log(
@@ -137,6 +172,7 @@ export async function handleSubscriptionChange(
     );
   } catch (error) {
     console.error("Error handling subscription change:", error);
+    throw error; // Re-throw to ensure webhook fails and gets retried
   }
 }
 
@@ -154,43 +190,15 @@ export async function createCheckoutSession({
   cancelUrl: string;
 }) {
   try {
-    // Get customer ID from subscriptions table
-    const { data: subscription } = await supabaseAdmin
-      .from("subscriptions")
-      .select("stripe_customer_id")
-      .eq("user_id", userId)
-      .single();
+    console.log("Creating checkout session for user:", userId);
 
-    let customerId = subscription?.stripe_customer_id;
-
-    if (!customerId) {
-      // Create Stripe customer
-      const customer = await stripe.customers.create({
-        email: userEmail,
-        metadata: { supabase_user_id: userId },
-      });
-      customerId = customer.id;
-
-      // Insert new subscription record with customer ID
-      const { error } = await supabaseAdmin.from("subscriptions").upsert(
-        {
-          user_id: userId,
-          stripe_customer_id: customerId,
-          plan: "free", // Default to free plan
-          status: "incomplete" as SubscriptionStatus,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" }
-      );
-
-      if (error) {
-        console.error(
-          "Error upserting subscription with new customer ID:",
-          error
-        );
-        throw error;
-      }
+    // Validate price ID
+    if (!priceId) {
+      throw new Error("Price ID is required");
     }
+
+    // Get or create customer
+    const customerId = await getOrCreateCustomer(userId, userEmail);
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -209,8 +217,10 @@ export async function createCheckoutSession({
         metadata: { user_id: userId },
       },
       allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
     });
 
+    console.log("✅ Checkout session created:", session.id);
     return session;
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -218,11 +228,65 @@ export async function createCheckoutSession({
   }
 }
 
+async function getOrCreateCustomer(
+  userId: string,
+  userEmail: string
+): Promise<string> {
+  // First check if user already has a subscription with customer ID
+  const { data: subscription } = await supabaseAdmin
+    .from("subscriptions")
+    .select("stripe_customer_id")
+    .eq("user_id", userId)
+    .single();
+
+  if (subscription?.stripe_customer_id) {
+    // Verify the customer exists in Stripe
+    try {
+      await stripe.customers.retrieve(subscription.stripe_customer_id);
+      return subscription.stripe_customer_id;
+    } catch (error) {
+      console.warn("Customer not found in Stripe, creating new one:", error);
+    }
+  }
+
+  // Create new Stripe customer
+  const customer = await stripe.customers.create({
+    email: userEmail,
+    metadata: { supabase_user_id: userId },
+  });
+
+  // Upsert subscription record with customer ID
+  const { error } = await supabaseAdmin.from("subscriptions").upsert(
+    {
+      user_id: userId,
+      stripe_customer_id: customer.id,
+      plan: "free",
+      status: "incomplete" as SubscriptionStatus,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
+
+  if (error) {
+    console.error("Error upserting subscription with new customer ID:", error);
+    throw error;
+  }
+
+  return customer.id;
+}
+
 export async function createCustomerPortalSession(
   customerId: string,
   returnUrl: string
 ) {
   try {
+    if (!customerId) {
+      throw new Error("Customer ID is required");
+    }
+
+    // Verify customer exists
+    await stripe.customers.retrieve(customerId);
+
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: returnUrl,
@@ -237,67 +301,43 @@ export async function createCustomerPortalSession(
 
 // Helper function to get user's subscription data
 export async function getUserSubscription(userId: string) {
-  const { data: subscription, error } = await supabaseAdmin
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const { data: subscription } = await supabaseAdmin
     .from("subscriptions")
     .select("*")
     .eq("user_id", userId)
     .single();
 
-  if (error && error.code !== "PGRST116") {
-    // PGRST116 is "not found"
-    console.error("Error fetching subscription:", error);
-    return null;
+  if (!subscription?.stripe_customer_id) {
+    throw new Error("No Stripe customer ID found");
   }
 
   return subscription;
 }
 
 // Helper function to check if user has active subscription
-export async function hasActiveSubscription(userId: string) {
-  const subscription = await getUserSubscription(userId);
+export async function hasActiveSubscription(userId: string): Promise<boolean> {
+  try {
+    const subscription = await getUserSubscription(userId);
 
-  if (!subscription) return false;
+    if (!subscription) return false;
 
-  const activeStatuses: SubscriptionStatus[] = ["active", "trialing"];
-  const hasActiveStatus = activeStatuses.includes(subscription.status);
+    const activeStatuses: SubscriptionStatus[] = ["active", "trialing"];
+    const hasActiveStatus = activeStatuses.includes(subscription.status);
 
-  // If subscription is set to cancel at period end, it's still active until then
-  if (subscription.cancel_at_period_end && subscription.status === "active") {
-    const periodEnd = new Date(subscription.current_period_end);
-    const now = new Date();
-    return now < periodEnd; // Still active until period ends
+    // If subscription is set to cancel at period end, it's still active until then
+    if (subscription.cancel_at_period_end && subscription.status === "active") {
+      const periodEnd = new Date(subscription.current_period_end);
+      const now = new Date();
+      return now < periodEnd;
+    }
+
+    return hasActiveStatus;
+  } catch (error) {
+    console.error("Error checking active subscription:", error);
+    return false;
   }
-
-  return hasActiveStatus;
-}
-
-// Helper function to get subscription details with cancellation info
-export async function getSubscriptionDetails(userId: string) {
-  const subscription = await getUserSubscription(userId);
-
-  if (!subscription) {
-    return {
-      plan: "free" as SubscriptionPlan,
-      status: "incomplete" as SubscriptionStatus,
-      isActive: false,
-      willCancelAtPeriodEnd: false,
-      periodEnd: null,
-      canceledAt: null,
-    };
-  }
-
-  const isActive = await hasActiveSubscription(userId);
-
-  return {
-    plan: subscription.plan,
-    status: subscription.status,
-    isActive,
-    willCancelAtPeriodEnd: subscription.cancel_at_period_end,
-    periodEnd: subscription.current_period_end
-      ? new Date(subscription.current_period_end)
-      : null,
-    canceledAt: subscription.canceled_at
-      ? new Date(subscription.canceled_at)
-      : null,
-  };
 }

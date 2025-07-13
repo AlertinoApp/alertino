@@ -3,20 +3,32 @@
 import {
   createCheckoutSession,
   createCustomerPortalSession,
+  getUserSubscription,
+  hasActiveSubscription,
 } from "@/lib/stripe/helpers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { createClientForServer } from "@/app/utils/supabase/server";
 
 export async function createCheckoutSessionAction(priceId: string) {
   const supabase = await createClientForServer();
-
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
   if (!session) {
     redirect("/login");
+  }
+
+  // Validate price ID
+  if (!priceId) {
+    throw new Error("Price ID is required");
+  }
+
+  // Check if user already has an active subscription
+  const isActive = await hasActiveSubscription(session.user.id);
+  if (isActive) {
+    // Redirect to billing instead of creating new checkout
+    redirect("/billing?error=already_subscribed");
   }
 
   const checkoutSession = await createCheckoutSession({
@@ -27,7 +39,11 @@ export async function createCheckoutSessionAction(priceId: string) {
     cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
   });
 
-  redirect(checkoutSession.url!);
+  if (!checkoutSession.url) {
+    throw new Error("Failed to create checkout session");
+  }
+
+  redirect(checkoutSession.url);
 }
 
 export async function createPortalSessionAction() {
@@ -42,15 +58,12 @@ export async function createPortalSessionAction() {
 
   const userId = session.user.id;
 
-  // Use subscriptions table instead of users table
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("stripe_customer_id")
-    .eq("user_id", userId)
-    .single();
+  // Get subscription data
+  const subscription = await getUserSubscription(userId);
 
   if (!subscription?.stripe_customer_id) {
-    throw new Error("No Stripe customer ID found");
+    // If no customer ID, redirect to pricing
+    redirect("/pricing?error=no_subscription");
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -60,10 +73,9 @@ export async function createPortalSessionAction() {
     `${baseUrl}/billing`
   );
 
-  redirect(portalSession.url);
-}
+  if (!portalSession.url) {
+    throw new Error("Failed to create portal session");
+  }
 
-export async function refreshSubscriptionData() {
-  revalidatePath("/billing");
-  revalidatePath("/");
+  redirect(portalSession.url);
 }

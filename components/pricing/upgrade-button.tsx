@@ -74,6 +74,7 @@ export function UpgradeButton({
   };
 
   const getButtonText = () => {
+    // If user is not logged in
     if (!isLoggedIn) {
       if (plan === "free") {
         return "Get Started Free";
@@ -81,14 +82,22 @@ export function UpgradeButton({
       return `Start ${planConfig.name} Trial`;
     }
 
+    // If it's the current plan
     if (isCurrentPlan) {
       return "Current Plan";
     }
 
-    if (plan === "free") {
+    // If user is logged in and selecting free plan from a paid plan
+    if (plan === "free" && currentPlan !== "free") {
       return "Downgrade to Free";
     }
 
+    // If user is on free plan and selecting a paid plan
+    if (currentPlan === "free" && plan !== "free") {
+      return `Upgrade to ${planConfig.name}`;
+    }
+
+    // For other cases (paid plan to paid plan)
     return `${isDowngrade ? "Downgrade" : "Upgrade"} to ${planConfig.name}`;
   };
 
@@ -101,7 +110,7 @@ export function UpgradeButton({
       return <Loader2 className="w-4 h-4 mr-2 animate-spin" />;
     }
 
-    if (!isCurrentPlan) {
+    if (!isCurrentPlan && plan !== "free") {
       return <Crown className="w-4 h-4 mr-2" />;
     }
 
@@ -114,7 +123,9 @@ export function UpgradeButton({
       disabled={isPending || (isLoggedIn && isCurrentPlan)}
       size={size}
       className={className}
-      variant={isCurrentPlan ? "outline" : "default"}
+      variant={
+        isCurrentPlan ? "outline" : plan === "free" ? "outline" : "default"
+      }
     >
       {getButtonIcon()}
       {getButtonText()}
