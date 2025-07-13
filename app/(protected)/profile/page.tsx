@@ -5,7 +5,7 @@ import { PersonalInformation } from "@/components/profile/personal-information";
 import { NotificationSettings } from "@/components/profile/notification-settings";
 import { DangerZone } from "@/components/profile/danger-zone";
 import { ProfileHeader } from "@/components/profile/profile-header";
-import { Header } from "@/components/common/header";
+import { Navbar } from "@/components/common/navbar";
 
 export default async function ProfilePage() {
   const supabase = await createClientForServer();
@@ -38,13 +38,27 @@ export default async function ProfilePage() {
     .eq("status", "active")
     .order("created_at", { ascending: false });
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Header user={session.user} profile={user} />
+  // Fetch user subscription
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .single();
 
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <Navbar
+        user={session?.user}
+        profile={user}
+        subscription={subscription}
+        variant="dashboard"
+        showNavigation={false}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <ProfileHeader user={session.user} profile={user} />
+
+          {/* <SubscriptionSection subscription={subscription} /> */}
 
           <ActivitySummary
             alertsCount={alerts?.length || 0}

@@ -2,7 +2,8 @@ import { createClientForServer } from "@/app/utils/supabase/server";
 import { ActionsSection } from "@/components/dashboard/actions-section";
 import { AlertsSection } from "@/components/dashboard/alerts-section";
 import { FiltersSection } from "@/components/dashboard/filters-section";
-import { Header } from "@/components/common/header";
+import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
+import { Navbar } from "@/components/common/navbar";
 
 export default async function DashboardPage() {
   const supabase = await createClientForServer();
@@ -33,10 +34,22 @@ export default async function DashboardPage() {
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
+  // Fetch user subscription
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .single();
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header user={session.user} profile={user} />
-
+      <Navbar
+        user={session?.user}
+        profile={user}
+        subscription={subscription}
+        variant="dashboard"
+        showNavigation={false}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <div>
@@ -46,7 +59,14 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <FiltersSection filters={filters || []} userId={session.user.id} />
+          <UpgradeBanner filtersCount={filters?.length || 0} />
+
+          <FiltersSection
+            filters={filters || []}
+            userId={session.user.id}
+            currentPlan={user?.plan || "free"}
+            filtersCount={filters?.length || 0}
+          />
 
           <AlertsSection alerts={alerts || []} />
 

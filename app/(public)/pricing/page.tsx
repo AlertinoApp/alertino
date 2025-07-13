@@ -1,16 +1,15 @@
 import { PricingSection } from "@/components/pricing/pricing-section";
 import { PricingFAQ } from "@/components/pricing/pricing-faq";
-import { LandingHeader } from "@/components/landing/landing-header";
 import { LandingFooter } from "@/components/landing/landing-footer";
+import { getUserAndSubscription } from "@/lib/actions/auth-actions";
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const { session, subscription } = await getUserAndSubscription();
+
   return (
     <div className="min-h-screen bg-white">
-      <LandingHeader />
-      <>
-        <PricingSection />
-        <PricingFAQ />
-      </>
+      <PricingSection user={session?.user} subscription={subscription} />
+      <PricingFAQ />
       <LandingFooter />
     </div>
   );

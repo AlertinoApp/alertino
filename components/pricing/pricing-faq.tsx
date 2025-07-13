@@ -10,7 +10,7 @@ const pricingFAQs = [
   {
     question: "What happens if I exceed my filter limit on the Free plan?",
     answer:
-      "You'll be prompted to upgrade to Pro or remove existing filters. We'll never charge you without explicit consent.",
+      "You'll be prompted to upgrade to Premium or remove existing filters. We'll never charge you without explicit consent.",
   },
   {
     question: "Do you offer refunds?",
@@ -18,9 +18,9 @@ const pricingFAQs = [
       "Yes, we offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, contact us for a full refund.",
   },
   {
-    question: "How does the free trial work for Pro plan?",
+    question: "How does the free trial work for Premium plan?",
     answer:
-      "You get 14 days of full Pro features at no cost. No credit card required. After the trial, you can choose to subscribe or continue with the free plan.",
+      "You get 14 days of full Premium features at no cost. No credit card required. After the trial, you can choose to subscribe or continue with the free plan.",
   },
   {
     question: "What payment methods do you accept?",
@@ -40,7 +40,7 @@ const pricingFAQs = [
   {
     question: "What's included in priority support?",
     answer:
-      "Pro and Business customers get priority email support with response times under 4 hours during business hours, plus access to our knowledge base and video tutorials.",
+      "Premium and Business customers get priority email support with response times under 4 hours during business hours, plus access to our knowledge base and video tutorials.",
   },
 ];
 

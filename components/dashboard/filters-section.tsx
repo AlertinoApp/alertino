@@ -6,20 +6,33 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, FilterIcon } from "lucide-react";
 import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
-import { Filter } from "@/types/filters";
+import type { Filter } from "@/types/filters";
+import type { SubscriptionPlan } from "@/types/subscription";
+import { getPlanConfig } from "@/lib/stripe/plans";
 
 interface FiltersSectionProps {
   filters: Filter[];
   userId: string;
+  currentPlan?: SubscriptionPlan;
+  filtersCount?: number;
 }
 
-export function FiltersSection({ filters, userId }: FiltersSectionProps) {
+export function FiltersSection({
+  filters,
+  userId,
+  currentPlan = "free",
+  filtersCount = 0,
+}: FiltersSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const activeFilters = filters.filter((filter) => filter.is_active !== false);
   const inactiveFilters = filters.filter(
     (filter) => filter.is_active === false
   );
+
+  const planConfig = getPlanConfig(currentPlan);
+  const maxFilters = planConfig.maxFilters;
+  const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -49,10 +62,17 @@ export function FiltersSection({ filters, userId }: FiltersSectionProps) {
           <p className="text-sm text-gray-600">
             Manage your apartment search criteria
           </p>
+          {maxFilters !== -1 && (
+            <p className="text-xs text-gray-500 mt-1">
+              {filtersCount} of {maxFilters} filters used ({planConfig.name}{" "}
+              plan)
+            </p>
+          )}
         </div>
         <Button
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-600 hover:bg-blue-700"
+          disabled={isAtLimit}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Filter
