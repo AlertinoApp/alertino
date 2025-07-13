@@ -37,7 +37,7 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
   },
   business: {
     name: "Business",
-    description: "For real estate professionals and agencies",
+    description: "For real estate professionals and leading agencies",
     price: { monthly: 49, yearly: 490 },
     stripePriceIds: {
       monthly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,

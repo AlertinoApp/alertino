@@ -8,6 +8,7 @@ import { CheckCircle, XCircle, AlertCircle, X } from "lucide-react";
 
 interface AlertMessage {
   type: "success" | "error" | "warning";
+  title: string;
   message: string;
 }
 
@@ -24,20 +25,40 @@ export function SubscriptionAlerts() {
     if (success) {
       setAlert({
         type: "success",
+        title: getSuccessTitle(success),
         message: getSuccessMessage(success),
       });
     } else if (error) {
       setAlert({
         type: "error",
+        title: getErrorTitle(error),
         message: getErrorMessage(error),
       });
     } else if (warning) {
       setAlert({
         type: "warning",
+        title: getWarningTitle(warning),
         message: getWarningMessage(warning),
       });
     }
   }, [searchParams]);
+
+  const getSuccessTitle = (type: string): string => {
+    switch (type) {
+      case "true":
+        return "Subscription Activated";
+      case "downgrade_scheduled":
+        return "Downgrade Scheduled";
+      case "downgraded_to_free":
+        return "Downgraded to Free";
+      case "subscription_updated":
+        return "Subscription Updated";
+      case "subscription_cancelled":
+        return "Subscription Cancelled";
+      default:
+        return "Success";
+    }
+  };
 
   const getSuccessMessage = (type: string): string => {
     switch (type) {
@@ -50,9 +71,28 @@ export function SubscriptionAlerts() {
       case "subscription_updated":
         return "Your subscription has been updated successfully.";
       case "subscription_cancelled":
-        return "Your subscription has been cancelled. You'll continue to have access until the end of your billing period.";
+        return "You'll continue to have access until the end of your billing period.";
       default:
         return "Operation completed successfully.";
+    }
+  };
+
+  const getErrorTitle = (type: string): string => {
+    switch (type) {
+      case "already_subscribed":
+        return "Already Subscribed";
+      case "no_subscription":
+        return "No Subscription Found";
+      case "downgrade_failed":
+        return "Downgrade Failed";
+      case "checkout_failed":
+        return "Payment Failed";
+      case "invalid_plan":
+        return "Invalid Plan";
+      case "stripe_error":
+        return "Payment Error";
+      default:
+        return "Error";
     }
   };
 
@@ -72,6 +112,19 @@ export function SubscriptionAlerts() {
         return "A payment processing error occurred. Please try again.";
       default:
         return "An error occurred. Please try again or contact support.";
+    }
+  };
+
+  const getWarningTitle = (type: string): string => {
+    switch (type) {
+      case "subscription_ending":
+        return "Subscription Ending Soon";
+      case "payment_failed":
+        return "Payment Failed";
+      case "trial_ending":
+        return "Trial Ending Soon";
+      default:
+        return "Notice";
     }
   };
 
@@ -124,6 +177,19 @@ export function SubscriptionAlerts() {
     }
   };
 
+  const getTitleColor = () => {
+    switch (alert?.type) {
+      case "success":
+        return "text-green-900";
+      case "error":
+        return "text-red-900";
+      case "warning":
+        return "text-yellow-900";
+      default:
+        return "";
+    }
+  };
+
   const getTextColor = () => {
     switch (alert?.type) {
       case "success":
@@ -137,6 +203,19 @@ export function SubscriptionAlerts() {
     }
   };
 
+  const getIconBgColor = () => {
+    switch (alert?.type) {
+      case "success":
+        return "bg-green-100";
+      case "error":
+        return "bg-red-100";
+      case "warning":
+        return "bg-yellow-100";
+      default:
+        return "bg-gray-100";
+    }
+  };
+
   if (!alert) return null;
 
   return (
@@ -144,11 +223,16 @@ export function SubscriptionAlerts() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/50 rounded-full flex items-center justify-center">
+            <div
+              className={`w-12 h-12 ${getIconBgColor()} rounded-full flex items-center justify-center`}
+            >
               {getAlertIcon()}
             </div>
             <div>
-              <p className={`font-medium ${getTextColor()}`}>{alert.message}</p>
+              <h3 className={`font-semibold ${getTitleColor()} mb-1`}>
+                {alert.title}
+              </h3>
+              <p className={`${getTextColor()} text-sm`}>{alert.message}</p>
             </div>
           </div>
           <Button

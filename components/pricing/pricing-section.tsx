@@ -13,6 +13,7 @@ import type {
 } from "@/types/subscription";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { NumberTicker } from "../magicui/number-ticker";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
@@ -25,7 +26,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
   const [interval, setInterval] = useState<SubscriptionInterval>("month");
   const router = useRouter();
   const isLoggedIn = !!user;
-  const currentPlan = subscription?.plan || "free";
+  const currentPlan = subscription?.plan || null; // Changed from "free" to null when not logged in
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
@@ -81,15 +82,24 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
   };
 
   const getButtonText = (plan: SubscriptionPlan) => {
+    if (!isLoggedIn) {
+      // When not logged in, show appropriate text for each plan
+      if (plan === "free") {
+        return "Get Started Free";
+      }
+      return `Get ${getPlanConfig(plan).name}`;
+    }
+
+    // When logged in, show based on current plan
     if (plan === "free") {
-      return isLoggedIn ? "Manage Plan" : "Get Started Free";
+      return "Manage Plan";
     }
 
     if (currentPlan === plan) {
       return "Manage Plan";
     }
 
-    if (currentPlan === "free") {
+    if (currentPlan === "free" || currentPlan === null) {
       return `Upgrade to ${getPlanConfig(plan).name}`;
     }
 
@@ -178,7 +188,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
             const planConfig = getPlanConfig(plan);
             const priceData = getPrice(plan);
             const isPopular = plan === "premium";
-            const isCurrent = currentPlan === plan;
+            const isCurrent = isLoggedIn && currentPlan === plan; // Only show as current if logged in
 
             return (
               <Card
@@ -201,7 +211,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                 />
 
                 {/* Popular badge */}
-                {isPopular && (
+                {isPopular && !isCurrent && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-blue-600 text-white shadow-lg">
                       Most Popular
@@ -209,6 +219,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   </div>
                 )}
 
+                {/* Current plan badge - only show if logged in */}
                 {isCurrent && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-green-600 text-white shadow-lg">
@@ -235,7 +246,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   <div className="mb-6">
                     <div className="flex items-baseline justify-center">
                       <span className="text-4xl font-bold text-slate-900">
-                        ${priceData.monthlyEquivalent}
+                        $<NumberTicker value={priceData.monthlyEquivalent} />
                       </span>
                       <span className="text-slate-500 ml-2">/month</span>
                       {priceData.yearlyDiscount > 0 && (
@@ -259,8 +270,8 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                       isPopular
                         ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
                         : plan === "free"
-                          ? "border-2 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
-                          : "border-2 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
+                          ? "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
+                          : "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
                     }`}
                   >
                     {getButtonText(plan)}
