@@ -411,7 +411,6 @@ export async function createCheckoutSession({
         metadata: { user_id: userId },
       },
       allow_promotion_codes: true,
-      automatic_tax: { enabled: true },
     });
 
     console.log("✅ Checkout session created:", session.id);
