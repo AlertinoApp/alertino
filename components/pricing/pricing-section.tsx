@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Building2, Zap } from "lucide-react";
-import { UpgradeButton } from "@/components/pricing/upgrade-button";
+import { UpgradeButton } from "@/components/subscription/upgrade-button";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   SubscriptionPlan,
