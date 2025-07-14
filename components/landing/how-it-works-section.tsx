@@ -68,8 +68,8 @@ export function HowItWorksSection() {
               {/* Connector Arrow */}
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                  <div className="w-8 h-0.5 bg-gray-300"></div>
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-300 border-t-2 border-b-2 border-t-transparent border-b-transparent"></div>
+                  <div className="w-14 h-0.5 bg-gray-300"></div>
+                  <div className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-l-gray-300 border-t-4 border-b-4 border-t-transparent border-b-transparent"></div>
                 </div>
               )}
             </div>
