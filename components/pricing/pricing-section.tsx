@@ -4,7 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Building2, Zap, ArrowRight } from "lucide-react";
+import {
+  Check,
+  Crown,
+  Building2,
+  Zap,
+  ArrowRight,
+  Settings,
+} from "lucide-react";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   SubscriptionPlan,
@@ -14,6 +21,7 @@ import type {
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { NumberTicker } from "../magicui/number-ticker";
+import { UpgradeButton } from "@/components/subscription/upgrade-button";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
@@ -26,7 +34,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
   const [interval, setInterval] = useState<SubscriptionInterval>("month");
   const router = useRouter();
   const isLoggedIn = !!user;
-  const currentPlan = subscription?.plan || null; // Changed from "free" to null when not logged in
+  const currentPlan = subscription?.plan || "free";
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
@@ -81,31 +89,6 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
     };
   };
 
-  const getButtonText = (plan: SubscriptionPlan) => {
-    if (!isLoggedIn) {
-      // When not logged in, show appropriate text for each plan
-      if (plan === "free") {
-        return "Get Started Free";
-      }
-      return `Get ${getPlanConfig(plan).name}`;
-    }
-
-    // When logged in, show based on current plan
-    if (plan === "free") {
-      return "Manage Plan";
-    }
-
-    if (currentPlan === plan) {
-      return "Manage Plan";
-    }
-
-    if (currentPlan === "free" || currentPlan === null) {
-      return `Upgrade to ${getPlanConfig(plan).name}`;
-    }
-
-    return "Choose Plan";
-  };
-
   const getButtonVariant = (plan: SubscriptionPlan, isPopular: boolean) => {
     if (plan === "free") {
       return "outline";
@@ -113,20 +96,91 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
     return isPopular ? "default" : "outline";
   };
 
+  const getButtonText = (plan: SubscriptionPlan) => {
+    if (!isLoggedIn) {
+      if (plan === "free") {
+        return "Get Started Free";
+      }
+      return `Get ${getPlanConfig(plan).name}`;
+    }
+
+    // When logged in
+    if (currentPlan === plan) {
+      return plan === "free" ? "Current Plan" : "Manage Plan";
+    }
+
+    // User has free plan
+    if (currentPlan === "free") {
+      if (plan === "free") {
+        return "Current Plan";
+      }
+      return `Upgrade to ${getPlanConfig(plan).name}`;
+    }
+
+    // User has premium plan
+    if (currentPlan === "premium") {
+      if (plan === "premium") {
+        return "Manage Plan";
+      }
+      if (plan === "business") {
+        return "Upgrade to Business";
+      }
+      if (plan === "free") {
+        return "Downgrade to Free";
+      }
+    }
+
+    // User has business plan
+    if (currentPlan === "business") {
+      if (plan === "business") {
+        return "Manage Plan";
+      }
+      if (plan === "premium") {
+        return "Downgrade to Premium";
+      }
+      if (plan === "free") {
+        return "Downgrade to Free";
+      }
+    }
+
+    return "Choose Plan";
+  };
+
   const handlePlanClick = (plan: SubscriptionPlan) => {
     if (!isLoggedIn) {
-      // Store intended plan in session/local storage for post-login redirect
-      sessionStorage.setItem("intended_plan", plan);
-      sessionStorage.setItem("intended_interval", interval);
-      router.push("/login?redirect=/billing");
-    } else {
-      // Redirect to billing page with plan parameters
-      const params = new URLSearchParams({
-        plan,
-        interval,
-      });
-      router.push(`/billing?${params.toString()}`);
+      router.push("/login");
+      return;
     }
+
+    // User has free plan
+    if (currentPlan === "free") {
+      if (plan === "free") {
+        router.push("/billing");
+      } else {
+        // Redirect to checkout for upgrading from free to paid
+        const params = new URLSearchParams({
+          plan,
+          interval,
+        });
+        router.push(`/checkout?${params.toString()}`);
+      }
+      return;
+    }
+
+    // User has premium or business plan - all actions go to billing
+    if (currentPlan === "premium" || currentPlan === "business") {
+      router.push("/billing");
+      return;
+    }
+  };
+
+  const shouldUseUpgradeButton = (plan: SubscriptionPlan) => {
+    return isLoggedIn && currentPlan === "free" && plan !== "free";
+  };
+
+  const shouldShowSettingsIcon = (plan: SubscriptionPlan) => {
+    const buttonText = getButtonText(plan);
+    return buttonText === "Manage Plan";
   };
 
   return (
@@ -188,7 +242,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
             const planConfig = getPlanConfig(plan);
             const priceData = getPrice(plan);
             const isPopular = plan === "premium";
-            const isCurrent = isLoggedIn && currentPlan === plan; // Only show as current if logged in
+            const isCurrent = isLoggedIn && currentPlan === plan;
 
             return (
               <Card
@@ -197,13 +251,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   plan,
                   isPopular,
                   isCurrent
-                )} ${
-                  isPopular && !isCurrent
-                    ? "scale-105 shadow-xl"
-                    : isCurrent
-                      ? "shadow-lg"
-                      : "hover:shadow-lg"
-                }`}
+                )} ${isPopular ? "md:scale-105" : ""} ${isCurrent ? "shadow-lg" : "hover:shadow-lg"}`}
               >
                 {/* Background gradient */}
                 <div
@@ -219,7 +267,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   </div>
                 )}
 
-                {/* Current plan badge - only show if logged in */}
+                {/* Current plan badge */}
                 {isCurrent && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-green-600 text-white shadow-lg">
@@ -263,20 +311,44 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                   </div>
 
                   {/* Call-to-action button */}
-                  <Button
-                    variant={getButtonVariant(plan, isPopular)}
-                    onClick={() => handlePlanClick(plan)}
-                    className={`w-full h-12 font-semibold transition-all duration-200 group ${
-                      isPopular
-                        ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
-                        : plan === "free"
-                          ? "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
-                          : "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
-                    }`}
-                  >
-                    {getButtonText(plan)}
-                    <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                  </Button>
+                  {shouldUseUpgradeButton(plan) ? (
+                    // Use UpgradeButton only for free users upgrading to paid plans
+                    <UpgradeButton
+                      plan={plan}
+                      interval={interval}
+                      currentPlan={currentPlan}
+                      isLoggedIn={isLoggedIn}
+                      className={`w-full h-12 font-semibold transition-all duration-200 group ${
+                        isPopular
+                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
+                          : "border-1 border-slate-200 hover:border-slate-300"
+                      }`}
+                    />
+                  ) : (
+                    // Use regular button for all other cases
+                    <Button
+                      variant={getButtonVariant(plan, isPopular)}
+                      onClick={() => handlePlanClick(plan)}
+                      disabled={
+                        isLoggedIn && currentPlan === plan && plan === "free"
+                      }
+                      className={`w-full h-12 font-semibold transition-all duration-200 group ${
+                        isPopular
+                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
+                          : plan === "free"
+                            ? "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
+                            : "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
+                      }`}
+                    >
+                      {shouldShowSettingsIcon(plan) && (
+                        <Settings className="w-4 h-4 mr-2" />
+                      )}
+                      {getButtonText(plan)}
+                      {(!isLoggedIn || currentPlan !== plan) && (
+                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                      )}
+                    </Button>
+                  )}
                 </CardHeader>
 
                 <CardContent className="pt-0 relative z-10">
