@@ -36,9 +36,9 @@ export function FiltersSection({
 
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <div>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-between md:justify-start gap-2 mb-2">
             <h2 className="text-xl font-semibold text-gray-900">
               Your Filters
             </h2>
@@ -71,7 +71,7 @@ export function FiltersSection({
         </div>
         <Button
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 w-full md:w-auto"
           disabled={isAtLimit}
         >
           <Plus className="w-4 h-4 mr-2" />

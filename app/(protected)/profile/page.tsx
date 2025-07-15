@@ -58,8 +58,6 @@ export default async function ProfilePage() {
         <div className="space-y-8">
           <ProfileHeader user={session.user} profile={user} />
 
-          {/* <SubscriptionSection subscription={subscription} /> */}
-
           <ActivitySummary
             alertsCount={alerts?.length || 0}
             filtersCount={filters?.length || 0}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,6 +93,13 @@ export function AddFilterModal({
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setErrors({});
+      setFormData({ city: "", max_price: "", min_rooms: "" });
+    }
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

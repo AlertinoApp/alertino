@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { Edit2, Save, X } from "lucide-react";
 import { updateProfileAction } from "@/lib/actions/profile-actions";
 import { Profile } from "@/types/users";
 import { profileSchema } from "@/schemas/profile";
+import { toast } from "sonner";
 
 interface PersonalInformationProps {
   user: User;
@@ -36,14 +37,33 @@ export function PersonalInformation({
     if (!parsed.success) {
       setErrorMessage(parsed.error.errors[0].message);
       setIsLoading(false);
+
+      // Field-level validation error toast
+      toast("❌ Validation error", {
+        description: parsed.error.errors[0].message,
+      });
       return;
     }
 
+    const loadingToast = toast.loading("Updating profile...", {
+      description: "Saving your profile changes. Please wait.",
+    });
+
     try {
       await updateProfileAction(parsed.data);
+
+      toast.dismiss(loadingToast);
+      toast("✅ Profile updated", {
+        description: "Your changes have been saved successfully.",
+      });
+
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
+      toast.dismiss(loadingToast);
+      toast("❌ Failed to update profile", {
+        description: "Something went wrong. Please try again shortly.",
+      });
       setErrorMessage("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -56,6 +76,18 @@ export function PersonalInformation({
     });
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    if (!isEditing) {
+      // Reset errors
+      setErrorMessage("");
+
+      // Reset form data to latest profile data
+      setFormData({
+        full_name: profile?.full_name || user.user_metadata?.full_name || "",
+      });
+    }
+  }, [isEditing, profile, user]);
 
   return (
     <Card className="shadow-sm border-0">

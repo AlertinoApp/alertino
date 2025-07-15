@@ -24,7 +24,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between md:justify-start gap-2 mb-2">
           <h2 className="text-xl font-semibold text-gray-900">New Alerts</h2>
           <div className="flex items-center gap-2">
             <Badge
