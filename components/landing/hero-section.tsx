@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Bell, Search, Zap } from "lucide-react";
+import { ArrowDown, ArrowRight, Bell, Search, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 
@@ -100,7 +100,10 @@ export function HeroSection({ user }: HeroSectionProps) {
 
               {/* Arrow */}
               <div className="flex items-center justify-center">
-                <ArrowRight className="w-8 h-8 text-gray-400" />
+                {/* Down arrow for mobile */}
+                <ArrowDown className="w-8 h-8 text-gray-400 md:hidden" />
+                {/* Right arrow for desktop */}
+                <ArrowRight className="w-8 h-8 text-gray-400 hidden md:block" />
               </div>
 
               {/* Mock Alert Card */}

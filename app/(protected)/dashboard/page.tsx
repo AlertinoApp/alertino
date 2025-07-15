@@ -27,6 +27,13 @@ export default async function DashboardPage() {
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
+  const { data: activeFilters } = await supabase
+    .from("filters")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
+
   // Fetch user alerts
   const { data: alerts } = await supabase
     .from("alerts")
@@ -70,7 +77,7 @@ export default async function DashboardPage() {
 
           <AlertsSection alerts={alerts || []} />
 
-          <ActionsSection />
+          <ActionsSection activeFiltersCount={activeFilters?.length || 0} />
         </div>
       </div>
     </div>

@@ -27,12 +27,22 @@ export function FilterCard({ filter }: FilterCardProps) {
     try {
       await toggleFilterStatus(filter.id, checked);
       setIsActive(checked);
-      toast.success(checked ? "Filter activated!" : "Filter deactivated!");
+
+      if (checked) {
+        toast("🎯 Filter activated!", {
+          description: `We’ll start monitoring new listings for "${filter.city}" right away.`,
+        });
+      } else {
+        toast("⏸️ Filter deactivated", {
+          description: `We’ll stop checking new listings for "${filter.city}".`,
+        });
+      }
     } catch (error) {
       console.error("Failed to toggle filter status:", error);
-      toast.error("Failed to update filter status");
-    } finally {
-      setIsToggling(false);
+      toast("❌ Failed to update filter status", {
+        description:
+          "Something went wrong while updating this filter. Please try again.",
+      });
     }
   };
 

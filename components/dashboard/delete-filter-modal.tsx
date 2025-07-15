@@ -27,13 +27,24 @@ export function DeleteFilterDialog({
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    const loadingToast = toast.loading("Deleting filter...", {
+      description: "We’re removing this filter and related settings.",
+    });
+
     try {
       await deleteFilterAction(filterId);
-      toast.success("Filter deleted successfully!");
+
+      toast.dismiss(loadingToast);
+      toast("✅ Filter deleted", {
+        description: "The filter was successfully removed from your list.",
+      });
       onClose();
     } catch (error) {
       console.error("Failed to delete filter:", error);
-      toast.error("Failed to delete filter. Please try again.");
+      toast.dismiss(loadingToast);
+      toast("❌ Failed to delete filter", {
+        description: "Something went wrong while deleting. Please try again.",
+      });
     } finally {
       setIsDeleting(false);
     }

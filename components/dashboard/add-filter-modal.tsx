@@ -57,8 +57,15 @@ export function AddFilterModal({
 
       setErrors(fieldErrors);
       setIsSubmitting(false);
+      toast("❌ Validation error", {
+        description: "Please fix the highlighted fields and try again.",
+      });
       return;
     }
+
+    const loadingToast = toast.loading("Adding new filter...", {
+      description: "Saving your criteria to start finding apartments.",
+    });
 
     try {
       const serverData = new FormData();
@@ -68,14 +75,20 @@ export function AddFilterModal({
       serverData.append("min_rooms", formData.min_rooms);
 
       await addFilterAction(serverData);
+      toast.dismiss(loadingToast);
+      toast("✅ Filter added", {
+        description: "Your new filter is active and ready to find apartments.",
+      });
+
       onClose();
-
       setFormData({ city: "", max_price: "", min_rooms: "" });
-
-      toast.success("Filter added successfully!");
     } catch (error) {
       console.error("Failed to add filter:", error);
-      toast.error("Failed to add filter. Please try again.");
+      toast.dismiss(loadingToast);
+      toast("❌ Failed to add filter", {
+        description:
+          "Something went wrong while saving your filter. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }

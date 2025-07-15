@@ -45,16 +45,33 @@ export async function generateAlerts() {
   const supabase = await createClientForServer();
   const { data: filters } = await supabase.from("filters").select("*");
 
-  if (!filters) return { createdCount: 0 };
+  if (!filters)
+    return {
+      createdCount: 0,
+      checkedCount: 0,
+      filtersProcessed: 0,
+      duplicatesSkipped: 0,
+    };
 
   console.log("🔥 Running alerts...");
 
   let totalCreated = 0;
+  let totalChecked = 0;
+  let filtersProcessed = 0;
+  let duplicatesSkipped = 0;
 
   for (const filter of filters) {
-    const matched = await getMatchedListings(filter);
+    filtersProcessed++;
 
-    if (matched.length === 0) continue;
+    const matched = await getMatchedListings(filter);
+    totalChecked += matched.length;
+
+    if (matched.length === 0) {
+      console.log(`ℹ️ No listings found for filter: ${filter.city}`);
+      continue;
+    }
+
+    console.log(`📋 Found ${matched.length} listings for ${filter.city}`);
 
     for (const listing of matched) {
       const { data: existing } = await supabase
@@ -66,10 +83,11 @@ export async function generateAlerts() {
 
       if (existing) {
         console.log(`⚠️ Alert already exists: ${listing.link}`);
+        duplicatesSkipped++;
         continue;
       }
 
-      await supabase.from("alerts").insert({
+      const { error } = await supabase.from("alerts").insert({
         user_id: filter.user_id,
         title: listing.title,
         price: listing.price,
@@ -78,7 +96,29 @@ export async function generateAlerts() {
         city: listing.city,
       });
 
+      if (error) {
+        console.error(`❌ Failed to create alert for ${listing.link}:`, error);
+        continue;
+      }
+
       totalCreated++;
+      console.log(`✅ Created alert: ${listing.title}`);
+    }
+
+    // Only send email if we created new alerts for this filter
+    const newAlertsForFilter = matched.filter(async (listing) => {
+      const { data: existing } = await supabase
+        .from("alerts")
+        .select("id")
+        .eq("user_id", filter.user_id)
+        .eq("link", listing.link)
+        .maybeSingle();
+      return !existing;
+    });
+
+    if (newAlertsForFilter.length === 0) {
+      console.log(`ℹ️ No new alerts for ${filter.city}, skipping email`);
+      continue;
     }
 
     const { data: user } = await supabase
@@ -87,28 +127,45 @@ export async function generateAlerts() {
       .eq("id", filter.user_id)
       .single();
 
-    if (!user?.email) continue;
+    if (!user?.email) {
+      console.log(`⚠️ No email found for user ${filter.user_id}`);
+      continue;
+    }
 
     if (user.email_notifications) {
       console.log(`✅ Sending email to ${user.email} for city ${filter.city}`);
 
-      await resend.emails.send({
-        from: "Alertino <onboarding@resend.dev>",
-        to: "alertino.app@gmail.com",
-        // to: user.email,
-        subject: `New listings in ${filter.city}`,
-        text: matched
-          .map((m) => `${m.title}\n${m.link}\nPrice: ${m.price} PLN\n\n`)
-          .join(""),
-      });
+      try {
+        await resend.emails.send({
+          from: "Alertino <onboarding@resend.dev>",
+          to: "alertino.app@gmail.com",
+          // to: user.email,
+          subject: `${newAlertsForFilter.length} new listing${newAlertsForFilter.length > 1 ? "s" : ""} in ${filter.city}`,
+          text: newAlertsForFilter
+            .map((m) => `${m.title}\n${m.link}\nPrice: ${m.price} PLN\n\n`)
+            .join(""),
+        });
+        console.log(`📧 Email sent successfully to ${user.email}`);
+      } catch (emailError) {
+        console.error(`❌ Failed to send email to ${user.email}:`, emailError);
+      }
     } else {
       console.log(
         `⚠️ Skipping email for user ${user.email} — notifications disabled.`
       );
     }
-
-    revalidatePath("/dashboard");
   }
 
-  return { createdCount: totalCreated };
+  console.log(
+    `🎯 Summary: Created ${totalCreated}, Checked ${totalChecked}, Duplicates ${duplicatesSkipped}, Filters ${filtersProcessed}`
+  );
+
+  revalidatePath("/dashboard");
+
+  return {
+    createdCount: totalCreated,
+    checkedCount: totalChecked,
+    filtersProcessed,
+    duplicatesSkipped,
+  };
 }

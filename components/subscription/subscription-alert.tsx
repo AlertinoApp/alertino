@@ -154,11 +154,13 @@ export function SubscriptionAlerts() {
   const getAlertIcon = () => {
     switch (alert?.type) {
       case "success":
-        return <CheckCircle className="w-6 h-6 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />;
       case "error":
-        return <XCircle className="w-6 h-6 text-red-600" />;
+        return <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />;
       case "warning":
-        return <AlertCircle className="w-6 h-6 text-yellow-600" />;
+        return (
+          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
+        );
       default:
         return null;
     }
@@ -220,29 +222,66 @@ export function SubscriptionAlerts() {
 
   return (
     <Card className={`bg-gradient-to-r ${getAlertStyles()} shadow-sm mb-6`}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <CardContent className="p-4 sm:p-6 relative">
+        {/* Close Button - Upper Right on mobile only */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={dismissAlert}
+          className={`${getTextColor()} hover:bg-white/50 absolute top-2 right-2 z-10 sm:hidden`}
+          aria-label="Dismiss alert"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+
+        {/* Desktop Layout */}
+        <div className="hidden sm:flex sm:items-center sm:justify-between">
+          {/* Main Content */}
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             <div
-              className={`w-12 h-12 ${getIconBgColor()} rounded-full flex items-center justify-center`}
+              className={`w-12 h-12 ${getIconBgColor()} rounded-full flex items-center justify-center flex-shrink-0`}
             >
               {getAlertIcon()}
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <h3 className={`font-semibold ${getTitleColor()} mb-1`}>
                 {alert.title}
               </h3>
-              <p className={`${getTextColor()} text-sm`}>{alert.message}</p>
+              <p className={`${getTextColor()} text-sm leading-relaxed`}>
+                {alert.message}
+              </p>
             </div>
           </div>
+
+          {/* Inline Close Button for desktop */}
           <Button
             variant="ghost"
             size="sm"
             onClick={dismissAlert}
-            className={`${getTextColor()} hover:bg-white/50`}
+            className={`${getTextColor()} hover:bg-white/50 flex-shrink-0 ml-4`}
+            aria-label="Dismiss alert"
           >
             <X className="w-4 h-4" />
           </Button>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="sm:hidden pr-8">
+          <div className="flex items-start gap-3">
+            <div
+              className={`w-10 h-10 ${getIconBgColor()} rounded-full flex items-center justify-center flex-shrink-0`}
+            >
+              {getAlertIcon()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`font-semibold ${getTitleColor()} mb-1 text-sm`}>
+                {alert.title}
+              </h3>
+              <p className={`${getTextColor()} text-xs leading-relaxed`}>
+                {alert.message}
+              </p>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

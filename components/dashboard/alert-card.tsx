@@ -21,6 +21,7 @@ import {
 } from "@/lib/actions/alert-actions";
 import { Alert } from "@/types/alerts";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface AlertCardProps {
   alert: Alert;
@@ -37,13 +38,22 @@ export function AlertCard({ alert }: AlertCardProps) {
     try {
       if (isNotInterested) {
         await restoreAlert(alert.id);
+        toast("✅ Alert restored!", {
+          description: "This listing is now active again in your alerts.",
+        });
       } else {
         await markAlertAsNotInterested(alert.id);
+        toast("🙈 Marked as not interested", {
+          description:
+            "You won’t receive further notifications for this listing.",
+        });
       }
     } catch (error) {
       console.error("Failed to update alert status:", error);
-    } finally {
-      setIsUpdating(false);
+      toast("❌ Failed to update alert", {
+        description:
+          "Something went wrong while updating this alert. Please try again.",
+      });
     }
   };
 

@@ -58,8 +58,15 @@ export function EditFilterModal({
 
       setErrors(fieldErrors);
       setIsSubmitting(false);
+      toast("❌ Validation error", {
+        description: "Please fix the highlighted fields and try again.",
+      });
       return;
     }
+
+    const loadingToast = toast.loading("Updating filter...", {
+      description: "Applying your changes to this filter.",
+    });
 
     try {
       const serverData = new FormData();
@@ -69,12 +76,17 @@ export function EditFilterModal({
       serverData.append("min_rooms", formData.min_rooms);
 
       await updateFilterAction(serverData);
+      toast.dismiss(loadingToast);
+      toast("✅ Filter updated", {
+        description: "Your filter has been successfully updated.",
+      });
       onClose();
-
-      toast.success("Filter updated successfully!");
     } catch (error) {
       console.error("Failed to update filter:", error);
-      toast.error("Failed to update filter. Please try again.");
+      toast.dismiss(loadingToast);
+      toast("❌ Update failed", {
+        description: "An error occurred while updating. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
