@@ -23,7 +23,6 @@ function mapStripePlanToSubscriptionPlan(priceId: string): SubscriptionPlan {
   return planMapping[priceId] || "free";
 }
 
-// Updated function to handle free plan properly
 function getPriceIdFromPlanAndInterval(
   plan: SubscriptionPlan,
   interval: SubscriptionInterval
@@ -52,7 +51,6 @@ function getPriceIdFromPlanAndInterval(
   return priceId;
 }
 
-// Updated function to handle free plan cancellation
 export async function updateSubscriptionPlan(
   subscriptionId: string,
   newPlan: SubscriptionPlan,
@@ -143,7 +141,6 @@ export async function updateSubscriptionPlan(
   }
 }
 
-// New function to handle subscription cancellation
 export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
   try {
     console.log(`Cancelling subscription at period end: ${subscriptionId}`);
@@ -155,7 +152,6 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
       }
     );
 
-    // Update our database
     const { error } = await supabaseAdmin
       .from("subscriptions")
       .update({
@@ -175,40 +171,6 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
     return updatedSubscription;
   } catch (error) {
     console.error("Error cancelling subscription:", error);
-    throw error;
-  }
-}
-
-// New function to reactivate a cancelled subscription
-export async function reactivateSubscription(subscriptionId: string) {
-  try {
-    console.log(`Reactivating subscription: ${subscriptionId}`);
-
-    const updatedSubscription = await stripe.subscriptions.update(
-      subscriptionId,
-      {
-        cancel_at_period_end: false,
-      }
-    );
-
-    // Update our database
-    const { error } = await supabaseAdmin
-      .from("subscriptions")
-      .update({
-        cancel_at_period_end: false,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("stripe_subscription_id", subscriptionId);
-
-    if (error) {
-      console.error("Error updating subscription for reactivation:", error);
-      throw error;
-    }
-
-    console.log(`✅ Subscription reactivated: ${subscriptionId}`);
-    return updatedSubscription;
-  } catch (error) {
-    console.error("Error reactivating subscription:", error);
     throw error;
   }
 }
@@ -492,7 +454,6 @@ export async function createCustomerPortalSession(
   }
 }
 
-// Helper function to get user's subscription data
 export async function getUserSubscription(userId: string) {
   if (!userId) {
     throw new Error("User ID is required");
@@ -512,7 +473,6 @@ export async function getUserSubscription(userId: string) {
   return subscription;
 }
 
-// Updated function to handle cancelled subscriptions correctly
 export async function hasActiveSubscription(userId: string): Promise<boolean> {
   try {
     const subscription = await getUserSubscription(userId);
