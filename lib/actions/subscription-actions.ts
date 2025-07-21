@@ -50,12 +50,6 @@ export async function createCheckoutSessionAction(priceId: string) {
 
   const user = await getAuthenticatedUser();
 
-  // Prevent duplicate subscriptions
-  const isActive = await hasActiveSubscription(user.id);
-  if (isActive) {
-    redirect("/billing?error=already_subscribed");
-  }
-
   const checkoutSession = await createCheckoutSession({
     priceId,
     userId: user.id,
@@ -75,17 +69,8 @@ export async function subscribeToAction(
   plan: SubscriptionPlan,
   interval: SubscriptionInterval
 ) {
-  if (plan === "free") {
-    redirect("/billing?error=invalid_plan");
-  }
-
-  try {
-    const priceId = getPriceId(plan, interval);
-    await createCheckoutSessionAction(priceId);
-  } catch (error) {
-    console.error("Subscription error:", error);
-    redirect("/billing?error=invalid_plan");
-  }
+  const priceId = getPriceId(plan, interval);
+  await createCheckoutSessionAction(priceId);
 }
 
 export async function getTrialInfoAction(): Promise<TrialInfo> {
@@ -119,15 +104,6 @@ export async function getTrialInfoAction(): Promise<TrialInfo> {
 export async function createPortalSessionAction() {
   const user = await getAuthenticatedUser();
   const subscription = await getUserSubscription(user.id);
-
-  // Validate subscription for portal access
-  if (!subscription?.stripe_customer_id) {
-    redirect("/billing?error=no_subscription");
-  }
-
-  if (subscription.plan === "free" && !subscription.stripe_subscription_id) {
-    redirect("/billing?error=no_stripe_history");
-  }
 
   const portalSession = await createCustomerPortalSession(
     subscription.stripe_customer_id,

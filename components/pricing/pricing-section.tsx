@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,8 +8,6 @@ import {
   Crown,
   Building2,
   Zap,
-  ArrowRight,
-  Settings,
   Timer,
   Sparkles,
   AlertCircle,
@@ -24,7 +21,7 @@ import type {
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { NumberTicker } from "../magicui/number-ticker";
-import { UpgradeButton } from "@/components/subscription/upgrade-button";
+import { PlanButton } from "@/components/subscription/plan-button";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
@@ -54,6 +51,7 @@ export function PricingSection({
   const isTrialActive = trialInfo?.isActive || false;
   const trialDaysRemaining = trialInfo?.daysRemaining || null;
   const hasUsedTrial = trialInfo?.hasUsedTrial || false;
+  const isCancelled = subscription?.cancel_at_period_end || false;
 
   // Check if subscription is effectively active (including grace periods)
   const isSubscriptionActive = () => {
@@ -136,153 +134,6 @@ export function PricingSection({
     };
   };
 
-  const getButtonVariant = (plan: SubscriptionPlan, isPopular: boolean) => {
-    if (plan === "free") {
-      return "outline";
-    }
-    return isPopular ? "default" : "outline";
-  };
-
-  const getButtonText = (plan: SubscriptionPlan) => {
-    if (!isLoggedIn) {
-      if (plan === "free") {
-        return "Get Started Free";
-      }
-      return hasUsedTrial
-        ? `Get ${getSubscriptionConfig(plan).name}`
-        : `Try ${getSubscriptionConfig(plan).name} Free`;
-    }
-
-    // Handle trial scenarios
-    if (isTrialActive) {
-      if (currentPlan === plan) {
-        return trialDaysRemaining !== null
-          ? `Trial (${trialDaysRemaining} days left)`
-          : "Trial Active";
-      }
-      if (plan === "free") {
-        return "Cancel Trial";
-      }
-      return `Convert to ${getSubscriptionConfig(plan).name}`;
-    }
-
-    // Handle canceled subscription that's still active
-    if (subscription?.status === "canceled" && isSubscriptionActive()) {
-      if (currentPlan === plan) {
-        return "Ending Soon";
-      }
-      return `Switch to ${getSubscriptionConfig(plan).name}`;
-    }
-
-    // Regular logged-in scenarios
-    if (currentPlan === plan && isSubscriptionActive()) {
-      return plan === "free" ? "Current Plan" : "Manage Plan";
-    }
-
-    // User has free plan
-    if (currentPlan === "free") {
-      if (plan === "free") {
-        return "Current Plan";
-      }
-      if (!hasUsedTrial) {
-        return `Start ${getSubscriptionConfig(plan).name} Trial`;
-      }
-      return `Upgrade to ${getSubscriptionConfig(plan).name}`;
-    }
-
-    // User has premium plan
-    if (currentPlan === "premium") {
-      if (plan === "premium") {
-        return "Manage Plan";
-      }
-      if (plan === "business") {
-        return "Switch to Business";
-      }
-      if (plan === "free") {
-        return "Downgrade to Free";
-      }
-    }
-
-    // User has business plan
-    if (currentPlan === "business") {
-      if (plan === "business") {
-        return "Manage Plan";
-      }
-      if (plan === "premium") {
-        return "Switch to Premium";
-      }
-      if (plan === "free") {
-        return "Downgrade to Free";
-      }
-    }
-
-    return "Choose Plan";
-  };
-
-  const handlePlanClick = (plan: SubscriptionPlan) => {
-    if (!isLoggedIn) {
-      router.push("/login");
-      return;
-    }
-
-    // If user is on trial
-    if (isTrialActive) {
-      if (plan === "free") {
-        // Cancel trial - redirect to billing
-        router.push("/billing");
-        return;
-      }
-      // Convert trial to paid or switch trial plan - handled by UpgradeButton
-      return;
-    }
-
-    // User has free plan
-    if (currentPlan === "free") {
-      if (plan === "free") {
-        router.push("/billing");
-      } else {
-        // Handled by UpgradeButton for trial start or direct upgrade
-        return;
-      }
-      return;
-    }
-
-    // User has premium or business plan - all actions go to billing
-    if (currentPlan === "premium" || currentPlan === "business") {
-      router.push("/billing");
-      return;
-    }
-  };
-
-  const shouldUseUpgradeButton = (plan: SubscriptionPlan) => {
-    if (!isLoggedIn) return true;
-
-    // Use upgrade button for trial conversions
-    if (isTrialActive && plan !== "free") return true;
-
-    // Use upgrade button for starting trials or upgrading from free
-    if (currentPlan === "free" && plan !== "free") return true;
-
-    return false;
-  };
-
-  const shouldShowSettingsIcon = (plan: SubscriptionPlan) => {
-    const buttonText = getButtonText(plan);
-    return buttonText === "Manage Plan";
-  };
-
-  const shouldShowTimerIcon = (plan: SubscriptionPlan) => {
-    return isTrialActive && currentPlan === plan;
-  };
-
-  const shouldShowAlertIcon = (plan: SubscriptionPlan) => {
-    return (
-      subscription?.status === "canceled" &&
-      isSubscriptionActive() &&
-      currentPlan === plan
-    );
-  };
-
   const isTrialPlan = (plan: SubscriptionPlan) => {
     return isTrialActive && currentPlan === plan;
   };
@@ -317,24 +168,6 @@ export function PricingSection({
             Choose the perfect plan for your apartment hunting needs. Start free
             and upgrade as you grow.
           </p>
-
-          {/* Trial Banner */}
-          {isLoggedIn &&
-            !hasUsedTrial &&
-            currentPlan === "free" &&
-            !isTrialActive && (
-              <div className="max-w-2xl mx-auto mb-8">
-                <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-3 rounded-lg shadow-lg">
-                  <div className="flex items-center justify-center gap-2">
-                    <Sparkles className="w-5 h-5" />
-                    <span className="font-semibold">
-                      Try any paid plan free for 14 days - no credit card
-                      required!
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
 
           {/* Active Trial Banner */}
           {isTrialActive && (
@@ -537,60 +370,22 @@ export function PricingSection({
                     )}
                   </div>
 
-                  {/* Call-to-action button */}
-                  {shouldUseUpgradeButton(plan) ? (
-                    <UpgradeButton
-                      plan={plan}
-                      interval={interval}
-                      currentPlan={currentPlan}
-                      isLoggedIn={isLoggedIn}
-                      isTrialActive={isTrialActive}
-                      trialDaysRemaining={trialDaysRemaining}
-                      hasUsedTrial={hasUsedTrial}
-                      onError={onError}
-                      onSuccess={onSuccess}
-                      className={`w-full h-12 font-semibold transition-all duration-200 group ${
-                        isPopular || isTrialPlanCard
-                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
-                          : "border-1 border-slate-200 hover:border-slate-300"
-                      }`}
-                    />
-                  ) : (
-                    <Button
-                      variant={getButtonVariant(plan, isPopular)}
-                      onClick={() => handlePlanClick(plan)}
-                      disabled={
-                        isLoggedIn &&
-                        currentPlan === plan &&
-                        plan === "free" &&
-                        !isTrialActive
-                      }
-                      className={`w-full h-12 font-semibold transition-all duration-200 group ${
-                        isPopular || isTrialPlanCard
-                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
-                          : plan === "free"
-                            ? "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
-                            : "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
-                      }`}
-                    >
-                      {shouldShowTimerIcon(plan) && (
-                        <Timer className="w-4 h-4 mr-2" />
-                      )}
-                      {shouldShowAlertIcon(plan) && (
-                        <AlertCircle className="w-4 h-4 mr-2" />
-                      )}
-                      {shouldShowSettingsIcon(plan) &&
-                        !shouldShowTimerIcon(plan) &&
-                        !shouldShowAlertIcon(plan) && (
-                          <Settings className="w-4 h-4 mr-2" />
-                        )}
-                      {getButtonText(plan)}
-                      {(!isLoggedIn ||
-                        (currentPlan !== plan && !isTrialActive)) && (
-                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                      )}
-                    </Button>
-                  )}
+                  {/* Unified Plan Button */}
+                  <PlanButton
+                    plan={plan}
+                    interval={interval}
+                    currentPlan={currentPlan}
+                    currentInterval={currentInterval}
+                    isLoggedIn={isLoggedIn}
+                    isCancelled={isCancelled}
+                    isTrialActive={isTrialActive}
+                    trialDaysRemaining={trialDaysRemaining}
+                    hasUsedTrial={hasUsedTrial}
+                    onError={onError}
+                    onSuccess={onSuccess}
+                    size="lg"
+                    className="w-full h-12 font-semibold transition-all duration-200"
+                  />
                 </CardHeader>
 
                 <CardContent className="pt-0 relative z-10">
@@ -651,13 +446,12 @@ export function PricingSection({
                 specific requirements? Let&apos;s talk about a solution tailored
                 to your needs.
               </p>
-              <Button
-                variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white hover:text-slate-900 backdrop-blur-sm transition-all duration-200"
+              <button
+                className="inline-flex items-center px-6 py-3 border border-white/20 rounded-lg bg-white/10 text-white hover:bg-white hover:text-slate-900 backdrop-blur-sm transition-all duration-200"
                 onClick={() => window.open("/contact", "_blank")}
               >
                 Contact Sales
-              </Button>
+              </button>
             </CardContent>
           </Card>
         </div>

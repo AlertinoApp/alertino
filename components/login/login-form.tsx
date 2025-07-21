@@ -235,7 +235,6 @@ export function LoginForm() {
             >
               Privacy Policy
             </Link>
-            .
           </p>
         </div>
       </CardContent>

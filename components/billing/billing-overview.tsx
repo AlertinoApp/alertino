@@ -19,6 +19,7 @@ import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { PlanButton } from "@/components/subscription/plan-button";
 
 interface BillingOverviewProps {
   subscription: Subscription | null;
@@ -26,6 +27,7 @@ interface BillingOverviewProps {
   trialDaysRemaining?: number | null;
   hasUsedTrial?: boolean;
   isTrialActive?: boolean;
+  userId?: string;
 }
 
 export function BillingOverview({
@@ -34,10 +36,11 @@ export function BillingOverview({
   trialDaysRemaining = null,
   hasUsedTrial = false,
   isTrialActive = false,
+  userId,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
   const planConfig = getSubscriptionConfig(currentPlan);
-  const planInterval = subscription?.interval || "";
+  const planInterval = subscription?.interval || "month";
   const subscriptionStatus = subscription?.status || "inactive";
   const currentPeriodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end)
@@ -188,42 +191,6 @@ export function BillingOverview({
     }
   };
 
-  const getPrimaryAction = () => {
-    // If user is on free plan
-    if (currentPlan === "free") {
-      return {
-        label: hasUsedTrial ? "Upgrade Plan" : "Start Free Trial",
-        href: "/pricing",
-        icon: hasUsedTrial ? Crown : Gift,
-        variant: "default" as const,
-        className: "bg-blue-600 hover:bg-blue-700",
-        isForm: false,
-      };
-    }
-
-    // If user has Stripe subscription, show portal
-    if (hasStripeSubscription) {
-      return {
-        label: "Manage Subscription",
-        href: "#",
-        icon: Settings,
-        variant: "default" as const,
-        className: "bg-slate-900 hover:bg-slate-800",
-        isForm: true,
-      };
-    }
-
-    // If user has local trial only, redirect to pricing
-    return {
-      label: "Upgrade Plan",
-      href: "/pricing",
-      icon: Crown,
-      variant: "default" as const,
-      className: "bg-blue-600 hover:bg-blue-700",
-      isForm: false,
-    };
-  };
-
   const getBillingDateLabel = () => {
     if (effectivelyOnTrial) {
       return "Trial Ends";
@@ -244,8 +211,6 @@ export function BillingOverview({
     return currentPeriodEnd;
   };
 
-  const primaryAction = getPrimaryAction();
-  const PrimaryIcon = primaryAction.icon;
   const billingDate = getBillingDate();
 
   return (
@@ -328,27 +293,21 @@ export function BillingOverview({
           </div>
         )}
 
-        {/* Primary Action */}
-        <div className="flex gap-3">
-          {primaryAction.isForm ? (
+        {/* Manage Subscription (Stripe Portal) */}
+        {hasStripeSubscription && (
+          <div className="border-t border-slate-200 pt-4">
             <form action={createPortalSessionAction}>
               <Button
                 type="submit"
-                className={`h-11 ${primaryAction.className}`}
+                variant="outline"
+                className="w-full h-11 border-slate-300 hover:bg-slate-50"
               >
-                <PrimaryIcon className="w-4 h-4 mr-2" />
-                {primaryAction.label}
+                <Settings className="w-4 h-4 mr-2" />
+                Manage Billing & Payment Methods
               </Button>
             </form>
-          ) : (
-            <Button asChild className={`h-11 ${primaryAction.className}`}>
-              <Link href={primaryAction.href}>
-                <PrimaryIcon className="w-4 h-4 mr-2" />
-                {primaryAction.label}
-              </Link>
-            </Button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Status Alerts */}
         {effectivelyOnTrial && (

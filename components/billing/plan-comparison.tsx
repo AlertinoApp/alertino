@@ -9,17 +9,16 @@ import {
   Zap,
   Sparkles,
   Timer,
-  AlertCircle,
+  XCircle,
 } from "lucide-react";
 import { useState } from "react";
-import { UpgradeButton } from "@/components/subscription/upgrade-button";
+import { PlanButton } from "@/components/subscription/plan-button";
 import type {
   Subscription,
   SubscriptionPlan,
   SubscriptionInterval,
 } from "@/types/subscription";
 import { User } from "@supabase/supabase-js";
-import { SwitchPlanButton } from "../subscription/switch-plan-button";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
@@ -55,7 +54,7 @@ export function PlanComparison({
     : subscription?.plan || "free";
   const currentInterval = subscription?.interval || "month";
   const currentStatus = subscription?.status || "active";
-
+  const cancelAtPeriodEnd = subscription?.cancel_at_period_end || false;
   const isLoggedIn = !!user;
   const hasActiveSubscription =
     subscription &&
@@ -70,6 +69,10 @@ export function PlanComparison({
       return new Date() < new Date(subscription.current_period_end);
     }
     return false;
+  };
+
+  const isSubscriptionCanceled = () => {
+    return subscription?.status === "canceled";
   };
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
@@ -152,31 +155,14 @@ export function PlanComparison({
     return currentPlan === plan && currentInterval === checkInterval;
   };
 
-  const isPlanChange = (plan: SubscriptionPlan) => {
-    return currentPlan !== plan;
-  };
-
-  const isIntervalChange = (checkInterval: SubscriptionInterval) => {
-    return currentInterval !== checkInterval;
-  };
-
-  const isAnyChange = (
-    plan: SubscriptionPlan,
-    checkInterval: SubscriptionInterval
-  ) => {
-    return isPlanChange(plan) || isIntervalChange(checkInterval);
-  };
-
   const getCurrentPlanBadge = (
     plan: SubscriptionPlan,
     checkInterval: SubscriptionInterval
   ) => {
-    // Only show trial badge if it's the current plan AND interval
-    if (
-      isTrialActive &&
-      currentPlan === plan &&
-      currentInterval === checkInterval
-    ) {
+    const isExactMatch = isCurrentPlanAndInterval(plan, checkInterval);
+
+    // Show trial badge if it's the current plan AND interval
+    if (isTrialActive && isExactMatch) {
       return (
         <Badge className="bg-orange-600 text-white border-orange-600 text-xs font-medium flex items-center gap-1">
           <Timer className="w-3 h-3" />
@@ -186,31 +172,28 @@ export function PlanComparison({
       );
     }
 
-    // Only show current plan badge if it's the exact plan and interval
-    if (
-      currentPlan === plan &&
-      currentInterval === checkInterval &&
-      !isTrialActive &&
-      isSubscriptionActive()
-    ) {
+    // Show canceled badge if subscription is canceled and it's the exact match
+    if (isSubscriptionCanceled() && isExactMatch) {
+      const isStillActive = isSubscriptionActive();
       return (
-        <Badge className="bg-green-600 text-white border-green-600 text-xs font-medium">
-          Current Plan
+        <Badge
+          className={`text-xs font-medium flex items-center gap-1 ${
+            isStillActive
+              ? "bg-amber-600 text-white border-amber-600"
+              : "bg-red-600 text-white border-red-600"
+          }`}
+        >
+          <XCircle className="w-3 h-3" />
+          {isStillActive ? "Ending Soon" : "Canceled"}
         </Badge>
       );
     }
 
-    // Show if subscription is canceled but still active (exact plan and interval)
-    if (
-      currentPlan === plan &&
-      currentInterval === checkInterval &&
-      subscription?.status === "canceled" &&
-      isSubscriptionActive()
-    ) {
+    // Show current plan badge if it's the exact plan and interval and active
+    if (isExactMatch && !isTrialActive && isSubscriptionActive()) {
       return (
-        <Badge className="bg-amber-600 text-white border-amber-600 text-xs font-medium flex items-center gap-1">
-          <AlertCircle className="w-3 h-3" />
-          Ending Soon
+        <Badge className="bg-green-600 text-white border-green-600 text-xs font-medium">
+          Current Plan
         </Badge>
       );
     }
@@ -226,6 +209,33 @@ export function PlanComparison({
         14-day free trial available
       </div>
     );
+  };
+
+  const getPlanCardBorder = (
+    plan: SubscriptionPlan,
+    checkInterval: SubscriptionInterval
+  ) => {
+    const isExactMatch = isCurrentPlanAndInterval(plan, checkInterval);
+    const isPopular = plan === "premium";
+
+    if (isExactMatch) {
+      if (isTrialActive) {
+        return "border-orange-500 bg-orange-50/50";
+      }
+      if (isSubscriptionCanceled()) {
+        const isStillActive = isSubscriptionActive();
+        return isStillActive
+          ? "border-amber-500 bg-amber-50/50"
+          : "border-red-500 bg-red-50/50";
+      }
+      return "border-green-500 bg-green-50/50";
+    }
+
+    if (isPopular) {
+      return "border-blue-500 bg-blue-50/50";
+    }
+
+    return "border-slate-200 hover:border-slate-300 hover:shadow-sm";
   };
 
   return (
@@ -255,20 +265,22 @@ export function PlanComparison({
             </p>
           </div>
         )}
-        {subscription?.status === "canceled" && isSubscriptionActive() && (
-          <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <div className="flex items-center gap-2 text-amber-800">
-              <AlertCircle className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                Subscription ending soon
-              </span>
+        {isSubscriptionCanceled() && (
+          <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-center gap-2 text-red-800">
+              <XCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">Subscription canceled</span>
             </div>
-            <p className="text-xs text-amber-700 mt-1">
-              Your subscription is scheduled to end on{" "}
-              {subscription.current_period_end
-                ? new Date(subscription.current_period_end).toLocaleDateString()
-                : "your next billing date"}
-              . Reactivate to continue using premium features.
+            <p className="text-xs text-red-700 mt-1">
+              {isSubscriptionActive()
+                ? `Your subscription is scheduled to end on ${
+                    subscription?.current_period_end
+                      ? new Date(
+                          subscription.current_period_end
+                        ).toLocaleDateString()
+                      : "your next billing date"
+                  }. You can reactivate anytime before then.`
+                : "Your subscription has ended. You can start a new subscription anytime."}
             </p>
           </div>
         )}
@@ -285,7 +297,7 @@ export function PlanComparison({
           </span>
           <button
             onClick={() => setInterval(interval === "month" ? "year" : "month")}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
               interval === "year" ? "bg-blue-600" : "bg-gray-200"
             }`}
             aria-label={`Switch to ${interval === "month" ? "yearly" : "monthly"} billing`}
@@ -319,27 +331,13 @@ export function PlanComparison({
             const price = getPrice(plan);
             const yearlyDiscount = getYearlyDiscount(plan);
             const isPopular = plan === "premium";
-            const isCurrent = isCurrentPlanAndInterval(plan, interval);
-            const needsChange =
-              (hasActiveSubscription || isTrialActive) &&
-              isAnyChange(plan, interval);
             const currentBadge = getCurrentPlanBadge(plan, interval);
             const trialNote = getTrialEligibilityNote(plan);
 
             return (
               <div
                 key={plan}
-                className={`relative p-4 rounded-lg border transition-all ${
-                  isCurrent
-                    ? isTrialActive
-                      ? "border-orange-500 bg-orange-50/50"
-                      : subscription?.status === "canceled"
-                        ? "border-amber-500 bg-amber-50/50"
-                        : "border-green-500 bg-green-50/50"
-                    : isPopular
-                      ? "border-blue-500 bg-blue-50/50"
-                      : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
-                }`}
+                className={`relative p-4 rounded-lg border transition-all ${getPlanCardBorder(plan, interval)}`}
               >
                 {currentBadge && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -347,7 +345,7 @@ export function PlanComparison({
                   </div>
                 )}
 
-                {!currentBadge && !isCurrent && isPopular && (
+                {!currentBadge && isPopular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-blue-600 text-white border-blue-600 text-xs font-medium">
                       Most Popular
@@ -410,60 +408,21 @@ export function PlanComparison({
                   </ul>
                 </div>
 
-                {/* Button Logic */}
-                {isCurrent &&
-                !isTrialActive &&
-                subscription?.status === "active" ? (
-                  <div className="w-full h-9 bg-green-100 border border-green-200 rounded-md flex items-center justify-center text-sm font-medium text-green-800">
-                    Current Plan
-                  </div>
-                ) : isCurrent && isTrialActive ? (
-                  <div className="w-full h-9 bg-orange-100 border border-orange-200 rounded-md flex items-center justify-center text-sm font-medium text-orange-800">
-                    <Timer className="w-4 h-4 mr-2" />
-                    Trial Active
-                  </div>
-                ) : isCurrent && subscription?.status === "canceled" ? (
-                  <div className="w-full h-9 bg-amber-100 border border-amber-200 rounded-md flex items-center justify-center text-sm font-medium text-amber-800">
-                    <AlertCircle className="w-4 h-4 mr-2" />
-                    Ending Soon
-                  </div>
-                ) : (hasActiveSubscription || isTrialActive) && needsChange ? (
-                  <SwitchPlanButton
-                    plan={plan}
-                    interval={interval}
-                    currentPlan={currentPlan}
-                    currentInterval={currentInterval}
-                    currentStatus={currentStatus}
-                    isTrialActive={isTrialActive}
-                    trialDaysRemaining={trialDaysRemaining}
-                    hasUsedTrial={hasUsedTrial}
-                    onError={onError}
-                    onSuccess={onSuccess}
-                    className={`w-full h-9 ${
-                      isPopular
-                        ? "bg-blue-600 hover:bg-blue-700 text-white hover:text-white!"
-                        : ""
-                    }`}
-                  />
-                ) : (
-                  <UpgradeButton
-                    plan={plan}
-                    interval={interval}
-                    currentPlan={currentPlan}
-                    currentStatus={currentStatus}
-                    isLoggedIn={isLoggedIn}
-                    isTrialActive={isTrialActive}
-                    trialDaysRemaining={trialDaysRemaining}
-                    hasUsedTrial={hasUsedTrial}
-                    onError={onError}
-                    onSuccess={onSuccess}
-                    className={`w-full h-9 ${
-                      isPopular
-                        ? "bg-blue-600 hover:bg-blue-700 text-white hover:text-white!"
-                        : ""
-                    }`}
-                  />
-                )}
+                {/* Unified Button - replaces both SwitchPlanButton and UpgradeButton */}
+                <PlanButton
+                  plan={plan}
+                  interval={interval}
+                  currentPlan={currentPlan}
+                  currentInterval={currentInterval}
+                  isLoggedIn={isLoggedIn}
+                  isCancelled={cancelAtPeriodEnd}
+                  isTrialActive={isTrialActive}
+                  trialDaysRemaining={trialDaysRemaining}
+                  hasUsedTrial={hasUsedTrial}
+                  onError={onError}
+                  onSuccess={onSuccess}
+                  className="w-full h-9"
+                />
               </div>
             );
           })}

@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  ArrowUpRight,
-  ArrowDownRight,
-  RefreshCw,
-  Crown,
-  Settings,
-} from "lucide-react";
+import { RefreshCw, Crown, Settings, XCircle } from "lucide-react";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type {
@@ -28,6 +22,7 @@ interface SwitchPlanButtonProps {
   isTrialActive?: boolean;
   trialDaysRemaining?: number | null;
   hasUsedTrial?: boolean;
+  isCancelled?: boolean;
   className?: string;
   onError?: (error: string) => void;
   onSuccess?: (message: string) => void;
@@ -41,6 +36,7 @@ export function SwitchPlanButton({
   isTrialActive = false,
   trialDaysRemaining = null,
   hasUsedTrial = false,
+  isCancelled = false,
   className,
   onError,
 }: SwitchPlanButtonProps) {
@@ -72,15 +68,8 @@ export function SwitchPlanButton({
     return currentPlan === plan && currentInterval === interval;
   };
 
-  // Determine the type of change and button text
-  const isPlanUpgrade = () => {
-    const planOrder = { free: 0, premium: 1, business: 2 };
-    return planOrder[plan] > planOrder[currentPlan];
-  };
-
-  const isPlanDowngrade = () => {
-    const planOrder = { free: 0, premium: 1, business: 2 };
-    return planOrder[plan] < planOrder[currentPlan];
+  const isFirstTimeSubscription = () => {
+    return currentPlan === "free" && plan !== "free";
   };
 
   const isIntervalChange = () => {
@@ -91,11 +80,33 @@ export function SwitchPlanButton({
     return plan === "free" && currentPlan !== "free";
   };
 
-  const isFirstTimeSubscription = () => {
-    return currentPlan === "free" && plan !== "free";
+  const isPlanChange = () => {
+    return currentPlan !== plan && plan !== "free";
   };
 
   const getButtonText = () => {
+    // Handle cancelled subscription cases
+    if (isCancelled) {
+      if (isCurrentConfiguration()) {
+        return "Cancelled - Expires at period end";
+      }
+      // If switching to a different plan/interval while cancelled
+      if (isFirstTimeSubscription()) {
+        const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
+        return !hasUsedTrial
+          ? `Start ${planName} Trial`
+          : `Subscribe to ${planName}`;
+      }
+      if (isPlanChange()) {
+        return `Switch to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
+      }
+      if (isIntervalChange()) {
+        return interval === "year" ? "Switch to Yearly" : "Switch to Monthly";
+      }
+      return "Reactivate Plan";
+    }
+
+    // Normal active subscription cases
     if (isCurrentConfiguration()) {
       if (isTrialActive && trialDaysRemaining) {
         return `Current Trial (${trialDaysRemaining} days left)`;
@@ -121,18 +132,19 @@ export function SwitchPlanButton({
       return interval === "year" ? "Switch to Yearly" : "Switch to Monthly";
     }
 
-    if (isPlanUpgrade()) {
-      return `Upgrade to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
-    }
-
-    if (isPlanDowngrade()) {
-      return `Downgrade to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
+    if (isPlanChange()) {
+      return `Switch to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
     }
 
     return "Change Plan";
   };
 
   const getButtonIcon = () => {
+    // Show cancelled icon for cancelled current plan
+    if (isCancelled && isCurrentConfiguration()) {
+      return <XCircle className="w-4 h-4" />;
+    }
+
     if (isFirstTimeSubscription()) {
       return <Crown className="w-4 h-4" />;
     }
@@ -142,23 +154,14 @@ export function SwitchPlanButton({
       return <Settings className="w-4 h-4" />;
     }
 
-    if (isIntervalChange()) {
-      return <RefreshCw className="w-4 h-4" />;
-    }
-
-    if (isPlanUpgrade()) {
-      return <ArrowUpRight className="w-4 h-4" />;
-    }
-
-    if (isPlanDowngrade()) {
-      return <ArrowDownRight className="w-4 h-4" />;
-    }
-
     return <RefreshCw className="w-4 h-4" />;
   };
 
   const getButtonVariant = () => {
     if (isCurrentConfiguration()) {
+      if (isCancelled) {
+        return "destructive";
+      }
       return "outline";
     }
 
@@ -169,10 +172,20 @@ export function SwitchPlanButton({
     return "outline";
   };
 
+  const isButtonDisabled = () => {
+    // Disable if pending
+    if (isPending) return true;
+
+    // Disable if it's the current configuration and not cancelled
+    if (isCurrentConfiguration() && !isCancelled) return true;
+
+    return false;
+  };
+
   return (
     <Button
       onClick={handleSwitch}
-      disabled={isPending || isCurrentConfiguration()}
+      disabled={isButtonDisabled()}
       className={className}
       variant={getButtonVariant()}
     >
