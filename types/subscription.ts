@@ -20,6 +20,9 @@ export interface Subscription {
   current_period_start: string | null;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  trial_start: string | null;
+  trial_end: string | null;
+  trial_used: boolean;
   created_at: string;
   updated_at: string;
   canceled_at: string;
@@ -38,4 +41,12 @@ export interface PlanConfig {
   };
   features: string[];
   maxFilters: number;
+  trialDays: number;
+}
+
+export interface TrialInfo {
+  isEligible: boolean;
+  daysRemaining: number | null;
+  isActive: boolean;
+  hasUsedTrial: boolean;
 }

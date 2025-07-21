@@ -8,10 +8,12 @@ import {
   Calendar,
   Users,
   AlertTriangle,
-  CheckCircle,
   Settings,
   Clock,
   XCircle,
+  Timer,
+  Gift,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
@@ -19,13 +21,19 @@ import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
 import { getPlanConfig } from "@/lib/stripe/plans";
 
 interface BillingOverviewProps {
-  subscription: Subscription;
+  subscription: Subscription | null;
   filtersCount: number;
+  trialDaysRemaining?: number | null;
+  hasUsedTrial?: boolean;
+  isTrialActive?: boolean;
 }
 
 export function BillingOverview({
   subscription,
   filtersCount,
+  trialDaysRemaining = null,
+  hasUsedTrial = false,
+  isTrialActive = false,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
   const planConfig = getPlanConfig(currentPlan);
@@ -38,16 +46,25 @@ export function BillingOverview({
   const canceledAt = subscription?.canceled_at
     ? new Date(subscription.canceled_at)
     : null;
+  const trialEnd = subscription?.trial_end
+    ? new Date(subscription.trial_end)
+    : null;
 
-  // Determine if subscription is effectively active (including grace period)
+  // Use the passed isTrialActive prop, but fallback to subscription status
+  const effectivelyOnTrial = isTrialActive || subscriptionStatus === "trialing";
+
+  // Determine if subscription is effectively active (including grace period and trial)
   const isEffectivelyActive = () => {
     if (subscriptionStatus === "active") return true;
-    if (subscriptionStatus === "trialing") return true;
+    if (effectivelyOnTrial) return true;
     if (subscriptionStatus === "canceled" && currentPeriodEnd) {
       return new Date() < currentPeriodEnd; // Still in grace period
     }
     return false;
   };
+
+  // Check if we have Stripe subscription data
+  const hasStripeSubscription = Boolean(subscription?.stripe_subscription_id);
 
   const getPlanIcon = () => {
     switch (currentPlan) {
@@ -62,6 +79,16 @@ export function BillingOverview({
 
   const getPriceDisplay = () => {
     if (currentPlan === "free") return null;
+
+    // Show different pricing for trial vs paid
+    if (effectivelyOnTrial) {
+      return (
+        <div className="text-right">
+          <div className="text-2xl font-bold text-slate-900">Free</div>
+          <div className="text-sm font-normal text-slate-600">Trial Period</div>
+        </div>
+      );
+    }
 
     const price =
       planInterval === "year"
@@ -79,6 +106,16 @@ export function BillingOverview({
   };
 
   const getStatusBadge = () => {
+    // Handle trial status first
+    if (effectivelyOnTrial) {
+      return (
+        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />
+          Free Trial
+        </Badge>
+      );
+    }
+
     // Handle cancel at period end scenario
     if (cancelAtPeriodEnd && subscriptionStatus === "active") {
       return (
@@ -107,18 +144,32 @@ export function BillingOverview({
             Active
           </Badge>
         );
-      case "trialing":
-        return (
-          <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5" />
-            Free Trial
-          </Badge>
-        );
       case "past_due":
         return (
           <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-medium">
             <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5" />
             Payment Required
+          </Badge>
+        );
+      case "incomplete":
+        return (
+          <Badge className="bg-yellow-50 text-yellow-700 border-yellow-200 font-medium">
+            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5" />
+            Setup Required
+          </Badge>
+        );
+      case "incomplete_expired":
+        return (
+          <Badge className="bg-red-50 text-red-700 border-red-200 font-medium">
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5" />
+            Setup Expired
+          </Badge>
+        );
+      case "unpaid":
+        return (
+          <Badge className="bg-red-50 text-red-700 border-red-200 font-medium">
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5" />
+            Unpaid
           </Badge>
         );
       case "canceled":
@@ -138,42 +189,64 @@ export function BillingOverview({
   };
 
   const getPrimaryAction = () => {
+    // If user is on free plan
     if (currentPlan === "free") {
       return {
-        label: "Upgrade Plan",
+        label: hasUsedTrial ? "Upgrade Plan" : "Start Free Trial",
         href: "/pricing",
-        icon: Crown,
+        icon: hasUsedTrial ? Crown : Gift,
         variant: "default" as const,
         className: "bg-blue-600 hover:bg-blue-700",
         isForm: false,
       };
     }
 
+    // If user has Stripe subscription, show portal
+    if (hasStripeSubscription) {
+      return {
+        label: "Manage Subscription",
+        href: "#",
+        icon: Settings,
+        variant: "default" as const,
+        className: "bg-slate-900 hover:bg-slate-800",
+        isForm: true,
+      };
+    }
+
+    // If user has local trial only, redirect to pricing
     return {
-      label: "Manage Subscription",
-      href: "#",
-      icon: Settings,
+      label: "Upgrade Plan",
+      href: "/pricing",
+      icon: Crown,
       variant: "default" as const,
-      className: "bg-slate-900 hover:bg-slate-800",
-      isForm: true,
+      className: "bg-blue-600 hover:bg-blue-700",
+      isForm: false,
     };
   };
 
   const getBillingDateLabel = () => {
+    if (effectivelyOnTrial) {
+      return "Trial Ends";
+    }
     if (cancelAtPeriodEnd && subscriptionStatus === "active") {
       return "Cancels On";
     }
     if (subscriptionStatus === "canceled" && isEffectivelyActive()) {
       return "Access Until";
     }
-    if (subscriptionStatus === "trialing") {
-      return "Trial Ends";
-    }
     return "Next Billing";
+  };
+
+  const getBillingDate = () => {
+    if (effectivelyOnTrial && trialEnd) {
+      return trialEnd;
+    }
+    return currentPeriodEnd;
   };
 
   const primaryAction = getPrimaryAction();
   const PrimaryIcon = primaryAction.icon;
+  const billingDate = getBillingDate();
 
   return (
     <Card className="border-0 shadow-sm">
@@ -189,6 +262,14 @@ export function BillingOverview({
               </h3>
               <div className="flex items-center gap-2 mt-1">
                 {getStatusBadge()}
+                {effectivelyOnTrial &&
+                  trialDaysRemaining &&
+                  trialDaysRemaining > 0 && (
+                    <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-medium">
+                      <Timer className="w-3 h-3 mr-1" />
+                      {trialDaysRemaining} days left
+                    </Badge>
+                  )}
               </div>
             </div>
           </div>
@@ -197,27 +278,37 @@ export function BillingOverview({
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Subscription Details */}
-        {currentPeriodEnd && (
+        {(billingDate || currentPlan !== "free") && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <div className="font-medium text-slate-900 text-sm">
-                    {getBillingDateLabel()}
+            {billingDate && (
+              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      effectivelyOnTrial ? "bg-emerald-50" : "bg-blue-50"
+                    }`}
+                  >
+                    {effectivelyOnTrial ? (
+                      <Timer className="w-4 h-4 text-emerald-600" />
+                    ) : (
+                      <Calendar className="w-4 h-4 text-blue-600" />
+                    )}
                   </div>
-                  <div className="text-slate-600 text-sm">
-                    {currentPeriodEnd.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  <div>
+                    <div className="font-medium text-slate-900 text-sm">
+                      {getBillingDateLabel()}
+                    </div>
+                    <div className="text-slate-600 text-sm">
+                      {billingDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
               <div className="flex items-center gap-3">
@@ -260,6 +351,49 @@ export function BillingOverview({
         </div>
 
         {/* Status Alerts */}
+        {effectivelyOnTrial && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Gift className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <div className="font-medium text-emerald-900 mb-1">
+                  Free Trial Active
+                </div>
+                <p className="text-emerald-800 text-sm">
+                  {trialEnd ? (
+                    <>
+                      Your trial ends on {trialEnd.toLocaleDateString()}.
+                      {trialDaysRemaining && trialDaysRemaining > 0 && (
+                        <>
+                          {" "}
+                          You have {trialDaysRemaining} days remaining to enjoy
+                          premium features.
+                        </>
+                      )}
+                      {trialDaysRemaining && trialDaysRemaining <= 3 && (
+                        <>
+                          {" "}
+                          Upgrade now to continue enjoying premium features
+                          without interruption.
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      You're currently on a free trial.
+                      {trialDaysRemaining && trialDaysRemaining > 0 && (
+                        <> You have {trialDaysRemaining} days remaining.</>
+                      )}
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {cancelAtPeriodEnd &&
           subscriptionStatus === "active" &&
           currentPeriodEnd && (
@@ -359,19 +493,42 @@ export function BillingOverview({
           </div>
         )}
 
-        {subscriptionStatus === "trialing" && currentPeriodEnd && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        {(subscriptionStatus === "incomplete" ||
+          subscriptionStatus === "incomplete_expired") && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-4 h-4 text-yellow-600" />
               </div>
               <div>
-                <div className="font-medium text-blue-900 mb-1">
-                  Free Trial Active
+                <div className="font-medium text-yellow-900 mb-1">
+                  {subscriptionStatus === "incomplete_expired"
+                    ? "Setup Expired"
+                    : "Setup Required"}
                 </div>
-                <p className="text-blue-800 text-sm">
-                  Your trial ends on {currentPeriodEnd.toLocaleDateString()}.
-                  Upgrade now to continue enjoying premium features.
+                <p className="text-yellow-800 text-sm">
+                  {subscriptionStatus === "incomplete_expired"
+                    ? "Your subscription setup has expired. Please try again to activate your subscription."
+                    : "Your subscription setup is incomplete. Please complete the payment process to activate your subscription."}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {subscriptionStatus === "unpaid" && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+              </div>
+              <div>
+                <div className="font-medium text-red-900 mb-1">
+                  Payment Failed
+                </div>
+                <p className="text-red-800 text-sm">
+                  Multiple payment attempts have failed. Please update your
+                  payment method immediately to restore access.
                 </p>
               </div>
             </div>

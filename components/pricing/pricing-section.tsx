@@ -11,12 +11,16 @@ import {
   Zap,
   ArrowRight,
   Settings,
+  Timer,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   SubscriptionPlan,
   SubscriptionInterval,
   Subscription,
+  TrialInfo,
 } from "@/types/subscription";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
@@ -28,13 +32,40 @@ const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 interface PricingSectionProps {
   user?: User | null;
   subscription?: Subscription | null;
+  trialInfo?: TrialInfo | null;
+  onError?: (error: string) => void;
+  onSuccess?: (message: string) => void;
 }
 
-export function PricingSection({ user, subscription }: PricingSectionProps) {
-  const [interval, setInterval] = useState<SubscriptionInterval>("month");
+export function PricingSection({
+  user,
+  subscription,
+  trialInfo,
+  onError,
+  onSuccess,
+}: PricingSectionProps) {
+  const [interval, setInterval] = useState<SubscriptionInterval>(
+    subscription?.interval || "month"
+  );
   const router = useRouter();
   const isLoggedIn = !!user;
   const currentPlan = subscription?.plan || "free";
+  const currentInterval = subscription?.interval || "month";
+  const subscriptionStatus = subscription?.status || "inactive";
+  const isTrialActive = trialInfo?.isActive || false;
+  const trialDaysRemaining = trialInfo?.daysRemaining || null;
+  const hasUsedTrial = trialInfo?.hasUsedTrial || false;
+
+  // Check if subscription is effectively active (including grace periods)
+  const isSubscriptionActive = () => {
+    if (!subscription) return false;
+    if (isTrialActive) return true;
+    if (subscription.status === "active") return true;
+    if (subscription.status === "canceled" && subscription.current_period_end) {
+      return new Date() < new Date(subscription.current_period_end);
+    }
+    return false;
+  };
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
@@ -61,8 +92,12 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
   const getPlanBorderColor = (
     plan: SubscriptionPlan,
     isPopular: boolean,
-    isCurrent: boolean
+    isCurrent: boolean,
+    isTrialPlan: boolean,
+    isEndingSoon: boolean
   ) => {
+    if (isTrialPlan) return "border-orange-500 shadow-orange-100";
+    if (isEndingSoon) return "border-amber-500 shadow-amber-100";
     if (isCurrent) return "border-green-500 shadow-green-100";
     if (isPopular) return "border-blue-500 shadow-blue-100";
     return "border-slate-200 hover:border-slate-300";
@@ -70,6 +105,15 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
 
   const getPrice = (plan: SubscriptionPlan) => {
     const planConfig = getPlanConfig(plan);
+
+    if (plan === "free") {
+      return {
+        monthlyEquivalent: 0,
+        yearlyDiscount: 0,
+        yearly: 0,
+      };
+    }
+
     const isYearly = interval === "year";
     const monthlyEquivalent = isYearly
       ? Math.round((planConfig.price.yearly / 12) * 100) / 100
@@ -101,11 +145,34 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
       if (plan === "free") {
         return "Get Started Free";
       }
-      return `Get ${getPlanConfig(plan).name}`;
+      return hasUsedTrial
+        ? `Get ${getPlanConfig(plan).name}`
+        : `Try ${getPlanConfig(plan).name} Free`;
     }
 
-    // When logged in
-    if (currentPlan === plan) {
+    // Handle trial scenarios
+    if (isTrialActive) {
+      if (currentPlan === plan) {
+        return trialDaysRemaining !== null
+          ? `Trial (${trialDaysRemaining} days left)`
+          : "Trial Active";
+      }
+      if (plan === "free") {
+        return "Cancel Trial";
+      }
+      return `Convert to ${getPlanConfig(plan).name}`;
+    }
+
+    // Handle canceled subscription that's still active
+    if (subscription?.status === "canceled" && isSubscriptionActive()) {
+      if (currentPlan === plan) {
+        return "Ending Soon";
+      }
+      return `Switch to ${getPlanConfig(plan).name}`;
+    }
+
+    // Regular logged-in scenarios
+    if (currentPlan === plan && isSubscriptionActive()) {
       return plan === "free" ? "Current Plan" : "Manage Plan";
     }
 
@@ -113,6 +180,9 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
     if (currentPlan === "free") {
       if (plan === "free") {
         return "Current Plan";
+      }
+      if (!hasUsedTrial) {
+        return `Start ${getPlanConfig(plan).name} Trial`;
       }
       return `Upgrade to ${getPlanConfig(plan).name}`;
     }
@@ -123,7 +193,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
         return "Manage Plan";
       }
       if (plan === "business") {
-        return "Upgrade to Business";
+        return "Switch to Business";
       }
       if (plan === "free") {
         return "Downgrade to Free";
@@ -136,7 +206,7 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
         return "Manage Plan";
       }
       if (plan === "premium") {
-        return "Downgrade to Premium";
+        return "Switch to Premium";
       }
       if (plan === "free") {
         return "Downgrade to Free";
@@ -152,17 +222,24 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
       return;
     }
 
+    // If user is on trial
+    if (isTrialActive) {
+      if (plan === "free") {
+        // Cancel trial - redirect to billing
+        router.push("/billing");
+        return;
+      }
+      // Convert trial to paid or switch trial plan - handled by UpgradeButton
+      return;
+    }
+
     // User has free plan
     if (currentPlan === "free") {
       if (plan === "free") {
         router.push("/billing");
       } else {
-        // Redirect to checkout for upgrading from free to paid
-        const params = new URLSearchParams({
-          plan,
-          interval,
-        });
-        router.push(`/checkout?${params.toString()}`);
+        // Handled by UpgradeButton for trial start or direct upgrade
+        return;
       }
       return;
     }
@@ -175,12 +252,54 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
   };
 
   const shouldUseUpgradeButton = (plan: SubscriptionPlan) => {
-    return isLoggedIn && currentPlan === "free" && plan !== "free";
+    if (!isLoggedIn) return true;
+
+    // Use upgrade button for trial conversions
+    if (isTrialActive && plan !== "free") return true;
+
+    // Use upgrade button for starting trials or upgrading from free
+    if (currentPlan === "free" && plan !== "free") return true;
+
+    return false;
   };
 
   const shouldShowSettingsIcon = (plan: SubscriptionPlan) => {
     const buttonText = getButtonText(plan);
     return buttonText === "Manage Plan";
+  };
+
+  const shouldShowTimerIcon = (plan: SubscriptionPlan) => {
+    return isTrialActive && currentPlan === plan;
+  };
+
+  const shouldShowAlertIcon = (plan: SubscriptionPlan) => {
+    return (
+      subscription?.status === "canceled" &&
+      isSubscriptionActive() &&
+      currentPlan === plan
+    );
+  };
+
+  const isTrialPlan = (plan: SubscriptionPlan) => {
+    return isTrialActive && currentPlan === plan;
+  };
+
+  const isCurrentPlan = (plan: SubscriptionPlan) => {
+    return (
+      currentPlan === plan &&
+      currentInterval === interval &&
+      !isTrialActive &&
+      isSubscriptionActive() &&
+      subscription?.status !== "canceled"
+    );
+  };
+
+  const isEndingSoon = (plan: SubscriptionPlan) => {
+    return (
+      currentPlan === plan &&
+      subscription?.status === "canceled" &&
+      isSubscriptionActive()
+    );
   };
 
   return (
@@ -196,6 +315,60 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
             and upgrade as you grow.
           </p>
 
+          {/* Trial Banner */}
+          {isLoggedIn &&
+            !hasUsedTrial &&
+            currentPlan === "free" &&
+            !isTrialActive && (
+              <div className="max-w-2xl mx-auto mb-8">
+                <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-3 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    <span className="font-semibold">
+                      Try any paid plan free for 14 days - no credit card
+                      required!
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {/* Active Trial Banner */}
+          {isTrialActive && (
+            <div className="max-w-2xl mx-auto mb-8">
+              <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-3 rounded-lg shadow-lg">
+                <div className="flex items-center justify-center gap-2">
+                  <Timer className="w-5 h-5" />
+                  <span className="font-semibold">
+                    {trialDaysRemaining !== null
+                      ? `Trial expires in ${trialDaysRemaining} days - convert to continue using premium features`
+                      : "Trial active - convert to continue using premium features"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Ending Soon Banner */}
+          {subscription?.status === "canceled" && isSubscriptionActive() && (
+            <div className="max-w-2xl mx-auto mb-8">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg">
+                <div className="flex items-center justify-center gap-2">
+                  <AlertCircle className="w-5 h-5" />
+                  <span className="font-semibold">
+                    Your subscription ends on{" "}
+                    {subscription.current_period_end
+                      ? new Date(
+                          subscription.current_period_end
+                        ).toLocaleDateString()
+                      : "your next billing date"}{" "}
+                    - reactivate to continue
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Billing Toggle */}
           <div className="inline-flex items-center gap-3 p-1 bg-white rounded-xl shadow-sm border border-slate-200">
             <span
@@ -209,9 +382,10 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
               onClick={() =>
                 setInterval(interval === "month" ? "year" : "month")
               }
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                 interval === "year" ? "bg-blue-600" : "bg-slate-200"
               }`}
+              aria-label={`Switch to ${interval === "month" ? "yearly" : "monthly"} billing`}
             >
               <span
                 className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
@@ -242,7 +416,9 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
             const planConfig = getPlanConfig(plan);
             const priceData = getPrice(plan);
             const isPopular = plan === "premium";
-            const isCurrent = isLoggedIn && currentPlan === plan;
+            const isCurrent = isCurrentPlan(plan);
+            const isTrialPlanCard = isTrialPlan(plan);
+            const isEndingSoonCard = isEndingSoon(plan);
 
             return (
               <Card
@@ -250,8 +426,10 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                 className={`relative hover:shadow-xl transition-all duration-300 ${getPlanBorderColor(
                   plan,
                   isPopular,
-                  isCurrent
-                )} ${isPopular ? "md:scale-105" : ""} ${isCurrent ? "shadow-lg" : "hover:shadow-lg"}`}
+                  isCurrent,
+                  isTrialPlanCard,
+                  isEndingSoonCard
+                )} ${isPopular ? "md:scale-105" : ""} ${isCurrent || isTrialPlanCard || isEndingSoonCard ? "shadow-lg" : "hover:shadow-lg"}`}
               >
                 {/* Background gradient */}
                 <div
@@ -259,19 +437,40 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
                 />
 
                 {/* Popular badge */}
-                {isPopular && !isCurrent && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-blue-600 text-white shadow-lg">
-                      Most Popular
-                    </Badge>
-                  </div>
-                )}
+                {isPopular &&
+                  !isCurrent &&
+                  !isTrialPlanCard &&
+                  !isEndingSoonCard && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-blue-600 text-white shadow-lg">
+                        Most Popular
+                      </Badge>
+                    </div>
+                  )}
 
                 {/* Current plan badge */}
                 {isCurrent && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-green-600 text-white shadow-lg">
                       Current Plan
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Trial badge */}
+                {isTrialPlanCard && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <Badge className="bg-orange-600 text-white shadow-lg">
+                      Trial Active
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Ending soon badge */}
+                {isEndingSoonCard && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <Badge className="bg-amber-600 text-white shadow-lg">
+                      Ending Soon
                     </Badge>
                   </div>
                 )}
@@ -293,58 +492,98 @@ export function PricingSection({ user, subscription }: PricingSectionProps) {
 
                   <div className="mb-6">
                     <div className="flex items-baseline justify-center">
-                      <span className="text-4xl font-bold text-slate-900">
-                        $<NumberTicker value={priceData.monthlyEquivalent} />
-                      </span>
-                      <span className="text-slate-500 ml-2">/month</span>
-                      {priceData.yearlyDiscount > 0 && (
+                      {isTrialPlanCard ? (
+                        <>
+                          <span className="text-4xl font-bold text-orange-600">
+                            FREE
+                          </span>
+                          <span className="text-slate-500 ml-2">
+                            {trialDaysRemaining !== null
+                              ? `for ${trialDaysRemaining} days`
+                              : "trial active"}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-4xl font-bold text-slate-900">
+                            $
+                            <NumberTicker value={priceData.monthlyEquivalent} />
+                          </span>
+                          <span className="text-slate-500 ml-2">
+                            {plan === "free" ? "" : "/month"}
+                          </span>
+                        </>
+                      )}
+                      {priceData.yearlyDiscount > 0 && !isTrialPlanCard && (
                         <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
                           Save {priceData.yearlyDiscount}%
                         </Badge>
                       )}
                     </div>
-                    {interval === "year" && planConfig.price.monthly > 0 && (
+                    {interval === "year" &&
+                      planConfig.price.monthly > 0 &&
+                      !isTrialPlanCard && (
+                        <p className="text-sm text-slate-500 mt-2">
+                          Billed ${priceData.yearly} annually
+                        </p>
+                      )}
+                    {isTrialPlanCard && (
                       <p className="text-sm text-slate-500 mt-2">
-                        Billed ${priceData.yearly} annually
+                        Then ${priceData.monthlyEquivalent}/month
                       </p>
                     )}
                   </div>
 
                   {/* Call-to-action button */}
                   {shouldUseUpgradeButton(plan) ? (
-                    // Use UpgradeButton only for free users upgrading to paid plans
                     <UpgradeButton
                       plan={plan}
                       interval={interval}
                       currentPlan={currentPlan}
                       isLoggedIn={isLoggedIn}
+                      isTrialActive={isTrialActive}
+                      trialDaysRemaining={trialDaysRemaining}
+                      hasUsedTrial={hasUsedTrial}
+                      onError={onError}
+                      onSuccess={onSuccess}
                       className={`w-full h-12 font-semibold transition-all duration-200 group ${
-                        isPopular
+                        isPopular || isTrialPlanCard
                           ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
                           : "border-1 border-slate-200 hover:border-slate-300"
                       }`}
                     />
                   ) : (
-                    // Use regular button for all other cases
                     <Button
                       variant={getButtonVariant(plan, isPopular)}
                       onClick={() => handlePlanClick(plan)}
                       disabled={
-                        isLoggedIn && currentPlan === plan && plan === "free"
+                        isLoggedIn &&
+                        currentPlan === plan &&
+                        plan === "free" &&
+                        !isTrialActive
                       }
                       className={`w-full h-12 font-semibold transition-all duration-200 group ${
-                        isPopular
+                        isPopular || isTrialPlanCard
                           ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
                           : plan === "free"
                             ? "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
                             : "border-1 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900"
                       }`}
                     >
-                      {shouldShowSettingsIcon(plan) && (
-                        <Settings className="w-4 h-4 mr-2" />
+                      {shouldShowTimerIcon(plan) && (
+                        <Timer className="w-4 h-4 mr-2" />
                       )}
+                      {shouldShowAlertIcon(plan) && (
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                      )}
+                      {shouldShowSettingsIcon(plan) &&
+                        !shouldShowTimerIcon(plan) &&
+                        !shouldShowAlertIcon(plan) && (
+                          <Settings className="w-4 h-4 mr-2" />
+                        )}
                       {getButtonText(plan)}
-                      {(!isLoggedIn || currentPlan !== plan) && (
+                      {(!isLoggedIn ||
+                        (currentPlan !== plan && !isTrialActive)) && (
                         <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                       )}
                     </Button>

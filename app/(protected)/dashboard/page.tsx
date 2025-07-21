@@ -4,6 +4,8 @@ import { AlertsSection } from "@/components/dashboard/alerts-section";
 import { FiltersSection } from "@/components/dashboard/filters-section";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 import { Navbar } from "@/components/common/navbar";
+import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
+import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function DashboardPage() {
   const supabase = await createClientForServer();
@@ -41,12 +43,13 @@ export default async function DashboardPage() {
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
-  // Fetch user subscription
   const { data: subscription } = await supabase
     .from("subscriptions")
     .select("*")
     .eq("user_id", session.user.id)
     .single();
+
+  const trialInfo = await getTrialInfoAction();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -66,12 +69,16 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <UpgradeBanner filtersCount={filters?.length || 0} />
+          <UpgradeBanner
+            filtersCount={filters?.length || 0}
+            subscription={subscription}
+            trialInfo={trialInfo}
+          />
 
           <FiltersSection
             filters={filters || []}
             userId={session.user.id}
-            currentPlan={user?.plan || "free"}
+            currentPlan={subscription?.plan || "free"}
             filtersCount={filters?.length || 0}
           />
 

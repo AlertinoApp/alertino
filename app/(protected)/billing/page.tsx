@@ -4,6 +4,7 @@ import { BillingOverview } from "@/components/billing/billing-overview";
 import { PlanComparison } from "@/components/billing/plan-comparison";
 import { Navbar } from "@/components/common/navbar";
 import { SubscriptionAlerts } from "@/components/subscription/subscription-alert";
+import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function BillingPage() {
   const supabase = await createClientForServer();
@@ -35,6 +36,8 @@ export default async function BillingPage() {
     .select("*")
     .eq("user_id", session.user.id)
     .single();
+
+  const trialInfo = await getTrialInfoAction();
 
   const filtersCount = filters?.length || 0;
 
@@ -69,13 +72,18 @@ export default async function BillingPage() {
               <BillingOverview
                 subscription={subscription}
                 filtersCount={filtersCount}
+                trialDaysRemaining={trialInfo.daysRemaining}
+                hasUsedTrial={trialInfo.hasUsedTrial}
               />
             </div>
             <>
-              {/* Only show plan comparison for free users */}
               <PlanComparison
                 user={session?.user}
                 subscription={subscription}
+                isTrialActive={trialInfo.isActive}
+                trialDaysRemaining={trialInfo.daysRemaining}
+                hasUsedTrial={trialInfo.hasUsedTrial}
+                trialPlan={subscription?.plan}
               />
             </>
           </div>

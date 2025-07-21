@@ -14,6 +14,7 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Community support",
     ],
     maxFilters: 3,
+    trialDays: 0,
   },
   premium: {
     name: "Premium",
@@ -33,7 +34,8 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Export alerts to CSV",
       "Custom notification schedules",
     ],
-    maxFilters: -1, // unlimited
+    maxFilters: -1,
+    trialDays: 14,
   },
   business: {
     name: "Business",
@@ -53,7 +55,8 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Custom integrations",
       "SLA guarantee",
     ],
-    maxFilters: -1, // unlimited
+    maxFilters: -1,
+    trialDays: 14,
   },
 };
 
