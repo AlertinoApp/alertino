@@ -8,7 +8,9 @@ import {
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
+// Constants
 const TRIAL_DAYS = 14;
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,53 +24,22 @@ const PLAN_MAPPING: Record<string, SubscriptionPlan> = {
   [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!]: "business",
 };
 
+// Helper functions
 function mapStripePlanToSubscriptionPlan(priceId: string): SubscriptionPlan {
   return PLAN_MAPPING[priceId] || "free";
 }
 
-// Get or create Stripe customer
-async function getOrCreateCustomer(
-  userId: string,
-  userEmail: string
-): Promise<string> {
-  // Check if user already has a customer ID
-  const { data: subscription } = await supabaseAdmin
-    .from("subscriptions")
-    .select("stripe_customer_id")
-    .eq("user_id", userId)
-    .single();
-
-  if (subscription?.stripe_customer_id) {
-    try {
-      await stripe.customers.retrieve(subscription.stripe_customer_id);
-      return subscription.stripe_customer_id;
-    } catch (error) {
-      console.warn("Customer not found in Stripe, creating new one");
-    }
-  }
-
-  // Create new Stripe customer
-  const customer = await stripe.customers.create({
-    email: userEmail,
-    metadata: { supabase_user_id: userId },
-  });
-
-  // Upsert subscription record with customer ID
-  await supabaseAdmin.from("subscriptions").upsert(
-    {
-      user_id: userId,
-      stripe_customer_id: customer.id,
-      plan: "free",
-      status: "incomplete" as SubscriptionStatus,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id" }
-  );
-
-  return customer.id;
+function timestampToDate(timestamp: number): Date {
+  return new Date(timestamp * 1000);
 }
 
+function calculateDaysRemaining(endDate: Date): number {
+  const now = new Date();
+  const diffTime = endDate.getTime() - now.getTime();
+  return Math.ceil(diffTime / MILLISECONDS_PER_DAY);
+}
+
+// Database operations
 export async function getUserSubscription(userId: string) {
   if (!userId) {
     throw new Error("User ID is required");
@@ -87,16 +58,61 @@ export async function getUserSubscription(userId: string) {
   return subscription;
 }
 
+async function createStripeCustomer(
+  userId: string,
+  userEmail: string
+): Promise<string> {
+  const customer = await stripe.customers.create({
+    email: userEmail,
+    metadata: { supabase_user_id: userId },
+  });
+
+  await supabaseAdmin.from("subscriptions").upsert(
+    {
+      user_id: userId,
+      stripe_customer_id: customer.id,
+      plan: "free",
+      status: "incomplete" as SubscriptionStatus,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
+
+  return customer.id;
+}
+
+async function getOrCreateCustomer(
+  userId: string,
+  userEmail: string
+): Promise<string> {
+  const subscription = await getUserSubscription(userId);
+
+  if (subscription?.stripe_customer_id) {
+    try {
+      await stripe.customers.retrieve(subscription.stripe_customer_id);
+      return subscription.stripe_customer_id;
+    } catch {
+      console.warn("Customer not found in Stripe, creating new one");
+    }
+  }
+
+  return createStripeCustomer(userId, userEmail);
+}
+
+// Trial and subscription status
 export async function getUserTrialInfo(userId: string): Promise<TrialInfo> {
   const subscription = await getUserSubscription(userId);
 
+  const defaultTrialInfo = {
+    isEligible: true,
+    daysRemaining: null,
+    isActive: false,
+    hasUsedTrial: false,
+  };
+
   if (!subscription) {
-    return {
-      isEligible: true,
-      daysRemaining: null,
-      isActive: false,
-      hasUsedTrial: false,
-    };
+    return defaultTrialInfo;
   }
 
   const hasUsedTrial = subscription.trial_used || false;
@@ -104,10 +120,7 @@ export async function getUserTrialInfo(userId: string): Promise<TrialInfo> {
 
   let daysRemaining = null;
   if (isActive && subscription.trial_end) {
-    const trialEnd = new Date(subscription.trial_end);
-    const now = new Date();
-    const diffTime = trialEnd.getTime() - now.getTime();
-    daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    daysRemaining = calculateDaysRemaining(new Date(subscription.trial_end));
   }
 
   return {
@@ -131,7 +144,7 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 
   // Check active subscription
   if (subscription.status === "active") {
-    if (subscription.cancel_at_period_end) {
+    if (subscription.cancel_at_period_end && subscription.current_period_end) {
       return now < new Date(subscription.current_period_end);
     }
     return true;
@@ -140,6 +153,7 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
   return false;
 }
 
+// Stripe operations
 export async function createCheckoutSession({
   priceId,
   userId,
@@ -170,7 +184,7 @@ export async function createCheckoutSession({
     allow_promotion_codes: true,
   };
 
-  return await stripe.checkout.sessions.create(sessionParams);
+  return stripe.checkout.sessions.create(sessionParams);
 }
 
 export async function createCustomerPortalSession(
@@ -181,66 +195,73 @@ export async function createCustomerPortalSession(
     throw new Error("Customer ID is required");
   }
 
-  // Verify customer exists
   await stripe.customers.retrieve(customerId);
 
-  return await stripe.billingPortal.sessions.create({
+  return stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: returnUrl,
   });
 }
 
-export async function handleCheckoutSessionCompleted(
-  session: Stripe.Checkout.Session
-) {
-  const subscriptionId = session.subscription as string;
-  const customerId = session.customer as string;
-  const userId = session.metadata?.user_id;
+// Trial logic helpers
+function calculateTrialDates(subscription: Stripe.Subscription) {
+  let trialStart = null;
+  let trialEnd = null;
 
-  if (!subscriptionId || !customerId || !userId) {
-    throw new Error("Missing required data in checkout session");
+  if (subscription.trial_start && subscription.trial_start > 0) {
+    trialStart = timestampToDate(subscription.trial_start).toISOString();
   }
 
-  console.log("Processing checkout session completed:", {
-    sessionId: session.id,
-    subscriptionId,
-    userId,
-    customerId,
-  });
+  if (subscription.trial_end && subscription.trial_end > 0) {
+    trialEnd = timestampToDate(subscription.trial_end).toISOString();
 
-  // Retrieve the full subscription details from Stripe
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
-    expand: ["items.data.price"],
-  });
-
-  console.log("Retrieved subscription from Stripe:", {
-    id: subscription.id,
-    status: subscription.status,
-    trial_start: subscription.trial_start,
-    trial_end: subscription.trial_end,
-  });
-
-  await updateSubscriptionInDatabase(subscription, userId, customerId);
-}
-
-export async function handleSubscriptionChange(
-  subscription: Stripe.Subscription
-) {
-  // Find the subscription record in our database
-  const { data: subRecord, error } = await supabaseAdmin
-    .from("subscriptions")
-    .select("user_id")
-    .eq("stripe_subscription_id", subscription.id)
-    .single();
-
-  if (error || !subRecord) {
-    console.error(`Subscription not found: ${subscription.id}`);
-    return;
+    // Calculate trial start if missing
+    if (!trialStart) {
+      const trialEndDate = new Date(trialEnd);
+      const trialStartDate = new Date(
+        trialEndDate.getTime() - TRIAL_DAYS * MILLISECONDS_PER_DAY
+      );
+      trialStart = trialStartDate.toISOString();
+    }
   }
 
-  await updateSubscriptionInDatabase(subscription, subRecord.user_id);
+  return { trialStart, trialEnd };
 }
 
+function determineTrialStatus(
+  subscription: Stripe.Subscription,
+  existingSubscription: any
+): { trialStart: string | null; trialEnd: string | null; trialUsed: boolean } {
+  const status = subscription.status as SubscriptionStatus;
+  let { trialStart, trialEnd } = calculateTrialDates(subscription);
+  let trialUsed = false;
+
+  // Mark trial as used if we have trial dates or status is trialing
+  if (trialStart || trialEnd || status === "trialing") {
+    trialUsed = true;
+  }
+
+  // Handle trialing status without timestamps
+  if (status === "trialing" && !trialStart && !trialEnd) {
+    const now = new Date();
+    trialStart = now.toISOString();
+    trialEnd = new Date(
+      now.getTime() + TRIAL_DAYS * MILLISECONDS_PER_DAY
+    ).toISOString();
+    trialUsed = true;
+  }
+
+  // Preserve existing trial status
+  if (existingSubscription?.trial_used) {
+    trialUsed = true;
+    if (!trialStart) trialStart = existingSubscription.trial_start;
+    if (!trialEnd) trialEnd = existingSubscription.trial_end;
+  }
+
+  return { trialStart, trialEnd, trialUsed };
+}
+
+// Database update operations
 async function updateSubscriptionInDatabase(
   subscription: Stripe.Subscription,
   userId: string,
@@ -257,104 +278,47 @@ async function updateSubscriptionInDatabase(
   const interval = price.recurring?.interval as SubscriptionInterval;
   const status = subscription.status as SubscriptionStatus;
 
-  // Handle trial information - FIXED Logic
-  let trialStart = null;
-  let trialEnd = null;
-  let trialUsed = false;
-
-  // Get existing subscription data to preserve trial_used status
+  // Get existing subscription and determine trial status
   const existingSubscription = await getUserSubscription(userId);
-
-  // Check if this subscription has any trial period (current or past)
-  if (subscription.trial_start && subscription.trial_start > 0) {
-    trialStart = new Date(subscription.trial_start * 1000).toISOString();
-    trialUsed = true;
-  }
-
-  if (subscription.trial_end && subscription.trial_end > 0) {
-    trialEnd = new Date(subscription.trial_end * 1000).toISOString();
-
-    // If we have trial_end but no trial_start, calculate it
-    if (!trialStart) {
-      const trialEndDate = new Date(subscription.trial_end * 1000);
-      const trialStartDate = new Date(
-        trialEndDate.getTime() - TRIAL_DAYS * 24 * 60 * 60 * 1000
-      );
-      trialStart = trialStartDate.toISOString();
-      trialUsed = true;
-    }
-  }
-
-  // For trialing status, ensure we mark trial as used even if timestamps are missing
-  if (status === "trialing") {
-    trialUsed = true;
-
-    // If no trial timestamps from Stripe, create them based on current time
-    if (!trialStart && !trialEnd) {
-      const now = new Date();
-      trialStart = now.toISOString();
-      trialEnd = new Date(
-        now.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000
-      ).toISOString();
-    }
-  }
-
-  // Preserve existing trial_used status if it was already true
-  if (existingSubscription?.trial_used) {
-    trialUsed = true;
-  }
-
-  // For subscriptions that had trials but are now active, preserve trial info
-  if (status === "active" && existingSubscription?.trial_used && !trialUsed) {
-    trialUsed = existingSubscription.trial_used;
-    trialStart = existingSubscription.trial_start;
-    trialEnd = existingSubscription.trial_end;
-  }
-
-  // Determine final plan and status
-  const finalPlan = status === "canceled" ? "free" : plan;
-  const finalStatus = status;
+  const { trialStart, trialEnd, trialUsed } = determineTrialStatus(
+    subscription,
+    existingSubscription
+  );
 
   const updateData = {
     user_id: userId,
     stripe_subscription_id: subscription.id,
-    plan: finalPlan,
-    status: finalStatus,
+    plan: status === "canceled" ? "free" : plan,
+    status,
     interval: status === "canceled" ? null : interval,
-    current_period_start: new Date(
-      subscriptionItem.current_period_start * 1000
+    current_period_start: timestampToDate(
+      subscriptionItem.current_period_start
     ).toISOString(),
-    current_period_end: new Date(
-      subscriptionItem.current_period_end * 1000
+    current_period_end: timestampToDate(
+      subscriptionItem.current_period_end
     ).toISOString(),
     trial_start: trialStart,
     trial_end: trialEnd,
     trial_used: trialUsed,
     cancel_at_period_end: subscription.cancel_at_period_end,
     canceled_at: subscription.canceled_at
-      ? new Date(subscription.canceled_at * 1000).toISOString()
+      ? timestampToDate(subscription.canceled_at).toISOString()
       : null,
     updated_at: new Date().toISOString(),
     ...(customerId && { stripe_customer_id: customerId }),
   };
 
-  console.log("Updating subscription in database:", {
+  console.log("Updating subscription:", {
     userId,
     subscriptionId: subscription.id,
-    status: finalStatus,
-    plan: finalPlan,
-    trialStart,
-    trialEnd,
+    status,
+    plan: updateData.plan,
     trialUsed,
-    stripeTrialStart: subscription.trial_start,
-    stripeTrialEnd: subscription.trial_end,
   });
 
   const { error } = await supabaseAdmin
     .from("subscriptions")
-    .upsert(updateData, {
-      onConflict: "user_id",
-    });
+    .upsert(updateData, { onConflict: "user_id" });
 
   if (error) {
     console.error("Error updating subscription:", error);
@@ -362,25 +326,57 @@ async function updateSubscriptionInDatabase(
   }
 }
 
-// Simplified webhook handlers (implement based on your needs)
+// Webhook handlers
+export async function handleCheckoutSessionCompleted(
+  session: Stripe.Checkout.Session
+) {
+  const subscriptionId = session.subscription as string;
+  const customerId = session.customer as string;
+  const userId = session.metadata?.user_id;
+
+  if (!subscriptionId || !customerId || !userId) {
+    throw new Error("Missing required data in checkout session");
+  }
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["items.data.price"],
+  });
+
+  await updateSubscriptionInDatabase(subscription, userId, customerId);
+}
+
+export async function handleSubscriptionChange(
+  subscription: Stripe.Subscription
+) {
+  const { data: subRecord } = await supabaseAdmin
+    .from("subscriptions")
+    .select("user_id")
+    .eq("stripe_subscription_id", subscription.id)
+    .single();
+
+  if (!subRecord) {
+    console.error(`Subscription not found: ${subscription.id}`);
+    return;
+  }
+
+  await updateSubscriptionInDatabase(subscription, subRecord.user_id);
+}
+
+// Simple webhook handlers
 export async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   console.log("Payment succeeded:", invoice.id);
-  // Add any custom logic here
 }
 
 export async function handlePaymentFailed(invoice: Stripe.Invoice) {
   console.log("Payment failed:", invoice.id);
-  // Add any custom logic here (e.g., notifications)
 }
 
 export async function handleTrialWillEnd(subscription: Stripe.Subscription) {
   console.log("Trial will end:", subscription.id);
-  // Add any custom logic here (e.g., notifications)
 }
 
 export async function handleCheckoutSessionExpired(
   session: Stripe.Checkout.Session
 ) {
   console.log("Checkout session expired:", session.id);
-  // Add any custom logic here
 }

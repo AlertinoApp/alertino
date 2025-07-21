@@ -1,5 +1,7 @@
 import { PlanConfig, SubscriptionPlan } from "@/types/subscription";
 
+const TRIAL_DAYS = 14;
+
 export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
   free: {
     name: "Free",
@@ -34,8 +36,8 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Export alerts to CSV",
       "Custom notification schedules",
     ],
-    maxFilters: -1,
-    trialDays: 14,
+    maxFilters: -1, // Unlimited
+    trialDays: TRIAL_DAYS,
   },
   business: {
     name: "Business",
@@ -55,11 +57,15 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Custom integrations",
       "SLA guarantee",
     ],
-    maxFilters: -1,
-    trialDays: 14,
+    maxFilters: -1, // Unlimited
+    trialDays: TRIAL_DAYS,
   },
 };
 
 export function getPlanConfig(plan: SubscriptionPlan): PlanConfig {
-  return PLAN_CONFIGS[plan];
+  const config = PLAN_CONFIGS[plan];
+  if (!config) {
+    throw new Error(`Invalid plan: ${plan}`);
+  }
+  return config;
 }

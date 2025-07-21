@@ -14,30 +14,43 @@ import type {
   SubscriptionInterval,
   TrialInfo,
 } from "@/types/subscription";
-import { revalidatePath } from "next/cache";
 import { getPlanConfig } from "@/lib/stripe/plans";
 import { getAuthenticatedUser } from "./auth-actions";
 
-function getPriceIdFromPlanAndInterval(
+function getPriceId(
   plan: SubscriptionPlan,
   interval: SubscriptionInterval
-): string | null {
-  if (plan === "free") return null;
+): string {
+  if (plan === "free") {
+    throw new Error("Free plan does not have a price ID");
+  }
 
   const planConfig = getPlanConfig(plan);
-  return interval === "month"
-    ? planConfig.stripePriceIds.monthly
-    : planConfig.stripePriceIds.yearly;
+  const priceId =
+    interval === "month"
+      ? planConfig.stripePriceIds.monthly
+      : planConfig.stripePriceIds.yearly;
+
+  if (!priceId) {
+    throw new Error(`No price ID found for ${plan} ${interval}`);
+  }
+
+  return priceId;
+}
+
+function getAppUrl(path: string = ""): string {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  return `${baseUrl}${path}`;
 }
 
 export async function createCheckoutSessionAction(priceId: string) {
-  const user = await getAuthenticatedUser();
-
   if (!priceId) {
     throw new Error("Price ID is required");
   }
 
-  // Check if user already has an active subscription
+  const user = await getAuthenticatedUser();
+
+  // Prevent duplicate subscriptions
   const isActive = await hasActiveSubscription(user.id);
   if (isActive) {
     redirect("/billing?error=already_subscribed");
@@ -47,8 +60,8 @@ export async function createCheckoutSessionAction(priceId: string) {
     priceId,
     userId: user.id,
     userEmail: user.email!,
-    successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing/success`,
-    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing/cancel`,
+    successUrl: getAppUrl("/billing/success"),
+    cancelUrl: getAppUrl("/billing/cancel"),
   });
 
   if (!checkoutSession.url) {
@@ -62,27 +75,38 @@ export async function subscribeToAction(
   plan: SubscriptionPlan,
   interval: SubscriptionInterval
 ) {
-  const user = await getAuthenticatedUser();
-
   if (plan === "free") {
     redirect("/billing?error=invalid_plan");
   }
 
-  const priceId = getPriceIdFromPlanAndInterval(plan, interval);
-  if (!priceId) {
+  try {
+    const priceId = getPriceId(plan, interval);
+    await createCheckoutSessionAction(priceId);
+  } catch (error) {
+    console.error("Subscription error:", error);
     redirect("/billing?error=invalid_plan");
   }
-
-  await createCheckoutSessionAction(priceId);
 }
 
 export async function getTrialInfoAction(): Promise<TrialInfo> {
-  const supabase = await createClientForServer();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  try {
+    const supabase = await createClientForServer();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-  if (!session) {
+    if (!session) {
+      return {
+        isEligible: false,
+        daysRemaining: null,
+        isActive: false,
+        hasUsedTrial: false,
+      };
+    }
+
+    return await getUserTrialInfo(session.user.id);
+  } catch (error) {
+    console.error("Error getting trial info:", error);
     return {
       isEligible: false,
       daysRemaining: null,
@@ -90,30 +114,24 @@ export async function getTrialInfoAction(): Promise<TrialInfo> {
       hasUsedTrial: false,
     };
   }
-
-  return await getUserTrialInfo(session.user.id);
 }
 
 export async function createPortalSessionAction() {
   const user = await getAuthenticatedUser();
-
   const subscription = await getUserSubscription(user.id);
 
-  // Check if user has a valid subscription for portal access
-  if (!subscription || !subscription.stripe_customer_id) {
+  // Validate subscription for portal access
+  if (!subscription?.stripe_customer_id) {
     redirect("/billing?error=no_subscription");
   }
 
-  // For free plan users without any Stripe history, redirect to billing
   if (subscription.plan === "free" && !subscription.stripe_subscription_id) {
     redirect("/billing?error=no_stripe_history");
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
   const portalSession = await createCustomerPortalSession(
     subscription.stripe_customer_id,
-    `${baseUrl}/billing`
+    getAppUrl("/billing")
   );
 
   if (!portalSession.url) {
