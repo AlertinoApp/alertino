@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { UpgradeButton } from "@/components/subscription/upgrade-button";
-import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   Subscription,
   SubscriptionPlan,
@@ -21,6 +20,7 @@ import type {
 } from "@/types/subscription";
 import { User } from "@supabase/supabase-js";
 import { SwitchPlanButton } from "../subscription/switch-plan-button";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
@@ -106,7 +106,7 @@ export function PlanComparison({
   };
 
   const getPrice = (plan: SubscriptionPlan) => {
-    const planConfig = getPlanConfig(plan);
+    const subscriptionConfig = getSubscriptionConfig(plan);
 
     if (plan === "free") {
       return {
@@ -119,13 +119,13 @@ export function PlanComparison({
 
     const isYearly = interval === "year";
     const monthlyEquivalent = isYearly
-      ? Math.round((planConfig.price.yearly / 12) * 100) / 100
-      : planConfig.price.monthly;
+      ? Math.round((subscriptionConfig.pricing.yearly / 12) * 100) / 100
+      : subscriptionConfig.pricing.monthly;
 
     return {
       display: `$${monthlyEquivalent}`,
-      monthly: planConfig.price.monthly,
-      yearly: planConfig.price.yearly,
+      monthly: subscriptionConfig.pricing.monthly,
+      yearly: subscriptionConfig.pricing.yearly,
       monthlyEquivalent,
     };
   };
@@ -133,10 +133,14 @@ export function PlanComparison({
   const getYearlyDiscount = (plan: SubscriptionPlan) => {
     if (plan === "free") return 0;
 
-    const planConfig = getPlanConfig(plan);
+    const subscriptionConfig = getSubscriptionConfig(plan);
     return interval === "year"
       ? Math.round(
-          (1 - planConfig.price.yearly / 12 / planConfig.price.monthly) * 100
+          (1 -
+            subscriptionConfig.pricing.yearly /
+              12 /
+              subscriptionConfig.pricing.monthly) *
+            100
         )
       : 0;
   };
@@ -240,7 +244,8 @@ export function PlanComparison({
             <div className="flex items-center gap-2 text-orange-800">
               <Timer className="w-4 h-4" />
               <span className="text-sm font-medium">
-                You're on a free trial of {getPlanConfig(currentPlan).name}
+                You&apos;re on a free trial of{" "}
+                {getSubscriptionConfig(currentPlan).name}
               </span>
             </div>
             <p className="text-xs text-orange-700 mt-1">
@@ -310,7 +315,7 @@ export function PlanComparison({
         {/* Plans */}
         <div className="space-y-4">
           {plans.map((plan) => {
-            const planConfig = getPlanConfig(plan);
+            const planConfig = getSubscriptionConfig(plan);
             const price = getPrice(plan);
             const yearlyDiscount = getYearlyDiscount(plan);
             const isPopular = plan === "premium";

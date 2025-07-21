@@ -38,13 +38,11 @@ export function SwitchPlanButton({
   interval,
   currentPlan,
   currentInterval,
-  currentStatus = "active",
   isTrialActive = false,
   trialDaysRemaining = null,
   hasUsedTrial = false,
   className,
   onError,
-  onSuccess,
 }: SwitchPlanButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();

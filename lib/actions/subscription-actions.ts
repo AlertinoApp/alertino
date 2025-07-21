@@ -14,8 +14,8 @@ import type {
   SubscriptionInterval,
   TrialInfo,
 } from "@/types/subscription";
-import { getPlanConfig } from "@/lib/stripe/plans";
 import { getAuthenticatedUser } from "./auth-actions";
+import { getSubscriptionConfig } from "../stripe/plans";
 
 function getPriceId(
   plan: SubscriptionPlan,
@@ -25,7 +25,7 @@ function getPriceId(
     throw new Error("Free plan does not have a price ID");
   }
 
-  const planConfig = getPlanConfig(plan);
+  const planConfig = getSubscriptionConfig(plan);
   const priceId =
     interval === "month"
       ? planConfig.stripePriceIds.monthly

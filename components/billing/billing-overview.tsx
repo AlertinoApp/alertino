@@ -18,7 +18,7 @@ import {
 import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
-import { getPlanConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 interface BillingOverviewProps {
   subscription: Subscription | null;
@@ -36,7 +36,7 @@ export function BillingOverview({
   isTrialActive = false,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
-  const planConfig = getPlanConfig(currentPlan);
+  const planConfig = getSubscriptionConfig(currentPlan);
   const planInterval = subscription?.interval || "";
   const subscriptionStatus = subscription?.status || "inactive";
   const currentPeriodEnd = subscription?.current_period_end
@@ -92,8 +92,8 @@ export function BillingOverview({
 
     const price =
       planInterval === "year"
-        ? planConfig.price.yearly
-        : planConfig.price.monthly;
+        ? planConfig.pricing.yearly
+        : planConfig.pricing.monthly;
 
     return (
       <div className="text-right">
@@ -382,7 +382,7 @@ export function BillingOverview({
                     </>
                   ) : (
                     <>
-                      You're currently on a free trial.
+                      You&apos;re currently on a free trial.
                       {trialDaysRemaining && trialDaysRemaining > 0 && (
                         <> You have {trialDaysRemaining} days remaining.</>
                       )}

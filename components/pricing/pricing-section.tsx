@@ -15,7 +15,6 @@ import {
   Sparkles,
   AlertCircle,
 } from "lucide-react";
-import { getPlanConfig } from "@/lib/stripe/plans";
 import type {
   SubscriptionPlan,
   SubscriptionInterval,
@@ -26,6 +25,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { NumberTicker } from "../magicui/number-ticker";
 import { UpgradeButton } from "@/components/subscription/upgrade-button";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 const plans: SubscriptionPlan[] = ["free", "premium", "business"];
 
@@ -51,7 +51,6 @@ export function PricingSection({
   const isLoggedIn = !!user;
   const currentPlan = subscription?.plan || "free";
   const currentInterval = subscription?.interval || "month";
-  const subscriptionStatus = subscription?.status || "inactive";
   const isTrialActive = trialInfo?.isActive || false;
   const trialDaysRemaining = trialInfo?.daysRemaining || null;
   const hasUsedTrial = trialInfo?.hasUsedTrial || false;
@@ -104,7 +103,7 @@ export function PricingSection({
   };
 
   const getPrice = (plan: SubscriptionPlan) => {
-    const planConfig = getPlanConfig(plan);
+    const subscriptionConfig = getSubscriptionConfig(plan);
 
     if (plan === "free") {
       return {
@@ -116,20 +115,24 @@ export function PricingSection({
 
     const isYearly = interval === "year";
     const monthlyEquivalent = isYearly
-      ? Math.round((planConfig.price.yearly / 12) * 100) / 100
-      : planConfig.price.monthly;
+      ? Math.round((subscriptionConfig.pricing.yearly / 12) * 100) / 100
+      : subscriptionConfig.pricing.monthly;
 
     const yearlyDiscount =
       interval === "year"
         ? Math.round(
-            (1 - planConfig.price.yearly / 12 / planConfig.price.monthly) * 100
+            (1 -
+              subscriptionConfig.pricing.yearly /
+                12 /
+                subscriptionConfig.pricing.monthly) *
+              100
           )
         : 0;
 
     return {
       monthlyEquivalent,
       yearlyDiscount,
-      yearly: planConfig.price.yearly,
+      yearly: subscriptionConfig.pricing.yearly,
     };
   };
 
@@ -146,8 +149,8 @@ export function PricingSection({
         return "Get Started Free";
       }
       return hasUsedTrial
-        ? `Get ${getPlanConfig(plan).name}`
-        : `Try ${getPlanConfig(plan).name} Free`;
+        ? `Get ${getSubscriptionConfig(plan).name}`
+        : `Try ${getSubscriptionConfig(plan).name} Free`;
     }
 
     // Handle trial scenarios
@@ -160,7 +163,7 @@ export function PricingSection({
       if (plan === "free") {
         return "Cancel Trial";
       }
-      return `Convert to ${getPlanConfig(plan).name}`;
+      return `Convert to ${getSubscriptionConfig(plan).name}`;
     }
 
     // Handle canceled subscription that's still active
@@ -168,7 +171,7 @@ export function PricingSection({
       if (currentPlan === plan) {
         return "Ending Soon";
       }
-      return `Switch to ${getPlanConfig(plan).name}`;
+      return `Switch to ${getSubscriptionConfig(plan).name}`;
     }
 
     // Regular logged-in scenarios
@@ -182,9 +185,9 @@ export function PricingSection({
         return "Current Plan";
       }
       if (!hasUsedTrial) {
-        return `Start ${getPlanConfig(plan).name} Trial`;
+        return `Start ${getSubscriptionConfig(plan).name} Trial`;
       }
-      return `Upgrade to ${getPlanConfig(plan).name}`;
+      return `Upgrade to ${getSubscriptionConfig(plan).name}`;
     }
 
     // User has premium plan
@@ -413,7 +416,7 @@ export function PricingSection({
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => {
-            const planConfig = getPlanConfig(plan);
+            const planConfig = getSubscriptionConfig(plan);
             const priceData = getPrice(plan);
             const isPopular = plan === "premium";
             const isCurrent = isCurrentPlan(plan);
@@ -521,7 +524,7 @@ export function PricingSection({
                       )}
                     </div>
                     {interval === "year" &&
-                      planConfig.price.monthly > 0 &&
+                      planConfig.pricing.monthly > 0 &&
                       !isTrialPlanCard && (
                         <p className="text-sm text-slate-500 mt-2">
                           Billed ${priceData.yearly} annually

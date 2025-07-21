@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
-import { getPlanConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 export default async function BillingSuccessPage() {
   // Get user data to provide personalized messaging
@@ -38,9 +38,8 @@ export default async function BillingSuccessPage() {
   }
 
   const currentPlan = subscription?.plan || "free";
-  const planConfig = getPlanConfig(currentPlan);
+  const planConfig = getSubscriptionConfig(currentPlan);
   const subscriptionStatus = subscription?.status || "active";
-  const currentInterval = subscription?.interval;
   const hasUsedTrial = previousTrialInfo?.hasUsedTrial || false;
 
   // Determine the type of success based on subscription state
@@ -139,37 +138,6 @@ export default async function BillingSuccessPage() {
   };
 
   const { icon, bgColor } = getIconAndColor();
-
-  const getFeatureHighlights = () => {
-    const features = planConfig.features.slice(0, 3); // Show top 3 features
-    return features;
-  };
-
-  const getNextSteps = () => {
-    switch (context.type) {
-      case "trial_started":
-        return [
-          { text: "Explore all premium features", action: "dashboard" },
-          { text: "Set up your preferences", action: "settings" },
-          { text: "View trial details", action: "billing" },
-        ];
-      case "trial_conversion":
-        return [
-          { text: "Continue where you left off", action: "dashboard" },
-          { text: "Manage your subscription", action: "billing" },
-          { text: "Explore additional features", action: "features" },
-        ];
-      default:
-        return [
-          { text: "Start using premium features", action: "dashboard" },
-          { text: "View billing details", action: "billing" },
-          { text: "Contact support if needed", action: "support" },
-        ];
-    }
-  };
-
-  const nextSteps = getNextSteps();
-  const features = getFeatureHighlights();
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">

@@ -21,7 +21,6 @@ export function SubscriptionAlerts() {
     const success = searchParams.get("success");
     const error = searchParams.get("error");
     const warning = searchParams.get("warning");
-    const reason = searchParams.get("reason");
     const type = searchParams.get("type");
 
     if (success) {
@@ -34,7 +33,7 @@ export function SubscriptionAlerts() {
       setAlert({
         type: "error",
         title: getErrorTitle(error),
-        message: getErrorMessage(error, reason),
+        message: getErrorMessage(error),
       });
     } else if (warning) {
       setAlert({
@@ -110,7 +109,7 @@ export function SubscriptionAlerts() {
     }
   };
 
-  const getErrorMessage = (type: string, reason?: string | null): string => {
+  const getErrorMessage = (type: string): string => {
     switch (type) {
       case "already_subscribed":
         return "You already have an active subscription. Use the manage subscription button to make changes.";

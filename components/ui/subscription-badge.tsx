@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { getSubscriptionConfig } from "@/lib/subscription-utils";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 import { cn } from "@/lib/utils";
 import { SubscriptionPlan } from "@/types/subscription";
 

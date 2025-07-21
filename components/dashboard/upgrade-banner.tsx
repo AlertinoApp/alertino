@@ -22,9 +22,8 @@ export function UpgradeBanner({
   const [isDismissed, setIsDismissed] = useState(false);
 
   const currentPlan = subscription?.plan || "free";
-  const subscriptionStatus = subscription?.status;
   const isTrialActive = trialInfo?.isActive || false;
-  const trialDaysRemaining = trialInfo?.daysRemaining;
+  const trialDaysRemaining = trialInfo?.daysRemaining || 0;
   const hasUsedTrial = trialInfo?.hasUsedTrial || false;
 
   // Check if subscription is effectively active (including grace periods)

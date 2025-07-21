@@ -4,6 +4,7 @@ import {
   SubscriptionStatus,
   SubscriptionInterval,
   TrialInfo,
+  Subscription,
 } from "@/types/subscription";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
@@ -230,7 +231,7 @@ function calculateTrialDates(subscription: Stripe.Subscription) {
 
 function determineTrialStatus(
   subscription: Stripe.Subscription,
-  existingSubscription: any
+  existingSubscription: Subscription
 ): { trialStart: string | null; trialEnd: string | null; trialUsed: boolean } {
   const status = subscription.status as SubscriptionStatus;
   let { trialStart, trialEnd } = calculateTrialDates(subscription);

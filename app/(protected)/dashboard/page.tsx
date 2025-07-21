@@ -4,7 +4,6 @@ import { AlertsSection } from "@/components/dashboard/alerts-section";
 import { FiltersSection } from "@/components/dashboard/filters-section";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 import { Navbar } from "@/components/common/navbar";
-import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function DashboardPage() {

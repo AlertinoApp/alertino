@@ -11,8 +11,8 @@ import type {
   SubscriptionInterval,
 } from "@/types/subscription";
 import { useTransition } from "react";
-import { getPlanConfig } from "@/lib/stripe/plans";
 import { useRouter } from "next/navigation";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 interface UpgradeButtonProps {
   plan: SubscriptionPlan;
@@ -33,7 +33,6 @@ export function UpgradeButton({
   plan,
   interval,
   currentPlan = "free",
-  currentStatus = "active",
   isLoggedIn = false,
   isTrialActive = false,
   trialDaysRemaining = null,
@@ -41,10 +40,9 @@ export function UpgradeButton({
   className,
   size = "default",
   onError,
-  onSuccess,
 }: UpgradeButtonProps) {
   const [isPending, startTransition] = useTransition();
-  const planConfig = getPlanConfig(plan);
+  const planConfig = getSubscriptionConfig(plan);
   const router = useRouter();
 
   const isCurrentPlan = currentPlan === plan;

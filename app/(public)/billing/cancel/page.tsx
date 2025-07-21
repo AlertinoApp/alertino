@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
-import { getPlanConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 export default async function BillingCancelPage() {
   // Get user data to provide personalized messaging
@@ -55,7 +55,7 @@ export default async function BillingCancelPage() {
       return {
         type: "trial_conversion_cancelled",
         title: "Trial Conversion Cancelled",
-        description: `Good news! Your ${getPlanConfig(currentPlan).name} trial is still active.`,
+        description: `Good news! Your ${getSubscriptionConfig(currentPlan).name} trial is still active.`,
         icon: Timer,
         iconColor: "text-orange-600",
         bgColor: "bg-orange-100",
@@ -139,8 +139,8 @@ export default async function BillingCancelPage() {
                 </Badge>
               </div>
               <p className="text-sm text-orange-800">
-                You can continue enjoying {getPlanConfig(currentPlan).name}{" "}
-                features
+                You can continue enjoying{" "}
+                {getSubscriptionConfig(currentPlan).name} features
                 {trialDaysRemaining !== null &&
                   trialDaysRemaining > 0 &&
                   ` for ${trialDaysRemaining} more days`}
