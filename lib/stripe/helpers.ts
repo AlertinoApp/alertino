@@ -3,335 +3,158 @@ import {
   SubscriptionPlan,
   SubscriptionStatus,
   SubscriptionInterval,
+  TrialInfo,
+  Subscription,
 } from "@/types/subscription";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
+
+// Constants
+const TRIAL_DAYS = 14;
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+const PLAN_MAPPING: Record<string, SubscriptionPlan> = {
+  [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!]: "premium",
+  [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!]: "premium",
+  [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!]: "business",
+  [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!]: "business",
+};
+
+// Helper functions
 function mapStripePlanToSubscriptionPlan(priceId: string): SubscriptionPlan {
-  const planMapping: Record<string, SubscriptionPlan> = {
-    [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!]: "premium",
-    [process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!]: "premium",
-    [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!]: "business",
-    [process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!]: "business",
-  };
-
-  return planMapping[priceId] || "free";
+  return PLAN_MAPPING[priceId] || "free";
 }
 
-function getPriceIdFromPlanAndInterval(
-  plan: SubscriptionPlan,
-  interval: SubscriptionInterval
-): string | null {
-  // Guard clause: free plan doesn't have a price ID
-  if (plan === "free") {
-    return null;
-  }
-
-  const priceMapping: Record<string, string> = {
-    premium_month: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
-    premium_year: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!,
-    business_month: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
-    business_year: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!,
-  };
-
-  const key = `${plan}_${interval}`;
-  const priceId = priceMapping[key];
-
-  if (!priceId) {
-    throw new Error(
-      `No price ID found for plan: ${plan}, interval: ${interval}`
-    );
-  }
-
-  return priceId;
+function timestampToDate(timestamp: number): Date {
+  return new Date(timestamp * 1000);
 }
 
-export async function updateSubscriptionPlan(
-  subscriptionId: string,
-  newPlan: SubscriptionPlan,
-  newInterval: SubscriptionInterval
-) {
-  try {
-    console.log(
-      `Updating subscription ${subscriptionId} to ${newPlan} (${newInterval})`
-    );
+function calculateDaysRemaining(endDate: Date): number {
+  const now = new Date();
+  const diffTime = endDate.getTime() - now.getTime();
+  return Math.ceil(diffTime / MILLISECONDS_PER_DAY);
+}
 
-    // Get the new price ID (null for free plan)
-    const newPriceId = getPriceIdFromPlanAndInterval(newPlan, newInterval);
+// Database operations
+export async function getUserSubscription(userId: string) {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
 
-    // Handle free plan: cancel subscription at period end
-    if (!newPriceId && newPlan === "free") {
-      console.log("Cancelling subscription for free plan downgrade");
+  const { data: subscription, error } = await supabaseAdmin
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-      const updatedSubscription = await stripe.subscriptions.update(
-        subscriptionId,
-        {
-          cancel_at_period_end: true,
-        }
-      );
-
-      // Update our database to reflect the cancellation
-      const { error } = await supabaseAdmin
-        .from("subscriptions")
-        .update({
-          cancel_at_period_end: true,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("stripe_subscription_id", subscriptionId);
-
-      if (error) {
-        console.error("Error updating subscription for cancellation:", error);
-        throw error;
-      }
-
-      console.log(
-        `✅ Subscription scheduled for cancellation: ${subscriptionId}`
-      );
-      return updatedSubscription;
-    }
-
-    // Handle paid plans: update subscription price
-    if (newPriceId) {
-      // Retrieve current subscription
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-      if (!subscription) {
-        throw new Error("Subscription not found");
-      }
-
-      // Get current subscription item
-      const currentItem = subscription.items.data[0];
-
-      if (!currentItem) {
-        throw new Error("No subscription items found");
-      }
-
-      // Update the subscription with the new price
-      const updatedSubscription = await stripe.subscriptions.update(
-        subscriptionId,
-        {
-          items: [
-            {
-              id: currentItem.id,
-              price: newPriceId,
-            },
-          ],
-          // Prorate the charges
-          proration_behavior: "create_prorations",
-          // Ensure subscription is not cancelled if it was previously set to cancel
-          cancel_at_period_end: false,
-        }
-      );
-
-      console.log(`✅ Subscription updated successfully: ${subscriptionId}`);
-
-      // The webhook will handle updating our database when Stripe sends the subscription.updated event
-      return updatedSubscription;
-    }
-
-    throw new Error("Invalid plan configuration");
-  } catch (error) {
-    console.error("Error updating subscription:", error);
+  if (error && error.code !== "PGRST116") {
     throw error;
   }
+
+  return subscription;
 }
 
-export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
-  try {
-    console.log(`Cancelling subscription at period end: ${subscriptionId}`);
+async function createStripeCustomer(
+  userId: string,
+  userEmail: string
+): Promise<string> {
+  const customer = await stripe.customers.create({
+    email: userEmail,
+    metadata: { supabase_user_id: userId },
+  });
 
-    const updatedSubscription = await stripe.subscriptions.update(
-      subscriptionId,
-      {
-        cancel_at_period_end: true,
-      }
-    );
-
-    const { error } = await supabaseAdmin
-      .from("subscriptions")
-      .update({
-        cancel_at_period_end: true,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("stripe_subscription_id", subscriptionId);
-
-    if (error) {
-      console.error("Error updating subscription for cancellation:", error);
-      throw error;
-    }
-
-    console.log(
-      `✅ Subscription scheduled for cancellation: ${subscriptionId}`
-    );
-    return updatedSubscription;
-  } catch (error) {
-    console.error("Error cancelling subscription:", error);
-    throw error;
-  }
-}
-
-export async function handleCheckoutSessionCompleted(
-  session: Stripe.Checkout.Session
-) {
-  try {
-    const subscriptionId = session.subscription as string;
-    const customerId = session.customer as string;
-    const userId = session.metadata?.user_id;
-
-    console.log("Processing checkout session completed:", {
-      sessionId: session.id,
-      subscriptionId,
-      customerId,
-      userId,
-    });
-
-    if (!subscriptionId || !customerId || !userId) {
-      console.error("Missing required data in checkout session:", {
-        subscriptionId,
-        customerId,
-        userId,
-      });
-      throw new Error("Missing required data in checkout session");
-    }
-
-    // Retrieve the full subscription details from Stripe
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
-      expand: ["items.data.price"],
-    });
-
-    const subscriptionItem = subscription.items.data[0];
-    const price = subscriptionItem.price;
-
-    if (!price) {
-      throw new Error("No price found in subscription");
-    }
-
-    const plan = mapStripePlanToSubscriptionPlan(price.id);
-    const interval = price.recurring?.interval as "month" | "year";
-
-    // Use transaction to ensure data consistency
-    const { error } = await supabaseAdmin.from("subscriptions").upsert(
-      {
-        user_id: userId,
-        stripe_subscription_id: subscription.id,
-        stripe_customer_id: customerId,
-        plan,
-        status: subscription.status as SubscriptionStatus,
-        interval,
-        current_period_start: new Date(
-          subscriptionItem.current_period_start * 1000
-        ).toISOString(),
-        current_period_end: new Date(
-          subscriptionItem.current_period_end * 1000
-        ).toISOString(),
-        cancel_at_period_end: subscription.cancel_at_period_end,
-        canceled_at: null, // Reset canceled_at for new subscription
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
-
-    if (error) {
-      console.error("Error upserting subscription:", error);
-      throw error;
-    }
-
-    console.log(
-      `✅ Subscription created/updated for user ${userId} - Plan: ${plan}, Status: ${subscription.status}`
-    );
-  } catch (error) {
-    console.error("Error handling checkout.session.completed:", error);
-    throw error; // Re-throw to ensure webhook fails and gets retried
-  }
-}
-
-export async function handleSubscriptionChange(
-  subscription: Stripe.Subscription
-) {
-  try {
-    const subscriptionId = subscription.id;
-    const status = subscription.status as SubscriptionStatus;
-
-    console.log("Processing subscription change:", {
-      subscriptionId,
-      status,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    });
-
-    // Find the subscription record in our database
-    const { data: subRecord, error: fetchError } = await supabaseAdmin
-      .from("subscriptions")
-      .select("user_id, plan, status")
-      .eq("stripe_subscription_id", subscriptionId)
-      .single();
-
-    if (fetchError || !subRecord) {
-      console.error(
-        "Subscription not found in database:",
-        subscriptionId,
-        fetchError
-      );
-      throw new Error(`Subscription not found: ${subscriptionId}`);
-    }
-
-    const subscriptionItem = subscription.items.data[0];
-    const price = subscriptionItem.price;
-    const plan = mapStripePlanToSubscriptionPlan(price.id);
-    const interval = price.recurring?.interval as "month" | "year";
-
-    // Determine final plan and status
-    let finalPlan: SubscriptionPlan;
-    let finalStatus: SubscriptionStatus;
-
-    if (status === "canceled") {
-      finalPlan = "free";
-      finalStatus = "canceled";
-    } else {
-      finalPlan = plan;
-      finalStatus = status;
-    }
-
-    const updateData = {
-      plan: finalPlan,
-      status: finalStatus,
-      interval: status === "canceled" ? null : interval,
-      current_period_start: new Date(
-        subscriptionItem.current_period_start * 1000
-      ).toISOString(),
-      current_period_end: new Date(
-        subscriptionItem.current_period_end * 1000
-      ).toISOString(),
-      cancel_at_period_end: subscription.cancel_at_period_end,
-      canceled_at: subscription.canceled_at
-        ? new Date(subscription.canceled_at * 1000).toISOString()
-        : null,
+  await supabaseAdmin.from("subscriptions").upsert(
+    {
+      user_id: userId,
+      stripe_customer_id: customer.id,
+      plan: "free",
+      status: "incomplete" as SubscriptionStatus,
+      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    };
+    },
+    { onConflict: "user_id" }
+  );
 
-    const { error: updateError } = await supabaseAdmin
-      .from("subscriptions")
-      .update(updateData)
-      .eq("stripe_subscription_id", subscriptionId);
-
-    if (updateError) {
-      console.error("Error updating subscription:", updateError);
-      throw updateError;
-    }
-
-    console.log(
-      `✅ Subscription updated for user ${subRecord.user_id}: ${finalPlan} (${finalStatus})`
-    );
-  } catch (error) {
-    console.error("Error handling subscription change:", error);
-    throw error; // Re-throw to ensure webhook fails and gets retried
-  }
+  return customer.id;
 }
 
+async function getOrCreateCustomer(
+  userId: string,
+  userEmail: string
+): Promise<string> {
+  const subscription = await getUserSubscription(userId);
+
+  if (subscription?.stripe_customer_id) {
+    try {
+      await stripe.customers.retrieve(subscription.stripe_customer_id);
+      return subscription.stripe_customer_id;
+    } catch {
+      console.warn("Customer not found in Stripe, creating new one");
+    }
+  }
+
+  return createStripeCustomer(userId, userEmail);
+}
+
+// Trial and subscription status
+export async function getUserTrialInfo(userId: string): Promise<TrialInfo> {
+  const subscription = await getUserSubscription(userId);
+
+  const defaultTrialInfo = {
+    isEligible: true,
+    daysRemaining: null,
+    isActive: false,
+    hasUsedTrial: false,
+  };
+
+  if (!subscription) {
+    return defaultTrialInfo;
+  }
+
+  const hasUsedTrial = subscription.trial_used || false;
+  const isActive = subscription.status === "trialing";
+
+  let daysRemaining = null;
+  if (isActive && subscription.trial_end) {
+    daysRemaining = calculateDaysRemaining(new Date(subscription.trial_end));
+  }
+
+  return {
+    isEligible: !hasUsedTrial,
+    daysRemaining,
+    isActive,
+    hasUsedTrial,
+  };
+}
+
+export async function hasActiveSubscription(userId: string): Promise<boolean> {
+  const subscription = await getUserSubscription(userId);
+  if (!subscription) return false;
+
+  const now = new Date();
+
+  // Check trial status
+  if (subscription.status === "trialing" && subscription.trial_end) {
+    return now < new Date(subscription.trial_end);
+  }
+
+  // Check active subscription
+  if (subscription.status === "active") {
+    if (subscription.cancel_at_period_end && subscription.current_period_end) {
+      return now < new Date(subscription.current_period_end);
+    }
+    return true;
+  }
+
+  return false;
+}
+
+// Stripe operations
 export async function createCheckoutSession({
   priceId,
   userId,
@@ -345,153 +168,216 @@ export async function createCheckoutSession({
   successUrl: string;
   cancelUrl: string;
 }) {
-  try {
-    console.log("Creating checkout session for user:", userId);
+  const customerId = await getOrCreateCustomer(userId, userEmail);
+  const trialInfo = await getUserTrialInfo(userId);
 
-    // Validate price ID
-    if (!priceId) {
-      throw new Error("Price ID is required");
-    }
-
-    // Get or create customer
-    const customerId = await getOrCreateCustomer(userId, userEmail);
-
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: "subscription",
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
+    customer: customerId,
+    line_items: [{ price: priceId, quantity: 1 }],
+    mode: "subscription",
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+    metadata: { user_id: userId },
+    subscription_data: {
       metadata: { user_id: userId },
-      subscription_data: {
-        metadata: { user_id: userId },
-      },
-      allow_promotion_codes: true,
-    });
-
-    console.log("✅ Checkout session created:", session.id);
-    return session;
-  } catch (error) {
-    console.error("Error creating checkout session:", error);
-    throw error;
-  }
-}
-
-async function getOrCreateCustomer(
-  userId: string,
-  userEmail: string
-): Promise<string> {
-  // First check if user already has a subscription with customer ID
-  const { data: subscription } = await supabaseAdmin
-    .from("subscriptions")
-    .select("stripe_customer_id")
-    .eq("user_id", userId)
-    .single();
-
-  if (subscription?.stripe_customer_id) {
-    // Verify the customer exists in Stripe
-    try {
-      await stripe.customers.retrieve(subscription.stripe_customer_id);
-      return subscription.stripe_customer_id;
-    } catch (error) {
-      console.warn("Customer not found in Stripe, creating new one:", error);
-    }
-  }
-
-  // Create new Stripe customer
-  const customer = await stripe.customers.create({
-    email: userEmail,
-    metadata: { supabase_user_id: userId },
-  });
-
-  // Upsert subscription record with customer ID
-  const { error } = await supabaseAdmin.from("subscriptions").upsert(
-    {
-      user_id: userId,
-      stripe_customer_id: customer.id,
-      plan: "free",
-      status: "incomplete" as SubscriptionStatus,
-      updated_at: new Date().toISOString(),
+      ...(trialInfo.isEligible && { trial_period_days: TRIAL_DAYS }),
     },
-    { onConflict: "user_id" }
-  );
+    allow_promotion_codes: true,
+  };
 
-  if (error) {
-    console.error("Error upserting subscription with new customer ID:", error);
-    throw error;
-  }
-
-  return customer.id;
+  return stripe.checkout.sessions.create(sessionParams);
 }
 
 export async function createCustomerPortalSession(
   customerId: string,
   returnUrl: string
 ) {
-  try {
-    if (!customerId) {
-      throw new Error("Customer ID is required");
+  if (!customerId) {
+    throw new Error("Customer ID is required");
+  }
+
+  await stripe.customers.retrieve(customerId);
+
+  return stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: returnUrl,
+  });
+}
+
+// Trial logic helpers
+function calculateTrialDates(subscription: Stripe.Subscription) {
+  let trialStart = null;
+  let trialEnd = null;
+
+  if (subscription.trial_start && subscription.trial_start > 0) {
+    trialStart = timestampToDate(subscription.trial_start).toISOString();
+  }
+
+  if (subscription.trial_end && subscription.trial_end > 0) {
+    trialEnd = timestampToDate(subscription.trial_end).toISOString();
+
+    // Calculate trial start if missing
+    if (!trialStart) {
+      const trialEndDate = new Date(trialEnd);
+      const trialStartDate = new Date(
+        trialEndDate.getTime() - TRIAL_DAYS * MILLISECONDS_PER_DAY
+      );
+      trialStart = trialStartDate.toISOString();
     }
+  }
 
-    // Verify customer exists
-    await stripe.customers.retrieve(customerId);
+  return { trialStart, trialEnd };
+}
 
-    const session = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: returnUrl,
-    });
+function determineTrialStatus(
+  subscription: Stripe.Subscription,
+  existingSubscription: Subscription
+): { trialStart: string | null; trialEnd: string | null; trialUsed: boolean } {
+  const status = subscription.status as SubscriptionStatus;
+  let { trialStart, trialEnd } = calculateTrialDates(subscription);
+  let trialUsed = false;
 
-    return session;
-  } catch (error) {
-    console.error("Error creating portal session:", error);
+  // Mark trial as used if we have trial dates or status is trialing
+  if (trialStart || trialEnd || status === "trialing") {
+    trialUsed = true;
+  }
+
+  // Handle trialing status without timestamps
+  if (status === "trialing" && !trialStart && !trialEnd) {
+    const now = new Date();
+    trialStart = now.toISOString();
+    trialEnd = new Date(
+      now.getTime() + TRIAL_DAYS * MILLISECONDS_PER_DAY
+    ).toISOString();
+    trialUsed = true;
+  }
+
+  // Preserve existing trial status
+  if (existingSubscription?.trial_used) {
+    trialUsed = true;
+    if (!trialStart) trialStart = existingSubscription.trial_start;
+    if (!trialEnd) trialEnd = existingSubscription.trial_end;
+  }
+
+  return { trialStart, trialEnd, trialUsed };
+}
+
+// Database update operations
+async function updateSubscriptionInDatabase(
+  subscription: Stripe.Subscription,
+  userId: string,
+  customerId?: string
+) {
+  const subscriptionItem = subscription.items.data[0];
+  const price = subscriptionItem.price;
+
+  if (!price) {
+    throw new Error("No price found in subscription");
+  }
+
+  const plan = mapStripePlanToSubscriptionPlan(price.id);
+  const interval = price.recurring?.interval as SubscriptionInterval;
+  const status = subscription.status as SubscriptionStatus;
+
+  // Get existing subscription and determine trial status
+  const existingSubscription = await getUserSubscription(userId);
+  const { trialStart, trialEnd, trialUsed } = determineTrialStatus(
+    subscription,
+    existingSubscription
+  );
+
+  const updateData = {
+    user_id: userId,
+    stripe_subscription_id: subscription.id,
+    plan: status === "canceled" ? "free" : plan,
+    status,
+    interval: status === "canceled" ? null : interval,
+    current_period_start: timestampToDate(
+      subscriptionItem.current_period_start
+    ).toISOString(),
+    current_period_end: timestampToDate(
+      subscriptionItem.current_period_end
+    ).toISOString(),
+    trial_start: trialStart,
+    trial_end: trialEnd,
+    trial_used: trialUsed,
+    cancel_at_period_end: subscription.cancel_at_period_end,
+    canceled_at: subscription.canceled_at
+      ? timestampToDate(subscription.canceled_at).toISOString()
+      : null,
+    updated_at: new Date().toISOString(),
+    ...(customerId && { stripe_customer_id: customerId }),
+  };
+
+  console.log("Updating subscription:", {
+    userId,
+    subscriptionId: subscription.id,
+    status,
+    plan: updateData.plan,
+    trialUsed,
+  });
+
+  const { error } = await supabaseAdmin
+    .from("subscriptions")
+    .upsert(updateData, { onConflict: "user_id" });
+
+  if (error) {
+    console.error("Error updating subscription:", error);
     throw error;
   }
 }
 
-export async function getUserSubscription(userId: string) {
-  if (!userId) {
-    throw new Error("User ID is required");
+// Webhook handlers
+export async function handleCheckoutSessionCompleted(
+  session: Stripe.Checkout.Session
+) {
+  const subscriptionId = session.subscription as string;
+  const customerId = session.customer as string;
+  const userId = session.metadata?.user_id;
+
+  if (!subscriptionId || !customerId || !userId) {
+    throw new Error("Missing required data in checkout session");
   }
 
-  const { data: subscription, error } = await supabaseAdmin
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["items.data.price"],
+  });
+
+  await updateSubscriptionInDatabase(subscription, userId, customerId);
+}
+
+export async function handleSubscriptionChange(
+  subscription: Stripe.Subscription
+) {
+  const { data: subRecord } = await supabaseAdmin
     .from("subscriptions")
-    .select("*")
-    .eq("user_id", userId)
+    .select("user_id")
+    .eq("stripe_subscription_id", subscription.id)
     .single();
 
-  if (error && error.code !== "PGRST116") {
-    // PGRST116 is "not found"
-    throw error;
+  if (!subRecord) {
+    console.error(`Subscription not found: ${subscription.id}`);
+    return;
   }
 
-  return subscription;
+  await updateSubscriptionInDatabase(subscription, subRecord.user_id);
 }
 
-export async function hasActiveSubscription(userId: string): Promise<boolean> {
-  try {
-    const subscription = await getUserSubscription(userId);
+// Simple webhook handlers
+export async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
+  console.log("Payment succeeded:", invoice.id);
+}
 
-    if (!subscription) return false;
+export async function handlePaymentFailed(invoice: Stripe.Invoice) {
+  console.log("Payment failed:", invoice.id);
+}
 
-    const activeStatuses: SubscriptionStatus[] = ["active", "trialing"];
-    const hasActiveStatus = activeStatuses.includes(subscription.status);
+export async function handleTrialWillEnd(subscription: Stripe.Subscription) {
+  console.log("Trial will end:", subscription.id);
+}
 
-    // If subscription is set to cancel at period end, it's still active until then
-    if (subscription.cancel_at_period_end && subscription.status === "active") {
-      const periodEnd = new Date(subscription.current_period_end);
-      const now = new Date();
-      return now < periodEnd;
-    }
-
-    return hasActiveStatus;
-  } catch (error) {
-    console.error("Error checking active subscription:", error);
-    return false;
-  }
+export async function handleCheckoutSessionExpired(
+  session: Stripe.Checkout.Session
+) {
+  console.log("Checkout session expired:", session.id);
 }

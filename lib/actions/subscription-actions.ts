@@ -4,45 +4,57 @@ import {
   createCheckoutSession,
   createCustomerPortalSession,
   getUserSubscription,
-  hasActiveSubscription,
-  updateSubscriptionPlan,
-  cancelSubscriptionAtPeriodEnd,
+  getUserTrialInfo,
 } from "@/lib/stripe/helpers";
 import { redirect } from "next/navigation";
 import { createClientForServer } from "@/app/utils/supabase/server";
 import type {
   SubscriptionPlan,
   SubscriptionInterval,
+  TrialInfo,
 } from "@/types/subscription";
+import { getAuthenticatedUser } from "./auth-actions";
+import { getSubscriptionConfig } from "../stripe/plans";
 
-export async function createCheckoutSessionAction(priceId: string) {
-  const supabase = await createClientForServer();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/login");
+function getPriceId(
+  plan: SubscriptionPlan,
+  interval: SubscriptionInterval
+): string {
+  if (plan === "free") {
+    throw new Error("Free plan does not have a price ID");
   }
 
-  // Validate price ID
+  const planConfig = getSubscriptionConfig(plan);
+  const priceId =
+    interval === "month"
+      ? planConfig.stripePriceIds.monthly
+      : planConfig.stripePriceIds.yearly;
+
+  if (!priceId) {
+    throw new Error(`No price ID found for ${plan} ${interval}`);
+  }
+
+  return priceId;
+}
+
+function getAppUrl(path: string = ""): string {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  return `${baseUrl}${path}`;
+}
+
+export async function createCheckoutSessionAction(priceId: string) {
   if (!priceId) {
     throw new Error("Price ID is required");
   }
 
-  // Check if user already has an active subscription
-  const isActive = await hasActiveSubscription(session.user.id);
-  if (isActive) {
-    // Redirect to billing instead of creating new checkout
-    redirect("/billing?error=already_subscribed");
-  }
+  const user = await getAuthenticatedUser();
 
   const checkoutSession = await createCheckoutSession({
     priceId,
-    userId: session.user.id,
-    userEmail: session.user.email!,
-    successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing/success`,
-    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing/cancel`,
+    userId: user.id,
+    userEmail: user.email!,
+    successUrl: getAppUrl("/billing/success"),
+    cancelUrl: getAppUrl("/billing/cancel"),
   });
 
   if (!checkoutSession.url) {
@@ -52,77 +64,49 @@ export async function createCheckoutSessionAction(priceId: string) {
   redirect(checkoutSession.url);
 }
 
-export async function switchSubscriptionPlanAction(
+export async function subscribeToAction(
   plan: SubscriptionPlan,
   interval: SubscriptionInterval
 ) {
-  const supabase = await createClientForServer();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const priceId = getPriceId(plan, interval);
+  await createCheckoutSessionAction(priceId);
+}
 
-  if (!session) {
-    redirect("/login");
+export async function getTrialInfoAction(): Promise<TrialInfo> {
+  try {
+    const supabase = await createClientForServer();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return {
+        isEligible: false,
+        daysRemaining: null,
+        isActive: false,
+        hasUsedTrial: false,
+      };
+    }
+
+    return await getUserTrialInfo(session.user.id);
+  } catch (error) {
+    console.error("Error getting trial info:", error);
+    return {
+      isEligible: false,
+      daysRemaining: null,
+      isActive: false,
+      hasUsedTrial: false,
+    };
   }
-
-  const userId = session.user.id;
-
-  // Get current subscription
-  const subscription = await getUserSubscription(userId);
-
-  if (!subscription || !subscription.stripe_subscription_id) {
-    throw new Error("No active subscription found");
-  }
-
-  // Check if this is actually a change
-  if (subscription.plan === plan && subscription.interval === interval) {
-    redirect("/billing?error=same_plan");
-    return;
-  }
-
-  // Handle free plan differently - just cancel the subscription
-  if (plan === "free") {
-    await cancelSubscriptionAtPeriodEnd(subscription.stripe_subscription_id);
-    redirect("/billing?success=downgrade_scheduled");
-    return;
-  }
-
-  // Handle paid plans - update subscription
-  await updateSubscriptionPlan(
-    subscription.stripe_subscription_id,
-    plan,
-    interval
-  );
-
-  // Redirect with success message
-  redirect("/billing?success=plan_changed");
 }
 
 export async function createPortalSessionAction() {
-  const supabase = await createClientForServer();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/login");
-  }
-
-  const userId = session.user.id;
-
-  // Get subscription data
-  const subscription = await getUserSubscription(userId);
-
-  if (!subscription?.stripe_customer_id) {
-    // If no customer ID, redirect to pricing
-    redirect("/pricing?error=no_subscription");
-  }
-
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const user = await getAuthenticatedUser();
+  const subscription = await getUserSubscription(user.id);
 
   const portalSession = await createCustomerPortalSession(
     subscription.stripe_customer_id,
-    `${baseUrl}/billing`
+    getAppUrl("/billing")
   );
 
   if (!portalSession.url) {
@@ -130,4 +114,8 @@ export async function createPortalSessionAction() {
   }
 
   redirect(portalSession.url);
+}
+
+export async function managePlanAction() {
+  await createPortalSessionAction();
 }

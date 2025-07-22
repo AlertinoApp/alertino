@@ -1,11 +1,59 @@
-import { PlanConfig, SubscriptionPlan } from "@/types/subscription";
+import { SubscriptionPlan } from "@/types/subscription";
+import { Crown, Zap, Building2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
+export interface SubscriptionConfig {
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  color: {
+    bg: string;
+    text: string;
+    border: string;
+    accent: string;
+  };
+  pricing: {
+    monthly: number;
+    yearly: number;
+  };
+  stripePriceIds: {
+    monthly: string;
+    yearly: string;
+  };
+  features: string[];
+  limits: {
+    maxFilters: number;
+    cities: string;
+    notifications: string;
+    support: string;
+  };
+  trialDays: number;
+}
+
+const TRIAL_DAYS = 14;
+
+export const SUBSCRIPTION_CONFIGS: Record<
+  SubscriptionPlan,
+  SubscriptionConfig
+> = {
   free: {
     name: "Free",
     description: "Perfect for getting started with apartment hunting",
-    price: { monthly: 0, yearly: 0 },
-    stripePriceIds: { monthly: "", yearly: "" },
+    icon: Zap,
+    color: {
+      bg: "bg-gray-50",
+      text: "text-gray-700",
+      border: "border-gray-200",
+      accent: "text-gray-600",
+    },
+    pricing: {
+      monthly: 0,
+      yearly: 0,
+    },
+    stripePriceIds: {
+      monthly: "",
+      yearly: "",
+    },
     features: [
       "Up to 3 active filters",
       "Email notifications",
@@ -13,12 +61,28 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Warsaw & Krakow coverage",
       "Community support",
     ],
-    maxFilters: 3,
+    limits: {
+      maxFilters: 3,
+      cities: "Warsaw & Krakow",
+      notifications: "Standard speed",
+      support: "Community",
+    },
+    trialDays: 0,
   },
   premium: {
     name: "Premium",
     description: "For serious apartment hunters who need more flexibility",
-    price: { monthly: 19, yearly: 190 },
+    icon: Crown,
+    color: {
+      bg: "bg-blue-50",
+      text: "text-blue-700",
+      border: "border-blue-200",
+      accent: "text-blue-600",
+    },
+    pricing: {
+      monthly: 19,
+      yearly: 190,
+    },
     stripePriceIds: {
       monthly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
       yearly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!,
@@ -33,12 +97,28 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Export alerts to CSV",
       "Custom notification schedules",
     ],
-    maxFilters: -1, // unlimited
+    limits: {
+      maxFilters: -1,
+      cities: "All Polish cities",
+      notifications: "5-minute delay",
+      support: "Priority",
+    },
+    trialDays: TRIAL_DAYS,
   },
   business: {
     name: "Business",
     description: "For real estate professionals and leading agencies",
-    price: { monthly: 49, yearly: 490 },
+    icon: Building2,
+    color: {
+      bg: "bg-purple-50",
+      text: "text-purple-700",
+      border: "border-purple-200",
+      accent: "text-purple-600",
+    },
+    pricing: {
+      monthly: 49,
+      yearly: 490,
+    },
     stripePriceIds: {
       monthly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
       yearly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!,
@@ -53,10 +133,35 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
       "Custom integrations",
       "SLA guarantee",
     ],
-    maxFilters: -1, // unlimited
+    limits: {
+      maxFilters: -1,
+      cities: "All Polish cities",
+      notifications: "Instant",
+      support: "Dedicated manager",
+    },
+    trialDays: TRIAL_DAYS,
   },
 };
 
-export function getPlanConfig(plan: SubscriptionPlan): PlanConfig {
-  return PLAN_CONFIGS[plan];
+export function getSubscriptionConfig(
+  plan: SubscriptionPlan
+): SubscriptionConfig {
+  const config = SUBSCRIPTION_CONFIGS[plan];
+  if (!config) {
+    throw new Error(`Invalid subscription plan: ${plan}`);
+  }
+  return config;
+}
+
+export function getUpgradeMessage(currentPlan: SubscriptionPlan): string {
+  switch (currentPlan) {
+    case "free":
+      return "Upgrade to Premium for unlimited filters and priority notifications";
+    case "premium":
+      return "Upgrade to Business for team collaboration and API access";
+    case "business":
+      return "You're on our highest tier plan";
+    default:
+      return "Upgrade your plan for more features";
+  }
 }

@@ -3,6 +3,19 @@
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
 
+export async function getAuthenticatedUser() {
+  const supabase = await createClientForServer();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  return session.user;
+}
+
 export async function getUserAndSubscription() {
   const supabase = await createClientForServer();
 

@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Play,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-} from "lucide-react";
+import { Play, Clock } from "lucide-react";
 import { generateAlerts } from "@/lib/actions/alert-actions";
 import { toast } from "sonner";
 

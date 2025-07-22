@@ -4,10 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  getSubscriptionConfig,
-  getUpgradeMessage,
-} from "@/lib/subscription-utils";
-import {
   Settings,
   ArrowRight,
   Sparkles,
@@ -25,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { Subscription, SubscriptionPlan } from "@/types/subscription";
+import { getSubscriptionConfig, getUpgradeMessage } from "@/lib/stripe/plans";
 
 interface SubscriptionSectionProps {
   subscription?: Subscription;

@@ -8,7 +8,7 @@ import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import type { Filter } from "@/types/filters";
 import type { SubscriptionPlan } from "@/types/subscription";
-import { getPlanConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 interface FiltersSectionProps {
   filters: Filter[];
@@ -30,8 +30,8 @@ export function FiltersSection({
     (filter) => filter.is_active === false
   );
 
-  const planConfig = getPlanConfig(currentPlan);
-  const maxFilters = planConfig.maxFilters;
+  const subscriptionConfig = getSubscriptionConfig(currentPlan);
+  const maxFilters = subscriptionConfig.limits.maxFilters;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
   return (
@@ -64,8 +64,8 @@ export function FiltersSection({
           </p>
           {maxFilters !== -1 && (
             <p className="text-xs text-gray-500 mt-1">
-              {filtersCount} of {maxFilters} filters used ({planConfig.name}{" "}
-              plan)
+              {filtersCount} of {maxFilters} filters used (
+              {subscriptionConfig.name} plan)
             </p>
           )}
         </div>

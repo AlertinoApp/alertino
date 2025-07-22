@@ -21,12 +21,13 @@ export function SubscriptionAlerts() {
     const success = searchParams.get("success");
     const error = searchParams.get("error");
     const warning = searchParams.get("warning");
+    const type = searchParams.get("type");
 
     if (success) {
       setAlert({
         type: "success",
-        title: getSuccessTitle(success),
-        message: getSuccessMessage(success),
+        title: getSuccessTitle(success, type),
+        message: getSuccessMessage(success, type),
       });
     } else if (error) {
       setAlert({
@@ -43,35 +44,45 @@ export function SubscriptionAlerts() {
     }
   }, [searchParams]);
 
-  const getSuccessTitle = (type: string): string => {
-    switch (type) {
+  const getSuccessTitle = (success: string, type?: string | null): string => {
+    if (type) {
+      switch (type) {
+        case "trial_started":
+          return "Trial Started";
+        case "subscription_created":
+          return "Subscription Activated";
+        case "plan_changed":
+          return "Plan Updated";
+        default:
+          return "Success";
+      }
+    }
+
+    switch (success) {
       case "true":
         return "Subscription Activated";
-      case "downgrade_scheduled":
-        return "Downgrade Scheduled";
-      case "downgraded_to_free":
-        return "Downgraded to Free";
-      case "subscription_updated":
-        return "Subscription Updated";
-      case "subscription_cancelled":
-        return "Subscription Cancelled";
       default:
         return "Success";
     }
   };
 
-  const getSuccessMessage = (type: string): string => {
-    switch (type) {
+  const getSuccessMessage = (success: string, type?: string | null): string => {
+    if (type) {
+      switch (type) {
+        case "trial_started":
+          return "Your free trial has started! You now have access to premium features for 14 days.";
+        case "subscription_created":
+          return "Your subscription has been activated successfully! Welcome to premium features.";
+        case "plan_changed":
+          return "Your subscription has been updated successfully in Stripe.";
+        default:
+          return "Operation completed successfully.";
+      }
+    }
+
+    switch (success) {
       case "true":
         return "Your subscription has been activated successfully!";
-      case "downgrade_scheduled":
-        return "Your subscription will be downgraded to free at the end of your current billing period.";
-      case "downgraded_to_free":
-        return "Your subscription has been downgraded to the free plan.";
-      case "subscription_updated":
-        return "Your subscription has been updated successfully.";
-      case "subscription_cancelled":
-        return "You'll continue to have access until the end of your billing period.";
       default:
         return "Operation completed successfully.";
     }
@@ -81,14 +92,16 @@ export function SubscriptionAlerts() {
     switch (type) {
       case "already_subscribed":
         return "Already Subscribed";
-      case "no_subscription":
-        return "No Subscription Found";
-      case "downgrade_failed":
-        return "Downgrade Failed";
-      case "checkout_failed":
-        return "Payment Failed";
       case "invalid_plan":
         return "Invalid Plan";
+      case "no_subscription":
+        return "No Subscription Found";
+      case "no_stripe_history":
+        return "No Billing History";
+      case "portal_session_failed":
+        return "Portal Access Failed";
+      case "checkout_failed":
+        return "Payment Failed";
       case "stripe_error":
         return "Payment Error";
       default:
@@ -99,19 +112,21 @@ export function SubscriptionAlerts() {
   const getErrorMessage = (type: string): string => {
     switch (type) {
       case "already_subscribed":
-        return "You already have an active subscription. Please manage your subscription through the billing portal.";
+        return "You already have an active subscription. Use the manage subscription button to make changes.";
+      case "invalid_plan":
+        return "Invalid subscription plan selected. Please choose a valid plan.";
       case "no_subscription":
         return "No subscription found. Please select a plan to get started.";
-      case "downgrade_failed":
-        return "Failed to downgrade your subscription. Please try again or contact support.";
+      case "no_stripe_history":
+        return "No billing history found. Please subscribe to a plan first to access subscription management.";
+      case "portal_session_failed":
+        return "Unable to access subscription management. Please try again or contact support.";
       case "checkout_failed":
-        return "Payment processing failed. Please try again.";
-      case "invalid_plan":
-        return "Invalid subscription plan selected.";
+        return "Payment processing failed. Please check your payment method and try again.";
       case "stripe_error":
-        return "A payment processing error occurred. Please try again.";
+        return "A payment processing error occurred. Please try again or use a different payment method.";
       default:
-        return "An error occurred. Please try again or contact support.";
+        return "An error occurred. Please try again or contact support if the problem persists.";
     }
   };
 
@@ -123,6 +138,10 @@ export function SubscriptionAlerts() {
         return "Payment Failed";
       case "trial_ending":
         return "Trial Ending Soon";
+      case "trial_active":
+        return "Trial Active";
+      case "past_due":
+        return "Payment Overdue";
       default:
         return "Notice";
     }
@@ -131,11 +150,15 @@ export function SubscriptionAlerts() {
   const getWarningMessage = (type: string): string => {
     switch (type) {
       case "subscription_ending":
-        return "Your subscription will end soon. Renew to continue enjoying premium features.";
+        return "Your subscription will end soon. Use the manage subscription button to reactivate.";
       case "payment_failed":
         return "Your last payment failed. Please update your payment method to avoid service interruption.";
       case "trial_ending":
-        return "Your trial period is ending soon. Upgrade to continue using premium features.";
+        return "Your trial period is ending soon. Subscribe to continue using premium features.";
+      case "trial_active":
+        return "You're currently on a trial. Manage your subscription through Stripe when ready to upgrade.";
+      case "past_due":
+        return "Your subscription payment is overdue. Please update your payment method immediately.";
       default:
         return "Please note the following information about your subscription.";
     }
@@ -148,6 +171,8 @@ export function SubscriptionAlerts() {
     url.searchParams.delete("success");
     url.searchParams.delete("error");
     url.searchParams.delete("warning");
+    url.searchParams.delete("reason");
+    url.searchParams.delete("type");
     router.replace(url.pathname + (url.search ? `?${url.searchParams}` : ""));
   };
 
