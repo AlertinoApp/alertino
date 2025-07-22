@@ -15,11 +15,9 @@ import {
   Gift,
   CreditCard,
 } from "lucide-react";
-import Link from "next/link";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
-import { PlanButton } from "@/components/subscription/plan-button";
 
 interface BillingOverviewProps {
   subscription: Subscription | null;
@@ -34,9 +32,7 @@ export function BillingOverview({
   subscription,
   filtersCount,
   trialDaysRemaining = null,
-  hasUsedTrial = false,
   isTrialActive = false,
-  userId,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
   const planConfig = getSubscriptionConfig(currentPlan);
@@ -317,7 +313,7 @@ export function BillingOverview({
                   Free Trial Active
                 </div>
                 <p className="text-emerald-800 text-sm">
-                  {trialEnd ? (
+                  {trialEnd && (
                     <>
                       Your trial ends on {trialEnd.toLocaleDateString()}.
                       {trialDaysRemaining && trialDaysRemaining > 0 && (
@@ -333,13 +329,6 @@ export function BillingOverview({
                           Upgrade now to continue enjoying premium features
                           without interruption.
                         </>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      You&apos;re currently on a free trial.
-                      {trialDaysRemaining && trialDaysRemaining > 0 && (
-                        <> You have {trialDaysRemaining} days remaining.</>
                       )}
                     </>
                   )}

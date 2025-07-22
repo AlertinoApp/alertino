@@ -3,15 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Check,
-  Crown,
-  Building2,
-  Zap,
-  Timer,
-  Sparkles,
-  AlertCircle,
-} from "lucide-react";
+import { Check, Crown, Building2, Zap, Timer, AlertCircle } from "lucide-react";
 import type {
   SubscriptionPlan,
   SubscriptionInterval,
@@ -218,7 +210,7 @@ export function PricingSection({
               onClick={() =>
                 setInterval(interval === "month" ? "year" : "month")
               }
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 interval === "year" ? "bg-blue-600" : "bg-slate-200"
               }`}
               aria-label={`Switch to ${interval === "month" ? "yearly" : "monthly"} billing`}
@@ -349,11 +341,6 @@ export function PricingSection({
                             {plan === "free" ? "" : "/month"}
                           </span>
                         </>
-                      )}
-                      {priceData.yearlyDiscount > 0 && !isTrialPlanCard && (
-                        <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
-                          Save {priceData.yearlyDiscount}%
-                        </Badge>
                       )}
                     </div>
                     {interval === "year" &&

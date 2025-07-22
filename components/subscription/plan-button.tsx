@@ -7,7 +7,6 @@ import {
   Settings,
   XCircle,
   LogIn,
-  Timer,
   Loader2,
 } from "lucide-react";
 import { useTransition } from "react";
@@ -44,6 +43,7 @@ export function PlanButton({
   interval,
   currentPlan = "free",
   currentInterval = "month",
+  currentStatus = "active",
   isLoggedIn = false,
   isTrialActive = false,
   trialDaysRemaining = null,
@@ -289,7 +289,11 @@ export function PlanButton({
     }
 
     // Current paid plan styling - disabled and green
-    if (isCurrentConfiguration() && plan !== "free") {
+    if (
+      isCurrentConfiguration() &&
+      plan !== "free" &&
+      currentStatus === "active"
+    ) {
       return "bg-green-100 border-green-300 text-green-700 hover:bg-green-100 hover:text-green-700 cursor-default";
     }
 

@@ -4,7 +4,6 @@ import {
   createCheckoutSession,
   createCustomerPortalSession,
   getUserSubscription,
-  hasActiveSubscription,
   getUserTrialInfo,
 } from "@/lib/stripe/helpers";
 import { redirect } from "next/navigation";

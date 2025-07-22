@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   XCircle,
   ArrowLeft,
@@ -105,8 +104,8 @@ export default async function BillingCancelPage() {
   const ContextIcon = context.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <Card className="max-w-lg w-full">
+    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4 overflow-hidden">
+      <Card className="max-w-lg w-full my-4">
         <CardHeader className="text-center pb-4">
           <div
             className={`w-20 h-20 mx-auto mb-6 ${context.bgColor} rounded-full flex items-center justify-center`}
@@ -132,11 +131,6 @@ export default async function BillingCancelPage() {
                     Your trial is still active!
                   </span>
                 </div>
-                <Badge className="bg-orange-100 text-orange-800 border-orange-300">
-                  {trialDaysRemaining !== null
-                    ? `${trialDaysRemaining} days left`
-                    : "Active"}
-                </Badge>
               </div>
               <p className="text-sm text-orange-800">
                 You can continue enjoying{" "}
@@ -147,37 +141,6 @@ export default async function BillingCancelPage() {
                 . Convert to a paid plan anytime to continue after your trial
                 ends.
               </p>
-            </div>
-          )}
-
-          {/* Benefits Reminder */}
-          {(context.type === "trial_conversion_cancelled" ||
-            context.type === "trial_start_cancelled" ||
-            context.type === "upgrade_cancelled") && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <div className="flex items-center mb-3">
-                <Crown className="w-5 h-5 text-blue-600 mr-2" />
-                <h3 className="font-semibold text-blue-900">
-                  {isTrialActive
-                    ? "Already enjoying Premium?"
-                    : "Still interested in Premium?"}
-                </h3>
-              </div>
-              <p className="text-sm text-blue-800 mb-4">
-                {isTrialActive
-                  ? "Convert your trial to continue enjoying premium features without interruption."
-                  : hasUsedTrial
-                    ? "Upgrade anytime to unlock all premium features."
-                    : "Premium features are waiting for you. Start your free trial with no commitment required."}
-              </p>
-              <ul className="space-y-1 text-sm text-blue-800">
-                {!hasUsedTrial && !isTrialActive && (
-                  <li>• 14-day free trial</li>
-                )}
-                <li>• Cancel anytime</li>
-                <li>• No setup fees</li>
-                <li>• Immediate access to all features</li>
-              </ul>
             </div>
           )}
 

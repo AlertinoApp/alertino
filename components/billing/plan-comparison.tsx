@@ -428,6 +428,7 @@ export function PlanComparison({
                   interval={interval}
                   currentPlan={currentPlan}
                   currentInterval={currentInterval}
+                  currentStatus={currentStatus}
                   isLoggedIn={isLoggedIn}
                   isCancelled={cancelAtPeriodEnd}
                   isTrialActive={isTrialActive}

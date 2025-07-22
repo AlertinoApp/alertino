@@ -42,7 +42,6 @@ export default async function BillingSuccessPage() {
   const subscriptionStatus = subscription?.status || "active";
   const hasUsedTrial = previousTrialInfo?.hasUsedTrial || false;
 
-  // Determine the type of success based on subscription state
   const getSuccessContext = () => {
     if (!subscription) {
       return {
@@ -140,8 +139,8 @@ export default async function BillingSuccessPage() {
   const { icon, bgColor } = getIconAndColor();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <Card className="max-w-lg w-full shadow-sm border-0">
+    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4 overflow-hidden">
+      <Card className="max-w-lg w-full py-0 my-4">
         <CardContent className="p-8 text-center">
           {/* Success Icon */}
           <div
