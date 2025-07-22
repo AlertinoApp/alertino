@@ -152,6 +152,10 @@ export function PlanComparison({
     plan: SubscriptionPlan,
     checkInterval: SubscriptionInterval
   ) => {
+    // For free plan, ignore interval since free doesn't have intervals
+    if (plan === "free" && currentPlan === "free") {
+      return true;
+    }
     return currentPlan === plan && currentInterval === checkInterval;
   };
 
@@ -166,8 +170,7 @@ export function PlanComparison({
       return (
         <Badge className="bg-orange-600 text-white border-orange-600 text-xs font-medium flex items-center gap-1">
           <Timer className="w-3 h-3" />
-          Trial{" "}
-          {trialDaysRemaining !== null && `(${trialDaysRemaining} days left)`}
+          Trial Active
         </Badge>
       );
     }
@@ -190,7 +193,13 @@ export function PlanComparison({
     }
 
     // Show current plan badge if it's the exact plan and interval and active
-    if (isExactMatch && !isTrialActive && isSubscriptionActive()) {
+    // Only show for paid plans, not free plan
+    if (
+      isExactMatch &&
+      !isTrialActive &&
+      isSubscriptionActive() &&
+      plan !== "free"
+    ) {
       return (
         <Badge className="bg-green-600 text-white border-green-600 text-xs font-medium">
           Current Plan
@@ -228,7 +237,12 @@ export function PlanComparison({
           ? "border-amber-500 bg-amber-50/50"
           : "border-red-500 bg-red-50/50";
       }
-      return "border-green-500 bg-green-50/50";
+      // Only apply green styling for paid plans, not free plan
+      if (plan !== "free") {
+        return "border-green-500 bg-green-50/50";
+      }
+      // Free plan current state - just normal border, no green
+      return "border-slate-200 hover:border-slate-300 hover:shadow-sm";
     }
 
     if (isPopular) {

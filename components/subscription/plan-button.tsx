@@ -59,6 +59,10 @@ export function PlanButton({
 
   // Helper functions for state detection
   const isCurrentConfiguration = () => {
+    // For free plan, ignore interval since free doesn't have intervals
+    if (plan === "free" && currentPlan === "free") {
+      return true;
+    }
     return currentPlan === plan && currentInterval === interval;
   };
 
@@ -67,6 +71,10 @@ export function PlanButton({
   };
 
   const isIntervalChange = () => {
+    // Free plan doesn't have intervals, so no interval changes possible
+    if (plan === "free" || currentPlan === "free") {
+      return false;
+    }
     return currentPlan === plan && currentInterval !== interval;
   };
 
@@ -258,14 +266,30 @@ export function PlanButton({
 
   const isButtonDisabled = () => {
     if (isPending) return true;
-    // Current plan is disabled (but not cancelled plans)
-    if (isCurrentConfiguration()) return true;
+    // Current plan is disabled (but not cancelled plans), except for free plan when not logged in
+    if (isCurrentConfiguration()) {
+      // Allow free plan button to be active when user is not logged in
+      if (plan === "free" && !isLoggedIn) {
+        return false;
+      }
+      return true;
+    }
     return false;
   };
 
   const getConsistentStyling = () => {
-    // Current plan styling - disabled and green
-    if (isCurrentConfiguration()) {
+    // Current free plan styling when logged in - disabled and outline (not green)
+    if (isCurrentConfiguration() && plan === "free" && isLoggedIn) {
+      return "cursor-default";
+    }
+
+    // Free plan when not logged in - should be active/clickable
+    if (plan === "free" && !isLoggedIn) {
+      return "";
+    }
+
+    // Current paid plan styling - disabled and green
+    if (isCurrentConfiguration() && plan !== "free") {
       return "bg-green-100 border-green-300 text-green-700 hover:bg-green-100 hover:text-green-700 cursor-default";
     }
 
@@ -274,7 +298,7 @@ export function PlanButton({
       return "hover:bg-red-50 hover:border-red-300 hover:text-red-700";
     }
 
-    // Free plan - always outlined
+    // Free plan - always outlined, no special styling for not logged in users
     if (plan === "free") {
       return "";
     }

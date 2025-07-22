@@ -248,13 +248,9 @@ export function BillingOverview({
             {billingDate && (
               <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                 <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      effectivelyOnTrial ? "bg-emerald-50" : "bg-blue-50"
-                    }`}
-                  >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
                     {effectivelyOnTrial ? (
-                      <Timer className="w-4 h-4 text-emerald-600" />
+                      <Timer className="w-4 h-4 text-blue-600" />
                     ) : (
                       <Calendar className="w-4 h-4 text-blue-600" />
                     )}
