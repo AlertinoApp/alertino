@@ -2,7 +2,6 @@ import { PricingSection } from "@/components/pricing/pricing-section";
 import { PricingFAQ } from "@/components/pricing/pricing-faq";
 import { LandingFooter } from "@/components/landing/landing-footer";
 import { getUserAndSubscription } from "@/lib/actions/auth-actions";
-import { getUserTrialInfo } from "@/lib/stripe/helpers";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function PricingPage() {
