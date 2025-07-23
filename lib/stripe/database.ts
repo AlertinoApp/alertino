@@ -1,13 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
-import type { SubscriptionStatus } from "@/types/subscription";
-import type { SubscriptionData } from "./types";
+import type { Subscription } from "@/types/subscription";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function getUserSubscription(userId: string) {
+export async function getUserSubscription(
+  userId: string
+): Promise<Subscription> {
   if (!userId) {
     throw new Error("User ID is required");
   }
@@ -34,7 +35,7 @@ export async function createSubscriptionRecord(data: {
       user_id: data.userId,
       stripe_customer_id: data.stripeCustomerId,
       plan: "free",
-      status: "incomplete" as SubscriptionStatus,
+      status: "incomplete",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
@@ -43,32 +44,15 @@ export async function createSubscriptionRecord(data: {
 }
 
 export async function updateSubscription(
-  data: SubscriptionData
+  subscription: Partial<Subscription> & {
+    user_id: string;
+    stripe_subscription_id: string;
+  }
 ): Promise<void> {
   const updateData = {
-    user_id: data.userId,
-    stripe_subscription_id: data.stripeSubscriptionId,
-    plan: data.plan,
-    status: data.status,
-    interval: data.interval,
-    current_period_start: data.currentPeriodStart,
-    current_period_end: data.currentPeriodEnd,
-    trial_start: data.trialStart,
-    trial_end: data.trialEnd,
-    trial_used: data.trialUsed,
-    cancel_at_period_end: data.cancelAtPeriodEnd,
-    canceled_at: data.canceledAt,
+    ...subscription,
     updated_at: new Date().toISOString(),
-    ...(data.stripeCustomerId && { stripe_customer_id: data.stripeCustomerId }),
   };
-
-  console.log("Updating subscription:", {
-    userId: data.userId,
-    subscriptionId: data.stripeSubscriptionId,
-    status: data.status,
-    plan: data.plan,
-    trialUsed: data.trialUsed,
-  });
 
   const { error } = await supabaseAdmin
     .from("subscriptions")

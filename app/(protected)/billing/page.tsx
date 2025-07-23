@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { BillingOverview } from "@/components/billing/billing-overview";
 import { PlanComparison } from "@/components/billing/plan-comparison";
 import { Navbar } from "@/components/common/navbar";
-import { SubscriptionAlerts } from "@/components/subscription/subscription-alert";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function BillingPage() {
@@ -67,8 +66,6 @@ export default async function BillingPage() {
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
-              <SubscriptionAlerts />
-
               <BillingOverview
                 subscription={subscription}
                 filtersCount={filtersCount}

@@ -38,7 +38,7 @@ export async function createCheckoutSession({
 }
 
 export async function createCustomerPortalSession(
-  customerId: string,
+  customerId: string | null,
   returnUrl: string
 ) {
   if (!customerId) {

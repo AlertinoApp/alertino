@@ -4,8 +4,8 @@ import { determineTrialStatus } from "./trial-logic";
 import type {
   SubscriptionStatus,
   SubscriptionInterval,
+  Subscription,
 } from "@/types/subscription";
-import type { SubscriptionData } from "./types";
 import type Stripe from "stripe";
 
 export async function processSubscriptionUpdate(
@@ -31,24 +31,27 @@ export async function processSubscriptionUpdate(
     existingSubscription
   );
 
-  const subscriptionData: SubscriptionData = {
-    userId,
-    stripeSubscriptionId: subscription.id,
-    stripeCustomerId: customerId,
+  const subscriptionData: Partial<Subscription> & {
+    user_id: string;
+    stripe_subscription_id: string;
+  } = {
+    user_id: userId,
+    stripe_subscription_id: subscription.id,
+    stripe_customer_id: customerId,
     plan: status === "canceled" ? "free" : plan,
     status,
     interval: status === "canceled" ? null : interval,
-    currentPeriodStart: timestampToDate(
+    current_period_start: timestampToDate(
       subscriptionItem.current_period_start
     ).toISOString(),
-    currentPeriodEnd: timestampToDate(
+    current_period_end: timestampToDate(
       subscriptionItem.current_period_end
     ).toISOString(),
-    trialStart,
-    trialEnd,
-    trialUsed,
-    cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    canceledAt: subscription.canceled_at
+    trial_start: trialStart,
+    trial_end: trialEnd,
+    trial_used: trialUsed,
+    cancel_at_period_end: subscription.cancel_at_period_end,
+    canceled_at: subscription.canceled_at
       ? timestampToDate(subscription.canceled_at).toISOString()
       : null,
   };
