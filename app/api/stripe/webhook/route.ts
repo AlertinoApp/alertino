@@ -1,12 +1,13 @@
 import { stripe } from "@/lib/stripe/config";
 import {
   handleCheckoutSessionCompleted,
-  handleSubscriptionChange,
+  handleCheckoutSessionExpired,
   handlePaymentFailed,
   handlePaymentSucceeded,
+  handleSubscriptionChange,
   handleTrialWillEnd,
-  handleCheckoutSessionExpired,
-} from "@/lib/stripe/helpers";
+} from "@/lib/stripe/webhooks";
+
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 

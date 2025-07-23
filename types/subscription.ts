@@ -25,7 +25,7 @@ export interface Subscription {
   trial_used: boolean;
   created_at: string;
   updated_at: string;
-  canceled_at: string;
+  canceled_at: string | null;
 }
 
 export interface PlanConfig {

@@ -219,19 +219,6 @@ export function UpgradeBanner({
                 >
                   {bannerContext.title}
                 </h3>
-                {bannerContext.type === "trial_ending" &&
-                  trialDaysRemaining !== null && (
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs">
-                      {trialDaysRemaining}{" "}
-                      {trialDaysRemaining === 1 ? "day" : "days"} left
-                    </Badge>
-                  )}
-                {bannerContext.type === "trial_active" &&
-                  trialDaysRemaining !== null && (
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs">
-                      {trialDaysRemaining} days remaining
-                    </Badge>
-                  )}
               </div>
               <p
                 className={`${bannerContext.iconColor.replace("600", "800")} text-sm leading-relaxed`}

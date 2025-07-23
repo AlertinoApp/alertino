@@ -14,6 +14,7 @@ import {
   Timer,
   Gift,
   CreditCard,
+  Star,
 } from "lucide-react";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
@@ -32,6 +33,7 @@ export function BillingOverview({
   subscription,
   filtersCount,
   trialDaysRemaining = null,
+  hasUsedTrial = false,
   isTrialActive = false,
 }: BillingOverviewProps) {
   const currentPlan = subscription?.plan || "free";
@@ -64,6 +66,14 @@ export function BillingOverview({
 
   // Check if we have Stripe subscription data
   const hasStripeSubscription = Boolean(subscription?.stripe_subscription_id);
+
+  // Check if user is on free plan and hasn't used trial
+  const isFreeWithoutTrial =
+    currentPlan === "free" && !hasUsedTrial && !effectivelyOnTrial;
+
+  // Check if user is on free plan and has used trial
+  const isFreeWithUsedTrial =
+    currentPlan === "free" && hasUsedTrial && !effectivelyOnTrial;
 
   const getPlanIcon = () => {
     switch (currentPlan) {
@@ -108,8 +118,8 @@ export function BillingOverview({
     // Handle trial status first
     if (effectivelyOnTrial) {
       return (
-        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium">
-          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />
+        <Badge className="bg-orange-50 text-orange-700 border-orange-200 font-medium">
+          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1.5" />
           Free Trial
         </Badge>
       );
@@ -136,13 +146,6 @@ export function BillingOverview({
     }
 
     switch (subscriptionStatus) {
-      case "active":
-        return (
-          <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />
-            Active
-          </Badge>
-        );
       case "past_due":
         return (
           <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-medium">
@@ -159,8 +162,8 @@ export function BillingOverview({
         );
       case "incomplete_expired":
         return (
-          <Badge className="bg-red-50 text-red-700 border-red-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5" />
+          <Badge className="bg-red-50 text-yellow-700 border-yellow-200 font-medium">
+            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5" />
             Setup Expired
           </Badge>
         );
@@ -180,8 +183,9 @@ export function BillingOverview({
         );
       default:
         return (
-          <Badge className="bg-slate-50 text-slate-600 border-slate-200 font-medium">
-            Free Plan
+          <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
+            Active
           </Badge>
         );
     }
@@ -196,6 +200,9 @@ export function BillingOverview({
     }
     if (subscriptionStatus === "canceled" && isEffectivelyActive()) {
       return "Access Until";
+    }
+    if (currentPlan === "free") {
+      return "Billing Status";
     }
     return "Next Billing";
   };
@@ -239,51 +246,51 @@ export function BillingOverview({
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Subscription Details */}
-        {(billingDate || currentPlan !== "free") && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {billingDate && (
-              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
-                    {effectivelyOnTrial ? (
-                      <Timer className="w-4 h-4 text-blue-600" />
-                    ) : (
-                      <Calendar className="w-4 h-4 text-blue-600" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-slate-900 text-sm">
-                      {getBillingDateLabel()}
-                    </div>
-                    <div className="text-slate-600 text-sm">
-                      {billingDate.toLocaleDateString("en-US", {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
+                {effectivelyOnTrial ? (
+                  <Timer className="w-4 h-4 text-blue-600" />
+                ) : currentPlan === "free" ? (
+                  <Calendar className="w-4 h-4 text-slate-400" />
+                ) : (
+                  <Calendar className="w-4 h-4 text-blue-600" />
+                )}
+              </div>
+              <div>
+                <div className="font-medium text-slate-900 text-sm">
+                  {getBillingDateLabel()}
+                </div>
+                <div className="text-slate-600 text-sm">
+                  {billingDate
+                    ? billingDate.toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
-                  <Users className="w-4 h-4 text-emerald-600" />
-                </div>
-                <div>
-                  <div className="font-medium text-slate-900 text-sm">
-                    Active Filters
-                  </div>
-                  <div className="text-slate-600 text-sm">
-                    {filtersCount} {currentPlan === "free" ? "/ 3" : ""}
-                  </div>
+                      })
+                    : "No billing required"}
                 </div>
               </div>
             </div>
           </div>
-        )}
+
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+                <Users className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <div className="font-medium text-slate-900 text-sm">
+                  Active Filters
+                </div>
+                <div className="text-slate-600 text-sm">
+                  {filtersCount} {currentPlan === "free" ? "/ 3" : ""}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Manage Subscription (Stripe Portal) */}
         {hasStripeSubscription && (
@@ -301,18 +308,60 @@ export function BillingOverview({
           </div>
         )}
 
-        {/* Status Alerts */}
-        {effectivelyOnTrial && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+        {/* Free Plan - No Trial Used */}
+        {isFreeWithoutTrial && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Gift className="w-4 h-4 text-emerald-600" />
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Star className="w-4 h-4 text-blue-600" />
               </div>
               <div>
-                <div className="font-medium text-emerald-900 mb-1">
+                <div className="font-medium text-blue-900 mb-1">
+                  Free Trial Available
+                </div>
+                <p className="text-blue-800 text-sm">
+                  Start your 14-day free trial to unlock unlimited filters,
+                  advanced analytics, and priority support. No credit card
+                  required.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Free Plan - Trial Already Used */}
+        {isFreeWithUsedTrial && (
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Crown className="w-4 h-4 text-purple-600" />
+              </div>
+              <div>
+                <div className="font-medium text-purple-900 mb-1">
+                  Upgrade to Premium
+                </div>
+                <p className="text-purple-800 text-sm">
+                  You&apos;ve experienced our premium features during your
+                  trial. Upgrade now to regain access to unlimited filters and
+                  advanced features.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Status Alerts */}
+        {effectivelyOnTrial && (
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Gift className="w-4 h-4 text-orange-600" />
+              </div>
+              <div>
+                <div className="font-medium text-orange-900 mb-1">
                   Free Trial Active
                 </div>
-                <p className="text-emerald-800 text-sm">
+                <p className="text-orange-800 text-sm">
                   {trialEnd && (
                     <>
                       Your trial ends on {trialEnd.toLocaleDateString()}.
