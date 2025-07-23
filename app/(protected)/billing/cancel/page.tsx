@@ -21,90 +21,93 @@ import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 export default async function BillingCancelPage() {
-  // Get user data to provide personalized messaging
   const supabase = await createClientForServer();
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  let trialInfo = null;
-  let subscription = null;
-  let isLoggedIn = false;
-
-  if (session) {
-    isLoggedIn = true;
-    try {
-      [trialInfo, subscription] = await Promise.all([
-        getUserTrialInfo(session.user.id),
-        getUserSubscription(session.user.id),
-      ]);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
+  // Must be authenticated to reach cancel page
+  if (!session) {
+    throw new Error("Not authenticated");
   }
 
-  const isTrialActive = trialInfo?.isActive || false;
-  const trialDaysRemaining = trialInfo?.daysRemaining || null;
-  const hasUsedTrial = trialInfo?.hasUsedTrial || false;
-  const currentPlan = subscription?.plan || "free";
+  let subscription = null;
+  let previousTrialInfo = null;
 
-  // Determine the context of the cancellation
+  try {
+    [subscription, previousTrialInfo] = await Promise.all([
+      getUserSubscription(session.user.id),
+      getUserTrialInfo(session.user.id),
+    ]);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+
+  const currentPlan = subscription?.plan || "free";
+  const planConfig = getSubscriptionConfig(currentPlan);
+  const subscriptionStatus = subscription?.status || "active";
+  const hasUsedTrial = previousTrialInfo?.hasUsedTrial || false;
+  const isTrialActive = subscriptionStatus === "trialing";
+
   const getPageContext = () => {
+    // Trial conversion cancelled
     if (isTrialActive) {
       return {
         type: "trial_conversion_cancelled",
         title: "Trial Conversion Cancelled",
-        description: `Good news! Your ${getSubscriptionConfig(currentPlan).name} trial is still active.`,
+        description: `Good news! Your ${planConfig.name} trial is still active.`,
         icon: Timer,
         iconColor: "text-orange-600",
         bgColor: "bg-orange-100",
       };
-    } else if (!isLoggedIn) {
-      return {
-        type: "guest_checkout_cancelled",
-        title: "Payment Cancelled",
-        description:
-          "No worries! You can try again anytime or continue exploring our features.",
-        icon: XCircle,
-        iconColor: "text-gray-600",
-        bgColor: "bg-gray-100",
-      };
-    } else if (currentPlan === "free" && hasUsedTrial) {
-      return {
-        type: "upgrade_cancelled",
-        title: "Upgrade Cancelled",
-        description: "You can upgrade to a premium plan anytime you're ready.",
-        icon: XCircle,
-        iconColor: "text-gray-600",
-        bgColor: "bg-gray-100",
-      };
-    } else if (currentPlan === "free" && !hasUsedTrial) {
-      return {
-        type: "trial_start_cancelled",
-        title: "Trial Start Cancelled",
-        description:
-          "You're still eligible for a free trial! No credit card required.",
-        icon: Gift,
-        iconColor: "text-blue-600",
-        bgColor: "bg-blue-100",
-      };
-    } else {
+    }
+
+    // Active subscription - plan change cancelled
+    if (subscription && subscriptionStatus === "active") {
       return {
         type: "plan_change_cancelled",
         title: "Plan Change Cancelled",
-        description: "Your current subscription remains unchanged.",
+        description: `Your current ${planConfig.name} subscription remains unchanged.`,
         icon: CheckCircle,
         iconColor: "text-green-600",
         bgColor: "bg-green-100",
       };
     }
+
+    // Free plan - upgrade cancelled
+    if (!subscription || currentPlan === "free") {
+      if (hasUsedTrial) {
+        return {
+          type: "upgrade_cancelled",
+          title: "Upgrade Cancelled",
+          description:
+            "You can upgrade to a premium plan anytime you're ready.",
+          icon: XCircle,
+          iconColor: "text-gray-600",
+          bgColor: "bg-gray-100",
+        };
+      } else {
+        return {
+          type: "trial_start_cancelled",
+          title: "Trial Start Cancelled",
+          description: "You're still eligible for a free trial!",
+          icon: Gift,
+          iconColor: "text-blue-600",
+          bgColor: "bg-blue-100",
+        };
+      }
+    }
+
+    // Unexpected state - throw error
+    throw new Error("Invalid billing state");
   };
 
   const context = getPageContext();
   const ContextIcon = context.icon;
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4 overflow-hidden">
+    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4">
       <Card className="max-w-lg w-full my-4">
         <CardHeader className="text-center pb-4">
           <div
@@ -133,13 +136,9 @@ export default async function BillingCancelPage() {
                 </div>
               </div>
               <p className="text-sm text-orange-800">
-                You can continue enjoying{" "}
-                {getSubscriptionConfig(currentPlan).name} features
-                {trialDaysRemaining !== null &&
-                  trialDaysRemaining > 0 &&
-                  ` for ${trialDaysRemaining} more days`}
-                . Convert to a paid plan anytime to continue after your trial
-                ends.
+                You can continue enjoying {planConfig.name} features for your
+                remaining trial period. Convert to a paid plan anytime to
+                continue after your trial ends.
               </p>
             </div>
           )}
@@ -164,7 +163,7 @@ export default async function BillingCancelPage() {
                   </Link>
                 </Button>
               </>
-            ) : isLoggedIn ? (
+            ) : (
               <>
                 <Button
                   asChild
@@ -182,43 +181,8 @@ export default async function BillingCancelPage() {
                   </Link>
                 </Button>
               </>
-            ) : (
-              <>
-                <Button
-                  asChild
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
-                >
-                  <Link href="/pricing">
-                    <Crown className="w-4 h-4 mr-2" />
-                    View Plans
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Home
-                  </Link>
-                </Button>
-              </>
             )}
           </div>
-
-          {/* Plan Comparison CTA */}
-          {isLoggedIn && currentPlan === "free" && !isTrialActive && (
-            <div className="text-center py-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-3">
-                Want to compare all available plans?
-              </p>
-              <Button variant="ghost" size="sm" asChild>
-                <Link
-                  href="/pricing"
-                  className="text-blue-600 hover:text-blue-700 font-medium"
-                >
-                  Compare Plans →
-                </Link>
-              </Button>
-            </div>
-          )}
 
           {/* Support Section */}
           <div className="text-center pt-4 border-t border-gray-200">
@@ -237,25 +201,6 @@ export default async function BillingCancelPage() {
               </Link>
             </Button>
           </div>
-
-          {/* Reassurance Message */}
-          {context.type === "trial_conversion_cancelled" && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm text-green-800 font-medium mb-1">
-                    No worries about cancelling!
-                  </p>
-                  <p className="text-sm text-green-700">
-                    Your trial data and settings are preserved. You can convert
-                    to a paid plan anytime before your trial expires without
-                    losing anything.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

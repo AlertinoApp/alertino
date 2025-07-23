@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, Search, ArrowLeft } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -28,12 +28,6 @@ export default function NotFound() {
               <Link href="/">
                 <Home className="w-4 h-4 mr-2" />
                 Go to Homepage
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full bg-transparent">
-              <Link href="javascript:history.back()">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Go Back
               </Link>
             </Button>
           </div>
