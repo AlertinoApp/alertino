@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { createClientForServer } from "@/app/utils/supabase/server";
-import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getUserSubscription } from "@/lib/stripe/database";
 
 export default async function BillingSuccessPage() {
   const supabase = await createClientForServer();
@@ -30,10 +30,7 @@ export default async function BillingSuccessPage() {
   let subscription = null;
 
   try {
-    [subscription] = await Promise.all([
-      getUserSubscription(session.user.id),
-      getUserTrialInfo(session.user.id),
-    ]);
+    [subscription] = await Promise.all([getUserSubscription(session.user.id)]);
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw error;
@@ -116,7 +113,7 @@ export default async function BillingSuccessPage() {
   const ContextIcon = context.icon;
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <Card className="max-w-lg w-full py-0 my-4">
         <CardContent className="p-8 text-center">
           {/* Success Icon */}

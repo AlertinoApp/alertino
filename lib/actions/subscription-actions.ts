@@ -1,46 +1,20 @@
 "use server";
 
+import { redirect } from "next/navigation";
+import { createClientForServer } from "@/app/utils/supabase/server";
+import { getAuthenticatedUser } from "./auth-actions";
 import {
   createCheckoutSession,
   createCustomerPortalSession,
-  getUserSubscription,
-  getUserTrialInfo,
-} from "@/lib/stripe/helpers";
-import { redirect } from "next/navigation";
-import { createClientForServer } from "@/app/utils/supabase/server";
+} from "@/lib/stripe/checkout";
+import { getUserTrialInfo } from "@/lib/stripe/subscription";
+import { getPriceId, getAppUrl } from "@/lib/stripe/utils";
 import type {
   SubscriptionPlan,
   SubscriptionInterval,
   TrialInfo,
 } from "@/types/subscription";
-import { getAuthenticatedUser } from "./auth-actions";
-import { getSubscriptionConfig } from "../stripe/plans";
-
-function getPriceId(
-  plan: SubscriptionPlan,
-  interval: SubscriptionInterval
-): string {
-  if (plan === "free") {
-    throw new Error("Free plan does not have a price ID");
-  }
-
-  const planConfig = getSubscriptionConfig(plan);
-  const priceId =
-    interval === "month"
-      ? planConfig.stripePriceIds.monthly
-      : planConfig.stripePriceIds.yearly;
-
-  if (!priceId) {
-    throw new Error(`No price ID found for ${plan} ${interval}`);
-  }
-
-  return priceId;
-}
-
-function getAppUrl(path: string = ""): string {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  return `${baseUrl}${path}`;
-}
+import { getUserSubscription } from "../stripe/database";
 
 export async function createCheckoutSessionAction(priceId: string) {
   if (!priceId) {

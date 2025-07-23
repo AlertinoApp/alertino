@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { createClientForServer } from "@/app/utils/supabase/server";
-import { getUserTrialInfo, getUserSubscription } from "@/lib/stripe/helpers";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getUserSubscription } from "@/lib/stripe/database";
+import { getUserTrialInfo } from "@/lib/stripe/subscription";
 
 export default async function BillingCancelPage() {
   const supabase = await createClientForServer();
@@ -107,7 +108,7 @@ export default async function BillingCancelPage() {
   const ContextIcon = context.icon;
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <Card className="max-w-lg w-full my-4">
         <CardHeader className="text-center pb-4">
           <div
