@@ -30,12 +30,6 @@ export default function NotFound() {
                 Go to Homepage
               </Link>
             </Button>
-            <Button asChild variant="outline" className="w-full bg-transparent">
-              <Link href="javascript:history.back()">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Go Back
-              </Link>
-            </Button>
           </div>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
