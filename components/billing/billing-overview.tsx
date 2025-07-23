@@ -341,9 +341,9 @@ export function BillingOverview({
                   Upgrade to Premium
                 </div>
                 <p className="text-purple-800 text-sm">
-                  You've experienced our premium features during your trial.
-                  Upgrade now to regain access to unlimited filters and advanced
-                  features.
+                  You&apos;ve experienced our premium features during your
+                  trial. Upgrade now to regain access to unlimited filters and
+                  advanced features.
                 </p>
               </div>
             </div>
