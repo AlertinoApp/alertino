@@ -73,16 +73,6 @@ export default function ProtectedError({
       };
     }
 
-    if (pathname.includes("/admin")) {
-      return {
-        customTitle: "Admin Panel Error",
-        customDescription:
-          "The admin panel is temporarily unavailable. Please check your permissions and try again.",
-        errorType: "permission" as const,
-        showHomeButton: false,
-      };
-    }
-
     // Default for protected routes
     return {
       customTitle: "Access Error",

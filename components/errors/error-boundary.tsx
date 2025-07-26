@@ -1,4 +1,3 @@
-// components/errors/error-boundary.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +14,10 @@ import {
   ArrowLeft,
   Ban,
   FileX,
+  LucideIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export type ErrorType =
   | "network"
@@ -30,20 +31,12 @@ export type ErrorType =
 export interface ErrorBoundaryProps {
   error: Error & { digest?: string };
   reset: () => void;
-
-  // Override specific error type
   errorType?: ErrorType;
-
-  // Custom content
   customTitle?: string;
   customDescription?: string;
-
-  // Navigation options
   showBackButton?: boolean;
   showHomeButton?: boolean;
   showRetryButton?: boolean;
-
-  // Additional content
   children?: React.ReactNode;
   additionalActions?: React.ReactNode;
 }
@@ -51,9 +44,10 @@ export interface ErrorBoundaryProps {
 interface ErrorScenario {
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: LucideIcon;
+  iconColor: string;
   bgColor: string;
-  iconBg: string;
+  backgroundGradient: string;
   buttonColor: string;
   showRetry: boolean;
 }
@@ -63,9 +57,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Connection Problem",
     description:
       "Unable to connect to our servers. Please check your internet connection.",
-    icon: <Wifi className="w-10 h-10 text-blue-600" />,
-    bgColor: "from-blue-50 via-white to-indigo-50",
-    iconBg: "bg-blue-100",
+    icon: Wifi,
+    iconColor: "text-blue-600",
+    bgColor: "bg-blue-100",
+    backgroundGradient: "from-blue-50 via-white to-indigo-50",
     buttonColor: "bg-blue-600 hover:bg-blue-700",
     showRetry: true,
   },
@@ -73,9 +68,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Access Denied",
     description:
       "You don't have permission to access this resource. Please sign in or contact support.",
-    icon: <Shield className="w-10 h-10 text-orange-600" />,
-    bgColor: "from-orange-50 via-white to-yellow-50",
-    iconBg: "bg-orange-100",
+    icon: Shield,
+    iconColor: "text-orange-600",
+    bgColor: "bg-orange-100",
+    backgroundGradient: "from-orange-50 via-white to-yellow-50",
     buttonColor: "bg-orange-600 hover:bg-orange-700",
     showRetry: false,
   },
@@ -83,18 +79,20 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Server Error",
     description:
       "We're experiencing technical difficulties. Our team has been notified.",
-    icon: <Server className="w-10 h-10 text-red-600" />,
-    bgColor: "from-red-50 via-white to-pink-50",
-    iconBg: "bg-red-100",
+    icon: Server,
+    iconColor: "text-red-600",
+    bgColor: "bg-red-100",
+    backgroundGradient: "from-red-50 via-white to-pink-50",
     buttonColor: "bg-red-600 hover:bg-red-700",
     showRetry: true,
   },
   timeout: {
     title: "Request Timeout",
     description: "The request took too long to complete. Please try again.",
-    icon: <Clock className="w-10 h-10 text-purple-600" />,
-    bgColor: "from-purple-50 via-white to-indigo-50",
-    iconBg: "bg-purple-100",
+    icon: Clock,
+    iconColor: "text-purple-600",
+    bgColor: "bg-purple-100",
+    backgroundGradient: "from-purple-50 via-white to-indigo-50",
     buttonColor: "bg-purple-600 hover:bg-purple-700",
     showRetry: true,
   },
@@ -102,9 +100,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Not Found",
     description:
       "The resource you're looking for doesn't exist or has been moved.",
-    icon: <FileX className="w-10 h-10 text-gray-600" />,
-    bgColor: "from-gray-50 via-white to-slate-50",
-    iconBg: "bg-gray-100",
+    icon: FileX,
+    iconColor: "text-gray-600",
+    bgColor: "bg-gray-100",
+    backgroundGradient: "from-gray-50 via-white to-slate-50",
     buttonColor: "bg-gray-600 hover:bg-gray-700",
     showRetry: false,
   },
@@ -112,9 +111,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Invalid Request",
     description:
       "The request contains invalid data. Please check your input and try again.",
-    icon: <Ban className="w-10 h-10 text-yellow-600" />,
-    bgColor: "from-yellow-50 via-white to-orange-50",
-    iconBg: "bg-yellow-100",
+    icon: Ban,
+    iconColor: "text-yellow-600",
+    bgColor: "bg-yellow-100",
+    backgroundGradient: "from-yellow-50 via-white to-orange-50",
     buttonColor: "bg-yellow-600 hover:bg-yellow-700",
     showRetry: false,
   },
@@ -122,9 +122,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     title: "Something went wrong",
     description:
       "An unexpected error occurred. Please try refreshing the page.",
-    icon: <AlertTriangle className="w-10 h-10 text-red-600" />,
-    bgColor: "from-red-50 via-white to-orange-50",
-    iconBg: "bg-red-100",
+    icon: AlertTriangle,
+    iconColor: "text-red-600",
+    bgColor: "bg-red-100",
+    backgroundGradient: "from-red-50 via-white to-orange-50",
     buttonColor: "bg-red-600 hover:bg-red-700",
     showRetry: true,
   },
@@ -222,16 +223,18 @@ export function ErrorBoundary({
   // Development mode check
   const isDev = process.env.NODE_ENV === "development";
 
+  const ContextIcon = scenario.icon;
+
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br ${scenario.bgColor} flex items-center justify-center p-6`}
+      className={`min-h-screen bg-gradient-to-br ${scenario.backgroundGradient} flex items-center justify-center p-6`}
     >
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardContent className="p-8 text-center">
           <div
-            className={`w-20 h-20 ${scenario.iconBg} rounded-full flex items-center justify-center mx-auto mb-6`}
+            className={`w-20 h-20 ${scenario.bgColor} rounded-full flex items-center justify-center mx-auto mb-6`}
           >
-            {scenario.icon}
+            <ContextIcon className={`w-10 h-10 ${scenario.iconColor}`} />
           </div>
 
           <div className="mb-8">
@@ -300,12 +303,14 @@ export function ErrorBoundary({
 
             {showHomeButton && (
               <Button
-                onClick={() => router.push("/")}
+                asChild
                 variant={shouldShowRetry ? "ghost" : "outline"}
                 className="w-full"
               >
-                <Home className="w-4 h-4 mr-2" />
-                Go to Homepage
+                <Link href="/">
+                  <Home className="w-4 h-4 mr-2" />
+                  Go to Homepage
+                </Link>
               </Button>
             )}
 

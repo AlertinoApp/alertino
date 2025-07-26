@@ -15,29 +15,12 @@ export default function AuthError({
   const pathname = usePathname();
 
   const getRouteConfig = () => {
-    if (pathname.includes("/signin")) {
+    if (pathname.includes("/login")) {
       return {
         customTitle: "Sign In Problem",
         customDescription:
           "We couldn't sign you in. Please check your credentials and try again.",
         errorType: "validation" as const,
-      };
-    }
-
-    if (pathname.includes("/signup")) {
-      return {
-        customTitle: "Sign Up Error",
-        customDescription:
-          "There was a problem creating your account. Please try again.",
-        errorType: "validation" as const,
-      };
-    }
-
-    if (pathname.includes("/forgot-password")) {
-      return {
-        customTitle: "Password Reset Error",
-        customDescription:
-          "Unable to process password reset request. Please try again.",
       };
     }
 
