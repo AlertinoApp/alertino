@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   Ban,
   FileX,
+  LucideIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -43,7 +44,7 @@ export interface ErrorBoundaryProps {
 interface ErrorScenario {
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   iconColor: string;
   bgColor: string;
   backgroundGradient: string;
