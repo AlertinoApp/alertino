@@ -1,11 +1,12 @@
+import { createClientForServer } from "@/app/utils/supabase/server";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getUserSubscription } from "@/lib/stripe/database";
+import { getUserTrialInfo } from "@/lib/stripe/subscription";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+  StatusPageLayout,
+  StatusPageAction,
+  StatusPageBanner,
+} from "@/components/layout/status-page-layout";
 import {
   XCircle,
   ArrowLeft,
@@ -15,11 +16,6 @@ import {
   CheckCircle,
   Gift,
 } from "lucide-react";
-import Link from "next/link";
-import { createClientForServer } from "@/app/utils/supabase/server";
-import { getSubscriptionConfig } from "@/lib/stripe/plans";
-import { getUserSubscription } from "@/lib/stripe/database";
-import { getUserTrialInfo } from "@/lib/stripe/subscription";
 
 export default async function BillingCancelPage() {
   const supabase = await createClientForServer();
@@ -105,105 +101,74 @@ export default async function BillingCancelPage() {
   };
 
   const context = getPageContext();
-  const ContextIcon = context.icon;
+
+  // Configure banner for trial active state
+  const banner: StatusPageBanner | undefined = isTrialActive
+    ? {
+        title: "Your trial is still active!",
+        description: `You can continue enjoying ${planConfig.name} features for your remaining trial period. Convert to a paid plan anytime to continue after your trial ends.`,
+        icon: Timer,
+        variant: "warning",
+      }
+    : undefined;
+
+  // Configure primary actions
+  const primaryActions: StatusPageAction[] = isTrialActive
+    ? [
+        {
+          href: "/billing",
+          label: "Convert Trial",
+          icon: Crown,
+          className: "flex-1 bg-orange-600 hover:bg-orange-700",
+        },
+        {
+          href: "/dashboard",
+          label: "Continue Trial",
+          icon: ArrowLeft,
+          variant: "outline",
+        },
+      ]
+    : [
+        {
+          href: "/pricing",
+          label: hasUsedTrial ? "Upgrade Now" : "Try Premium Free",
+          icon: Crown,
+          className: "flex-1 bg-blue-600 hover:bg-blue-700",
+        },
+        {
+          href: "/billing",
+          label: "Back to Billing",
+          icon: ArrowLeft,
+          variant: "outline",
+        },
+      ];
+
+  // Configure support
+  const supportText =
+    context.type === "trial_conversion_cancelled"
+      ? "Need help with your trial or have questions about converting?"
+      : "Have questions about our plans or need assistance?";
+
+  const supportAction: StatusPageAction = {
+    href: "/contact",
+    label: "Contact Support",
+    icon: HelpCircle,
+    variant: "ghost",
+    className: "text-blue-600 hover:text-blue-700",
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <Card className="max-w-lg w-full my-4">
-        <CardHeader className="text-center pb-4">
-          <div
-            className={`w-20 h-20 mx-auto mb-6 ${context.bgColor} rounded-full flex items-center justify-center`}
-          >
-            <ContextIcon className={`w-10 h-10 ${context.iconColor}`} />
-          </div>
-          <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
-            {context.title}
-          </CardTitle>
-          <CardDescription className="text-lg text-gray-600">
-            {context.description}
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          {/* Trial Active Banner */}
-          {isTrialActive && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <Timer className="w-5 h-5 text-orange-600 mr-2" />
-                  <span className="font-semibold text-orange-900">
-                    Your trial is still active!
-                  </span>
-                </div>
-              </div>
-              <p className="text-sm text-orange-800">
-                You can continue enjoying {planConfig.name} features for your
-                remaining trial period. Convert to a paid plan anytime to
-                continue after your trial ends.
-              </p>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            {isTrialActive ? (
-              <>
-                <Button
-                  asChild
-                  className="flex-1 bg-orange-600 hover:bg-orange-700"
-                >
-                  <Link href="/billing">
-                    <Crown className="w-4 h-4 mr-2" />
-                    Convert Trial
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/dashboard">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Continue Trial
-                  </Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  asChild
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
-                >
-                  <Link href="/pricing">
-                    <Crown className="w-4 h-4 mr-2" />
-                    {hasUsedTrial ? "Upgrade Now" : "Try Premium Free"}
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/billing">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Billing
-                  </Link>
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Support Section */}
-          <div className="text-center pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-600 mb-2">
-              {context.type === "trial_conversion_cancelled"
-                ? "Need help with your trial or have questions about converting?"
-                : "Have questions about our plans or need assistance?"}
-            </p>
-            <Button variant="ghost" size="sm" asChild>
-              <Link
-                href="/contact"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                <HelpCircle className="w-4 h-4 mr-1" />
-                Contact Support
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <StatusPageLayout
+      title={context.title}
+      description={context.description}
+      icon={context.icon}
+      iconColor={context.iconColor}
+      iconBgColor={context.bgColor}
+      backgroundGradient="from-gray-50 via-white to-gray-50"
+      banner={banner}
+      primaryActions={primaryActions}
+      supportText={supportText}
+      supportAction={supportAction}
+    />
   );
 }

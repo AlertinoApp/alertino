@@ -1,6 +1,12 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { createClientForServer } from "@/app/utils/supabase/server";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getUserSubscription } from "@/lib/stripe/database";
+import {
+  StatusPageLayout,
+  StatusPageAction,
+  StatusPageBadge,
+  StatusPageBanner,
+} from "@/components/layout/status-page-layout";
 import {
   CheckCircle,
   ArrowRight,
@@ -11,10 +17,6 @@ import {
   Timer,
   Settings,
 } from "lucide-react";
-import Link from "next/link";
-import { createClientForServer } from "@/app/utils/supabase/server";
-import { getSubscriptionConfig } from "@/lib/stripe/plans";
-import { getUserSubscription } from "@/lib/stripe/database";
 
 export default async function BillingSuccessPage() {
   const supabase = await createClientForServer();
@@ -110,99 +112,79 @@ export default async function BillingSuccessPage() {
   };
 
   const context = getSuccessContext();
-  const ContextIcon = context.icon;
+
+  // Configure badge
+  const badge: StatusPageBadge = isTrialActive
+    ? {
+        label: "Free Trial Active",
+        icon: Timer,
+        className: "bg-orange-100 text-orange-800 border-orange-300",
+      }
+    : {
+        label: "Subscription Active",
+        icon: CheckCircle,
+        className: "bg-green-100 text-green-800 border-green-300",
+      };
+
+  // Configure primary action
+  const primaryActions: StatusPageAction[] = [
+    {
+      href: "/dashboard",
+      label: isTrialActive ? "Start Exploring" : "Go to Dashboard",
+      icon: ArrowRight,
+      className: "w-full bg-blue-600 hover:bg-blue-700 h-12",
+    },
+  ];
+
+  // Configure secondary actions
+  const secondaryActions: StatusPageAction[] = [
+    {
+      href: "/billing",
+      label: "Billing",
+      icon: Settings,
+      variant: "outline",
+      className: "bg-transparent",
+    },
+    isTrialActive
+      ? {
+          href: "/pricing",
+          label: "Plans",
+          icon: Crown,
+          variant: "outline",
+          className: "bg-transparent",
+        }
+      : {
+          href: "/contact",
+          label: "Support",
+          variant: "outline",
+          className: "bg-transparent",
+        },
+  ];
+
+  // Configure trial banner
+  const banner: StatusPageBanner | undefined = isTrialActive
+    ? {
+        title: "Trial Information",
+        description:
+          "Your trial will automatically end in 14 days. You can convert to a paid subscription anytime to continue using premium features without interruption.",
+        icon: Timer,
+        variant: "warning",
+      }
+    : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <Card className="max-w-lg w-full py-0 my-4">
-        <CardContent className="p-8 text-center">
-          {/* Success Icon */}
-          <div
-            className={`w-20 h-20 ${context.bgColor} rounded-full flex items-center justify-center mx-auto mb-6`}
-          >
-            <ContextIcon className={`w-10 h-10 ${context.iconColor}`} />
-          </div>
-
-          {/* Main Title */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {context.title}
-          </h1>
-
-          {/* Description */}
-          <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-            {context.description}
-          </p>
-
-          {/* Status Badge */}
-          <div className="flex justify-center mb-6">
-            {isTrialActive ? (
-              <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-sm px-3 py-1">
-                <Timer className="w-4 h-4 mr-1" />
-                Free Trial Active
-              </Badge>
-            ) : (
-              <Badge className="bg-green-100 text-green-800 border-green-300 text-sm px-3 py-1">
-                <CheckCircle className="w-4 h-4 mr-1" />
-                Subscription Active
-              </Badge>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="space-y-3 mb-6">
-            <Button
-              asChild
-              className="w-full bg-blue-600 hover:bg-blue-700 h-12"
-            >
-              <Link href="/dashboard">
-                {isTrialActive ? "Start Exploring" : "Go to Dashboard"}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Button asChild variant="outline" className="bg-transparent">
-                <Link href="/billing">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Billing
-                </Link>
-              </Button>
-
-              {isTrialActive ? (
-                <Button asChild variant="outline" className="bg-transparent">
-                  <Link href="/pricing">
-                    <Crown className="w-4 h-4 mr-2" />
-                    Plans
-                  </Link>
-                </Button>
-              ) : (
-                <Button asChild variant="outline" className="bg-transparent">
-                  <Link href="/contact">Support</Link>
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Trial Specific Info */}
-          {isTrialActive && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-left">
-              <div className="flex items-start">
-                <Timer className="w-5 h-5 text-orange-600 mr-2 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-orange-900 mb-1">
-                    Trial Information
-                  </p>
-                  <p className="text-sm text-orange-800">
-                    Your trial will automatically end in 14 days. You can
-                    convert to a paid subscription anytime to continue using
-                    premium features without interruption.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <StatusPageLayout
+      title={context.title}
+      description={context.description}
+      icon={context.icon}
+      iconColor={context.iconColor}
+      iconBgColor={context.bgColor}
+      showHeader={false}
+      contentClassName="p-8 text-center"
+      badge={badge}
+      banner={banner}
+      primaryActions={primaryActions}
+      secondaryActions={secondaryActions}
+    />
   );
 }
