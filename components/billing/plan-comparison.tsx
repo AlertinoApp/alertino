@@ -443,16 +443,34 @@ export function PlanComparison({
           })}
         </div>
 
-        <div className="pt-4 border-t border-slate-200">
-          <p className="text-xs text-slate-600 text-center">
-            Need a custom plan?{" "}
-            <a
-              href="/contact"
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Contact us
-            </a>
-          </p>
+        <div className="pt-4 border-t border-slate-200 space-y-3">
+          <div className="text-center">
+            <p className="text-xs text-slate-600">
+              Need a custom plan?{" "}
+              <a
+                href="/contact"
+                className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
+              >
+                Contact us
+              </a>
+            </p>
+          </div>
+
+          {/* Trust indicators */}
+          <div className="flex justify-center items-center gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-1">
+              <Check className="w-3 h-3 text-green-600" />
+              Cancel anytime
+            </div>
+            <div className="flex items-center gap-1">
+              <Check className="w-3 h-3 text-green-600" />
+              No setup fees
+            </div>
+            <div className="flex items-center gap-1">
+              <Check className="w-3 h-3 text-green-600" />
+              24/7 support
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

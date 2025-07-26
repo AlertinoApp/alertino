@@ -1,11 +1,9 @@
 import { stripe } from "@/lib/stripe/config";
 import {
   handleCheckoutSessionCompleted,
-  handleCheckoutSessionExpired,
-  handlePaymentFailed,
-  handlePaymentSucceeded,
   handleSubscriptionChange,
-  handleTrialWillEnd,
+  handleSubscriptionDeleted,
+  handleSubscriptionTrialWillEnd,
 } from "@/lib/stripe/webhooks";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -30,10 +28,12 @@ export async function POST(request: NextRequest) {
 
   try {
     switch (event.type) {
+      // Checkout events
       case "checkout.session.completed":
         await handleCheckoutSessionCompleted(event.data.object);
         break;
 
+      // Subscription lifecycle events
       case "customer.subscription.created":
         await handleSubscriptionChange(event.data.object);
         break;
@@ -43,23 +43,12 @@ export async function POST(request: NextRequest) {
         break;
 
       case "customer.subscription.deleted":
-        await handleSubscriptionChange(event.data.object);
+        await handleSubscriptionDeleted(event.data.object);
         break;
 
+      // Trial events
       case "customer.subscription.trial_will_end":
-        await handleTrialWillEnd(event.data.object);
-        break;
-
-      case "invoice.payment_succeeded":
-        await handlePaymentSucceeded(event.data.object);
-        break;
-
-      case "invoice.payment_failed":
-        await handlePaymentFailed(event.data.object);
-        break;
-
-      case "checkout.session.expired":
-        await handleCheckoutSessionExpired(event.data.object);
+        await handleSubscriptionTrialWillEnd(event.data.object);
         break;
 
       default:

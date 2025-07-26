@@ -1,5 +1,6 @@
+import { Subscription } from "@/types/subscription";
 import { stripe } from "./config";
-import { getUserIdByStripeSubscription } from "./database";
+import { getUserIdByStripeSubscription, updateSubscription } from "./database";
 import { processSubscriptionUpdate } from "./subscription-processor";
 import type Stripe from "stripe";
 
@@ -34,21 +35,55 @@ export async function handleSubscriptionChange(
   await processSubscriptionUpdate(subscription, userId);
 }
 
-export async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  console.log("Payment succeeded:", invoice.id);
-}
-
-export async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  console.log("Payment failed:", invoice.id);
-}
-
-export async function handleTrialWillEnd(subscription: Stripe.Subscription) {
-  console.log("Trial will end:", subscription.id);
-  // TODO: Send notification to user
-}
-
-export async function handleCheckoutSessionExpired(
-  session: Stripe.Checkout.Session
+export async function handleSubscriptionDeleted(
+  subscription: Stripe.Subscription
 ) {
-  console.log("Checkout session expired:", session.id);
+  const userId = await getUserIdByStripeSubscription(subscription.id);
+
+  if (!userId) {
+    console.error(`Subscription not found for deletion: ${subscription.id}`);
+    return;
+  }
+
+  // Update subscription to canceled status with free plan
+  const subscriptionData: Partial<Subscription> & {
+    user_id: string;
+    stripe_subscription_id: string;
+  } = {
+    user_id: userId,
+    stripe_subscription_id: subscription.id,
+    plan: "free",
+    status: "canceled",
+    interval: null,
+    canceled_at: new Date().toISOString(),
+    cancel_at_period_end: false,
+  };
+
+  await updateSubscription(subscriptionData);
+  console.log(`Subscription deleted and synced: ${subscription.id}`);
+}
+
+export async function handleSubscriptionTrialWillEnd(
+  subscription: Stripe.Subscription
+) {
+  const userId = await getUserIdByStripeSubscription(subscription.id);
+
+  if (!userId) {
+    console.error(
+      `Subscription not found for trial ending: ${subscription.id}`
+    );
+    return;
+  }
+
+  // Sync the subscription to ensure trial status is up to date
+  const fullSubscription = await stripe.subscriptions.retrieve(
+    subscription.id,
+    {
+      expand: ["items.data.price"],
+    }
+  );
+
+  await processSubscriptionUpdate(fullSubscription, userId);
+  console.log("Trial will end, subscription synced:", subscription.id);
+  // TODO: Send notification to user
 }

@@ -35,7 +35,7 @@ export async function createSubscriptionRecord(data: {
       user_id: data.userId,
       stripe_customer_id: data.stripeCustomerId,
       plan: "free",
-      status: "incomplete",
+      status: "active",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },

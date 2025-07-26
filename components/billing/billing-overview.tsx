@@ -15,6 +15,7 @@ import {
   Gift,
   CreditCard,
   Star,
+  AlertCircle,
 } from "lucide-react";
 import type { Subscription } from "@/types/subscription";
 import { createPortalSessionAction } from "@/lib/actions/subscription-actions";
@@ -115,11 +116,11 @@ export function BillingOverview({
   };
 
   const getStatusBadge = () => {
-    // Handle trial status first
+    // Handle trial status
     if (effectivelyOnTrial) {
       return (
         <Badge className="bg-orange-50 text-orange-700 border-orange-200 font-medium">
-          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1.5" />
+          <Clock className="w-3 h-3 mr-1" />
           Free Trial
         </Badge>
       );
@@ -129,7 +130,7 @@ export function BillingOverview({
     if (cancelAtPeriodEnd && subscriptionStatus === "active") {
       return (
         <Badge className="bg-orange-50 text-orange-700 border-orange-200 font-medium">
-          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1.5" />
+          <AlertCircle className="w-3 h-3 mr-1" />
           Canceling Soon
         </Badge>
       );
@@ -139,7 +140,7 @@ export function BillingOverview({
     if (subscriptionStatus === "canceled" && isEffectivelyActive()) {
       return (
         <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-medium">
-          <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5" />
+          <Clock className="w-3 h-3 mr-1" />
           Grace Period
         </Badge>
       );
@@ -149,35 +150,35 @@ export function BillingOverview({
       case "past_due":
         return (
           <Badge className="bg-amber-50 text-amber-700 border-amber-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5" />
+            <AlertTriangle className="w-3 h-3 mr-1" />
             Payment Required
           </Badge>
         );
       case "incomplete":
         return (
           <Badge className="bg-yellow-50 text-yellow-700 border-yellow-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5" />
+            <Settings className="w-3 h-3 mr-1" />
             Setup Required
           </Badge>
         );
       case "incomplete_expired":
         return (
           <Badge className="bg-red-50 text-yellow-700 border-yellow-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5" />
+            <XCircle className="w-3 h-3 mr-1" />
             Setup Expired
           </Badge>
         );
       case "unpaid":
         return (
           <Badge className="bg-red-50 text-red-700 border-red-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5" />
+            <CreditCard className="w-3 h-3 mr-1" />
             Unpaid
           </Badge>
         );
       case "canceled":
         return (
           <Badge className="bg-red-50 text-red-700 border-red-200 font-medium">
-            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5" />
+            <XCircle className="w-3 h-3 mr-1" />
             Canceled
           </Badge>
         );
@@ -294,18 +295,16 @@ export function BillingOverview({
 
         {/* Manage Subscription (Stripe Portal) */}
         {hasStripeSubscription && (
-          <div className="border-t border-slate-200 pt-4">
-            <form action={createPortalSessionAction}>
-              <Button
-                type="submit"
-                variant="outline"
-                className="w-full h-11 border-slate-300 hover:bg-slate-50"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Manage Billing & Payment Methods
-              </Button>
-            </form>
-          </div>
+          <form action={createPortalSessionAction}>
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full h-11 border-slate-300 hover:bg-slate-50"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Billing & Payment Methods
+            </Button>
+          </form>
         )}
 
         {/* Free Plan - No Trial Used */}
