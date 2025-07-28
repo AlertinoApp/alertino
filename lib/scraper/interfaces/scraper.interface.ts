@@ -71,17 +71,6 @@ export abstract class BaseScraper {
 
       return response.text();
     } catch (error) {
-      if (typeof window === "undefined") {
-        try {
-          const axios = require("axios");
-          const response = await axios.get(url, {
-            headers: this.getRequestHeaders(),
-          });
-          return response.data;
-        } catch (axiosError) {
-          throw new Error(`Request failed: ${error}`);
-        }
-      }
       throw error;
     }
   }
