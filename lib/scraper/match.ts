@@ -5,7 +5,7 @@ import { normalize } from "../utils";
 import { exampleListings } from "../data/example-listings";
 
 // Flag to switch between test mode and real scraping
-const USE_REAL_SCRAPING = true;
+const USE_REAL_SCRAPING = process.env.NEXT_PUBLIC_NODE_ENV === "production";
 
 export async function getMatchedListings(filter: Filter): Promise<Listing[]> {
   console.log(
