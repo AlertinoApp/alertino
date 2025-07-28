@@ -1,5 +1,3 @@
-// lib/scraper/interfaces/scraper.interface.ts
-
 import type { Listing } from "@/types/listings";
 
 export interface ScrapingConfig {
@@ -23,7 +21,7 @@ export interface ScraperMetadata {
   name: string;
   baseUrl: string;
   isEnabled: boolean;
-  priority: number; // Wyższy = wyższy priorytet
+  priority: number;
   rateLimit: {
     requestsPerMinute: number;
     delayBetweenRequests: number;
@@ -44,14 +42,10 @@ export abstract class BaseScraper {
     this.metadata = metadata;
   }
 
-  // Główna metoda do scrapowania - musi być zaimplementowana przez każdy scraper
   abstract scrape(config: ScrapingConfig): Promise<ScrapingResult>;
-
-  // Metody pomocnicze
   abstract buildUrl(config: ScrapingConfig): string;
   abstract parseListings(html: string, config: ScrapingConfig): Listing[];
 
-  // Opcjonalne metody do override'owania
   protected getRequestHeaders(): Record<string, string> {
     return {
       "User-Agent":
@@ -77,7 +71,6 @@ export abstract class BaseScraper {
 
       return response.text();
     } catch (error) {
-      // Fallback na axios jeśli masz go zainstalowanego
       if (typeof window === "undefined") {
         try {
           const axios = require("axios");
@@ -93,7 +86,7 @@ export abstract class BaseScraper {
     }
   }
 
-  // Gettery dla metadanych
+  // Metadata getters
   get name(): string {
     return this.metadata.name;
   }
@@ -110,12 +103,10 @@ export abstract class BaseScraper {
     return this.metadata.rateLimit;
   }
 
-  // Metoda do włączania/wyłączania scrapera
   setEnabled(enabled: boolean): void {
     this.metadata.isEnabled = enabled;
   }
 
-  // Walidacja czy scraper obsługuje daną konfigurację
   canHandle(config: ScrapingConfig): boolean {
     if (config.propertyType && !this.features.supportsPropertyType)
       return false;

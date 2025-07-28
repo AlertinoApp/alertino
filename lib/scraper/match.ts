@@ -1,12 +1,10 @@
-// lib/scraper/match.ts
-
 import { Filter } from "@/types/filters";
 import type { Listing } from "@/types/listings";
 import { scraperManager } from "./scraper.manager";
 import { normalize } from "../utils";
 import { exampleListings } from "../data/example-listings";
 
-// Flaga do przełączania między trybem testowym a prawdziwym scrapowaniem
+// Flag to switch between test mode and real scraping
 const USE_REAL_SCRAPING = true;
 
 export async function getMatchedListings(filter: Filter): Promise<Listing[]> {
@@ -16,7 +14,7 @@ export async function getMatchedListings(filter: Filter): Promise<Listing[]> {
 
   if (USE_REAL_SCRAPING) {
     try {
-      // Użyj ScraperManager do scrapowania z wszystkich źródeł
+      // Use ScraperManager to scrape from all sources
       console.log(`🌐 Scraping real data for ${filter.city} from all sources`);
 
       const listings = await scraperManager.scrapeListings(filter);
@@ -31,18 +29,18 @@ export async function getMatchedListings(filter: Filter): Promise<Listing[]> {
         error
       );
 
-      // Fallback do danych testowych w przypadku błędu
+      // Fallback to test data in case of error
       return getExampleMatchedListings(filter);
     }
   } else {
-    // Użyj danych testowych
+    // Use test data
     console.log(`🧪 Using example data for testing`);
     return getExampleMatchedListings(filter);
   }
 }
 
 /**
- * Oryginalna funkcja z danymi testowymi
+ * Original function with test data
  */
 function getExampleMatchedListings(filter: Filter): Listing[] {
   return exampleListings.filter(
@@ -54,63 +52,7 @@ function getExampleMatchedListings(filter: Filter): Listing[] {
 }
 
 /**
- * Funkcja pomocnicza do ręcznego testowania scrapera
- */
-export async function testRealScraping(
-  city: string,
-  maxPrice: number,
-  minRooms: number
-): Promise<Listing[]> {
-  console.log(`🧪 Testing real scraping for ${city}`);
-
-  const testFilter: Filter = {
-    id: "test",
-    user_id: "test-user",
-    is_active: true,
-    city,
-    max_price: maxPrice,
-    min_rooms: minRooms,
-    created_at: new Date().toISOString(),
-  };
-
-  // Tymczasowo włącz prawdziwe scrapowanie
-  const originalEnv = process.env.USE_REAL_SCRAPING;
-  process.env.USE_REAL_SCRAPING = "true";
-
-  try {
-    const results = await getMatchedListings(testFilter);
-    console.log(`📊 Test results for ${city}:`, results);
-    return results;
-  } finally {
-    // Przywróć oryginalne ustawienie
-    if (originalEnv === undefined) {
-      delete process.env.USE_REAL_SCRAPING;
-    } else {
-      process.env.USE_REAL_SCRAPING = originalEnv;
-    }
-  }
-}
-
-/**
- * Testuje wszystkie dostępne scrapers
- */
-export async function testAllScrapers(city: string = "Warszawa") {
-  console.log(`🧪 Testing all scrapers for ${city}...`);
-
-  const results = await scraperManager.testAllScrapers(city);
-
-  console.log("📊 Test Results Summary:");
-  for (const [source, result] of Object.entries(results)) {
-    console.log(
-      `  ${source}: ${result.listings.length} listings, ${result.errors.length} errors`
-    );
-  }
-
-  return results;
-}
-
-/**
- * Scrapuje tylko z określonego źródła (do debugowania)
+ * Test specific source (for debugging)
  */
 export async function scrapeFromSpecificSource(
   source: string,
@@ -133,22 +75,22 @@ export async function scrapeFromSpecificSource(
 }
 
 /**
- * Funkcje zarządzania scraperem
+ * Scraper management functions
  */
 export const scraperControls = {
-  // Włącz/wyłącz scraping globalnie
+  // Enable/disable scraping globally
   setEnabled: (enabled: boolean) => scraperManager.setEnabled(enabled),
 
-  // Włącz/wyłącz konkretny scraper
+  // Enable/disable specific scraper
   setScraperEnabled: (name: string, enabled: boolean) =>
     scraperManager.setScraperEnabled(name, enabled),
 
-  // Pobierz informacje o scraperach
+  // Get scraper information
   getScrapersInfo: () => scraperManager.getScrapersInfo(),
 
-  // Wyczyść cache
+  // Clear cache
   clearCache: () => scraperManager.clearCache(),
 
-  // Testuj wszystkie scrapers
+  // Test all scrapers
   testAll: (city?: string) => scraperManager.testAllScrapers(city),
 };

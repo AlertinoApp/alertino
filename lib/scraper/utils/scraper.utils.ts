@@ -29,7 +29,6 @@ export function filterListings(
     minRooms?: number;
     maxRooms?: number;
     excludeKeywords?: string[];
-    includeKeywords?: string[];
   }
 ): Listing[] {
   return listings.filter((listing) => {
@@ -45,13 +44,6 @@ export function filterListings(
       for (const keyword of filters.excludeKeywords) {
         if (titleLower.includes(keyword.toLowerCase())) return false;
       }
-    }
-
-    if (filters.includeKeywords && filters.includeKeywords.length > 0) {
-      const hasRequiredKeyword = filters.includeKeywords.some((keyword) =>
-        titleLower.includes(keyword.toLowerCase())
-      );
-      if (!hasRequiredKeyword) return false;
     }
 
     return true;

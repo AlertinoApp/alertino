@@ -1,5 +1,3 @@
-// lib/scraper/scraper.manager.ts
-
 import type { Listing } from "@/types/listings";
 import type { Filter } from "@/types/filters";
 import {
@@ -8,8 +6,6 @@ import {
   ScrapingResult,
 } from "./interfaces/scraper.interface";
 import { OlxScraper } from "./providers/olx.scraper";
-// import { OtodomScraper } from "./providers/otodom.scraper";
-// import { GratkaScraper } from "./providers/gratka.scraper"; // Odkomentuj gdy dodasz
 import { scrapingCache } from "./utils/cache.utils";
 import {
   deduplicateListings,
@@ -37,14 +33,14 @@ export class ScraperManager {
   }
 
   private initializeScrapers(): void {
-    // Dodaj wszystkie dostępne scrapers
+    // Add all available scrapers
     this.scrapers = [
-      // new OtodomScraper(), // Najwyższy priorytet (9)
-      new OlxScraper(), // Średni priorytet (8)
-      // new GratkaScraper(), // Niski priorytet (7) - odkomentuj gdy dodasz
+      new OlxScraper(), // Medium priority (8)
+      // new OtodomScraper(), // Highest priority (9) - uncomment when added
+      // new GratkaScraper(), // Low priority (7) - uncomment when added
     ]
       .filter((scraper) => scraper.isEnabled)
-      .sort((a, b) => b.priority - a.priority); // Sortuj po priorytecie malejąco
+      .sort((a, b) => b.priority - a.priority); // Sort by priority descending
 
     console.log(
       `🔧 Initialized ${this.scrapers.length} scrapers:`,
@@ -53,7 +49,7 @@ export class ScraperManager {
   }
 
   /**
-   * Główna metoda do scrapowania - używana przez match.ts
+   * Main scraping method - used by match.ts
    */
   async scrapeListings(filter: Filter): Promise<Listing[]> {
     const config: ScrapingConfig = {
@@ -70,7 +66,7 @@ export class ScraperManager {
   }
 
   /**
-   * Scrapuje z wszystkich dostępnych źródeł
+   * Scrape from all available sources
    */
   async scrapeFromAllSources(
     config: ScrapingConfig
@@ -80,7 +76,7 @@ export class ScraperManager {
       return this.getEmptyResult("Scraping is disabled");
     }
 
-    // Sprawdź cache
+    // Check cache
     const cacheKey = this.generateCacheKey(config);
     const cachedResult = scrapingCache.get(cacheKey);
 
@@ -109,11 +105,11 @@ export class ScraperManager {
       `🚀 Starting scraping for ${config.city} with ${this.scrapers.length} sources`
     );
 
-    // Scrapuj ze wszystkich źródeł z kontrolowanymi opóźnieniami
+    // Scrape from all sources with controlled delays
     for (let i = 0; i < this.scrapers.length; i++) {
       const scraper = this.scrapers[i];
 
-      // Dodaj opóźnienie między scraperami (oprócz pierwszego)
+      // Add delay between scrapers (except first)
       if (i > 0) {
         await delay(scraper.rateLimit.delayBetweenRequests);
       }
@@ -150,17 +146,17 @@ export class ScraperManager {
       }
     }
 
-    // Przetwórz wyniki
+    // Process results
     const processedListings = this.processListings(allListings, config);
     const duplicatesRemoved = allListings.length - processedListings.length;
     const totalProcessingTime = Date.now() - startTime;
 
-    // Zapisz w cache jeśli mamy wyniki
+    // Save to cache if we have results
     if (processedListings.length > 0) {
       scrapingCache.set(cacheKey, processedListings);
     }
 
-    // Loguj statystyki
+    // Log statistics
     logScrapingStats(
       config.city,
       totalFound,
@@ -181,7 +177,7 @@ export class ScraperManager {
   }
 
   /**
-   * Przetwarzanie wyników - deduplikacja, filtrowanie, sortowanie
+   * Process results - deduplication, filtering, sorting
    */
   private processListings(
     listings: Listing[],
@@ -191,22 +187,22 @@ export class ScraperManager {
 
     console.log(`🔄 Processing ${listings.length} raw listings...`);
 
-    // 1. Deduplikacja
+    // 1. Deduplication
     let processed = deduplicateListings(listings);
 
-    // 2. Dodatkowe filtrowanie (bezpieczeństwo)
+    // 2. Additional filtering (safety)
     processed = filterListings(processed, {
       minPrice: 100, // Minimum 100 PLN
       maxPrice: config.maxPrice,
       minRooms: config.minRooms,
-      maxRooms: 15, // Maksimum 15 pokoi (rozsądny limit)
-      excludeKeywords: ["spam", "fake", "test"], // Podstawowe słowa do wykluczenia
+      maxRooms: 15, // Maximum 15 rooms (reasonable limit)
+      excludeKeywords: ["spam", "fake", "test"], // Basic exclusion words
     });
 
-    // 3. Sortowanie według ceny (rosnąco)
+    // 3. Sort by price (ascending)
     processed.sort((a, b) => a.price - b.price);
 
-    // 4. Limit wyników
+    // 4. Limit results
     if (config.maxResults && processed.length > config.maxResults) {
       processed = processed.slice(0, config.maxResults);
     }
@@ -216,7 +212,7 @@ export class ScraperManager {
   }
 
   /**
-   * Scrapuje tylko z określonego źródła
+   * Scrape from specific source only
    */
   async scrapeFromSource(
     sourceName: string,
@@ -244,7 +240,7 @@ export class ScraperManager {
   }
 
   /**
-   * Testuje wszystkie scrapers
+   * Test all scrapers
    */
   async testAllScrapers(
     city: string = "Warszawa"
@@ -275,7 +271,7 @@ export class ScraperManager {
           `✅ ${scraper.name}: ${result.listings.length} listings in ${duration}ms`
         );
 
-        // Pokaż pierwsze znalezione ogłoszenie jako przykład
+        // Show first found listing as example
         if (result.listings.length > 0) {
           const firstListing = result.listings[0];
           console.log(
@@ -293,7 +289,7 @@ export class ScraperManager {
         };
       }
 
-      // Pauza między testami
+      // Pause between tests
       await delay(2000);
     }
 
@@ -302,7 +298,7 @@ export class ScraperManager {
   }
 
   /**
-   * Loguje podsumowanie testów
+   * Log test summary
    */
   private logTestSummary(results: Record<string, ScrapingResult>): void {
     console.log("\n📊 Test Results Summary:");
@@ -342,7 +338,7 @@ export class ScraperManager {
   }
 
   /**
-   * Włącza/wyłącza scraping globalnie
+   * Enable/disable scraping globally
    */
   setEnabled(enabled: boolean): void {
     this.isEnabled = enabled;
@@ -350,7 +346,7 @@ export class ScraperManager {
   }
 
   /**
-   * Włącza/wyłącza konkretny scraper
+   * Enable/disable specific scraper
    */
   setScraperEnabled(scraperName: string, enabled: boolean): void {
     const scraper = this.scrapers.find(
@@ -366,7 +362,7 @@ export class ScraperManager {
   }
 
   /**
-   * Zwraca informacje o dostępnych scraperach
+   * Get information about available scrapers
    */
   getScrapersInfo() {
     return this.scrapers.map((scraper) => ({
@@ -379,14 +375,14 @@ export class ScraperManager {
   }
 
   /**
-   * Zwraca nazwy dostępnych scraperów
+   * Get available scraper names
    */
   getAvailableScrapers(): string[] {
     return this.scrapers.map((s) => s.name);
   }
 
   /**
-   * Czyści cache
+   * Clear cache
    */
   clearCache(): void {
     scrapingCache.clear();
@@ -394,14 +390,14 @@ export class ScraperManager {
   }
 
   /**
-   * Zwraca statystyki cache
+   * Get cache statistics
    */
   getCacheStats() {
     return scrapingCache.getStats();
   }
 
   /**
-   * Sprawdza status managera
+   * Check manager status
    */
   getStatus() {
     return {
@@ -438,5 +434,5 @@ export class ScraperManager {
   }
 }
 
-// Singleton instance - eksportuj gotową instancję
+// Singleton instance - export ready instance
 export const scraperManager = new ScraperManager();

@@ -8,15 +8,15 @@ interface CacheEntry {
 
 export class ScrapingCache {
   private cache = new Map<string, CacheEntry>();
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minut
-  private readonly MAX_CACHE_SIZE = 100; // Maksymalnie 100 wpisów
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private readonly MAX_CACHE_SIZE = 100; // Maximum 100 entries
 
   get(key: string): Listing[] | null {
     const entry = this.cache.get(key);
 
     if (!entry) return null;
 
-    // Sprawdź czy nie wygasł
+    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       return null;
@@ -27,7 +27,7 @@ export class ScrapingCache {
   }
 
   set(key: string, listings: Listing[]): void {
-    // Usuń stare wpisy jeśli cache jest pełen
+    // Remove old entries if cache is full
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
       this.cleanOldEntries();
     }
@@ -46,10 +46,6 @@ export class ScrapingCache {
   clear(): void {
     this.cache.clear();
     console.log("💾 Cache cleared");
-  }
-
-  size(): number {
-    return this.cache.size;
   }
 
   getStats() {
@@ -78,14 +74,13 @@ export class ScrapingCache {
     const now = Date.now();
     const entriesToDelete: string[] = [];
 
-    // Najpierw usuń wygasłe wpisy
+    // Delete expired records
     for (const [key, entry] of this.cache.entries()) {
       if (now > entry.expiresAt) {
         entriesToDelete.push(key);
       }
     }
 
-    // Jeśli nadal za dużo, usuń najstarsze
     if (this.cache.size - entriesToDelete.length >= this.MAX_CACHE_SIZE) {
       const sortedEntries = Array.from(this.cache.entries())
         .filter(([key]) => !entriesToDelete.includes(key))

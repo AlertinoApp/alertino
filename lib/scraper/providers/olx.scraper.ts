@@ -10,15 +10,21 @@ import {
   parsePrice,
   extractRoomsFromText,
   validateListing,
+  normalizeText,
 } from "../utils/parsing.utils";
 
 export class OlxScraper extends BaseScraper {
   private readonly cityUrlMap: Record<string, string> = {
     Warszawa: "warszawa",
+    Kraków: "krakow",
     Krakow: "krakow",
+    Gdańsk: "gdansk",
     Gdansk: "gdansk",
+    Poznań: "poznan",
     Poznan: "poznan",
+    Wrocław: "wroclaw",
     Wroclaw: "wroclaw",
+    Łódź: "lodz",
     Lodz: "lodz",
     Katowice: "katowice",
     Szczecin: "szczecin",
@@ -81,33 +87,31 @@ export class OlxScraper extends BaseScraper {
   }
 
   buildUrl(config: ScrapingConfig): string {
-    const cityUrl = this.cityUrlMap[config.city] || config.city.toLowerCase();
+    // Proper URL encoding for Polish cities
+    const cityUrl = this.getCityUrlSafe(config.city);
 
-    // Bazowy URL dla kategorii
+    // Base URL for category
     let url = `${this.metadata.baseUrl}/nieruchomosci/`;
 
-    // Typ nieruchomości
+    // Property type
     if (config.propertyType === "apartment") {
       url += "mieszkania/";
     } else if (config.propertyType === "house") {
       url += "domy/";
     } else {
-      url += "mieszkania/"; // domyślnie mieszkania
+      url += "mieszkania/";
     }
 
-    // Typ ogłoszenia
     if (config.listingType === "rent") {
       url += "wynajem/";
     } else if (config.listingType === "sale") {
       url += "sprzedaz/";
     } else {
-      url += "wynajem/"; // domyślnie wynajem
+      url += "wynajem/";
     }
 
-    // Miasto
     url += `${cityUrl}/`;
 
-    // Parametry filtrowania
     const params = new URLSearchParams();
 
     if (config.maxPrice) {
@@ -124,11 +128,24 @@ export class OlxScraper extends BaseScraper {
     return url;
   }
 
+  /**
+   * Get URL-safe city name with proper Polish character handling
+   */
+  private getCityUrlSafe(city: string): string {
+    // First try direct mapping
+    if (this.cityUrlMap[city]) {
+      return this.cityUrlMap[city];
+    }
+
+    // Fallback: normalize the city name for URL
+    return normalizeText(city);
+  }
+
   parseListings(html: string, config: ScrapingConfig): Listing[] {
     const $ = cheerio.load(html);
     const listings: Listing[] = [];
 
-    // Selektory dla różnych wersji OLX
+    // Selectors for different versions of OLX
     const listingSelectors = [
       '[data-cy="l-card"]',
       ".css-1sw7q4x",
@@ -138,7 +155,7 @@ export class OlxScraper extends BaseScraper {
 
     let $listings: cheerio.Cheerio;
 
-    // Znajdź działające selektory
+    // Find working selectors
     for (const selector of listingSelectors) {
       $listings = $(selector);
       if ($listings.length > 0) {
@@ -158,7 +175,7 @@ export class OlxScraper extends BaseScraper {
 
     $listings!.each((index: number, element: cheerio.Element) => {
       if (listings.length >= (config.maxResults || 10)) {
-        return false; // Przerwij gdy osiągniemy limit
+        return false; // Stop when limit reached
       }
 
       try {
@@ -182,11 +199,11 @@ export class OlxScraper extends BaseScraper {
     $listing: cheerio.Cheerio,
     config: ScrapingConfig
   ): Listing | null {
-    // Tytuł
+    // Title
     const title = this.extractTitle($listing);
     if (!title) return null;
 
-    // Cena
+    // Price
     const priceText = this.extractPrice($listing);
     const price = parsePrice(priceText);
     if (price === 0) return null;
@@ -195,7 +212,7 @@ export class OlxScraper extends BaseScraper {
     const link = this.extractLink($listing);
     if (!link) return null;
 
-    // Liczba pokoi z tytułu
+    // Number of rooms from title
     const rooms = extractRoomsFromText(title);
 
     return {
@@ -255,7 +272,7 @@ export class OlxScraper extends BaseScraper {
       if ($link.length > 0) {
         let link = $link.attr("href") || "";
         if (link) {
-          // Upewnij się, że link jest pełnym URL
+          // Ensure complete URL
           if (link.startsWith("/")) {
             link = this.metadata.baseUrl + link;
           }
