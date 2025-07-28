@@ -1,4 +1,4 @@
-import type { Listing } from "@/types/listings";
+import { Listing } from "@/types/listings";
 
 export const exampleListings: Listing[] = [
   {
@@ -44,10 +44,10 @@ export const exampleListings: Listing[] = [
     rooms: 5,
   },
   {
-    title: "Share apartment in Warsaw",
+    title: "Share apartment in Warszawa",
     price: 3670,
     link: "https://www.olx.pl/example7",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 4,
   },
   {
@@ -58,10 +58,10 @@ export const exampleListings: Listing[] = [
     rooms: 2,
   },
   {
-    title: "Animal apartment in Warsaw",
+    title: "Animal apartment in Warszawa",
     price: 5595,
     link: "https://www.olx.pl/example9",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 3,
   },
   {
@@ -79,10 +79,10 @@ export const exampleListings: Listing[] = [
     rooms: 2,
   },
   {
-    title: "Future apartment in Warsaw",
+    title: "Future apartment in Warszawa",
     price: 5064,
     link: "https://www.olx.pl/example12",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 3,
   },
   {
@@ -100,10 +100,10 @@ export const exampleListings: Listing[] = [
     rooms: 2,
   },
   {
-    title: "Ok apartment in Warsaw",
+    title: "Ok apartment in Warszawa",
     price: 1832,
     link: "https://www.olx.pl/example15",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 4,
   },
   {
@@ -128,10 +128,10 @@ export const exampleListings: Listing[] = [
     rooms: 1,
   },
   {
-    title: "Night apartment in Warsaw",
+    title: "Night apartment in Warszawa",
     price: 3871,
     link: "https://www.olx.pl/example19",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 2,
   },
   {
@@ -156,17 +156,17 @@ export const exampleListings: Listing[] = [
     rooms: 4,
   },
   {
-    title: "Think apartment in Warsaw",
+    title: "Think apartment in Warszawa",
     price: 4917,
     link: "https://www.olx.pl/example23",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 4,
   },
   {
-    title: "Ability apartment in Warsaw",
+    title: "Ability apartment in Warszawa",
     price: 2659,
     link: "https://www.olx.pl/example24",
-    city: "Warsaw",
+    city: "Warszawa",
     rooms: 4,
   },
   {
