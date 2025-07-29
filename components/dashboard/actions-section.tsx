@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +26,16 @@ interface ActionsSectionProps {
   lastRunDate?: Date | null;
 }
 
+// Mock progress steps - replace with your actual process steps
+const PROGRESS_STEPS = [
+  { step: 1, label: "Initializing search..." },
+  { step: 2, label: "Connecting to listing sources..." },
+  { step: 3, label: "Processing filters..." },
+  { step: 4, label: "Scanning apartment listings..." },
+  { step: 5, label: "Checking for duplicates..." },
+  { step: 6, label: "Finalizing results..." },
+];
+
 export function ActionsSection({
   activeFiltersCount = 0,
   totalAlertsCount = 0,
@@ -33,6 +43,8 @@ export function ActionsSection({
   lastRunDate = null,
 }: ActionsSectionProps) {
   const [isRunning, setIsRunning] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState("");
   const [lastRun, setLastRun] = useState<Date | null>(lastRunDate);
   const [lastResult, setLastResult] = useState<{
     found: number;
@@ -40,15 +52,111 @@ export function ActionsSection({
     duplicates: number;
   } | null>(null);
 
+  // Simulate progress updates - replace with real progress tracking
+  const simulateProgress = async () => {
+    setProgress(0);
+
+    for (let i = 0; i < PROGRESS_STEPS.length; i++) {
+      const step = PROGRESS_STEPS[i];
+      setCurrentStep(step.label);
+
+      // Simulate time for each step
+      const stepDuration = i === 3 ? 3000 : 1000; // Step 4 (scanning) takes longer
+      const progressIncrement = 100 / PROGRESS_STEPS.length;
+      const startProgress = i * progressIncrement;
+
+      // Animate progress within each step
+      const animationDuration = stepDuration;
+      const animationSteps = 20;
+      const stepIncrement = progressIncrement / animationSteps;
+
+      for (let j = 0; j < animationSteps; j++) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, animationDuration / animationSteps)
+        );
+        setProgress((prev) =>
+          Math.min(100, startProgress + (j + 1) * stepIncrement)
+        );
+      }
+    }
+
+    setProgress(100);
+    setCurrentStep("Completed!");
+  };
+
+  // Alternative: Real-time progress tracking with Server-Sent Events (SSE)
+  const trackProgressWithSSE = () => {
+    const eventSource = new EventSource("/api/alerts/progress");
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setProgress(data.progress);
+      setCurrentStep(data.message);
+
+      if (data.progress >= 100) {
+        eventSource.close();
+      }
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+      setCurrentStep("Connection error");
+    };
+
+    return eventSource;
+  };
+
+  // Alternative: Polling approach
+  const trackProgressWithPolling = async (jobId: string) => {
+    const pollInterval = 500; // Poll every 500ms
+
+    while (true) {
+      try {
+        const response = await fetch(`/api/alerts/progress/${jobId}`);
+        const data = await response.json();
+
+        setProgress(data.progress);
+        setCurrentStep(data.message);
+
+        if (data.progress >= 100 || data.status === "completed") {
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, pollInterval));
+      } catch (error) {
+        console.error("Progress polling error:", error);
+        break;
+      }
+    }
+  };
+
   const handleRunAlerts = async () => {
     setIsRunning(true);
+    setProgress(0);
+    setCurrentStep("Starting scan...");
 
     const loadingToast = toast.loading("🔍 Searching for new apartments...", {
       description: `Scanning ${activeFiltersCount} filter${activeFiltersCount > 1 ? "s" : ""} across all listing sources`,
     });
 
     try {
-      const result = await generateAlerts();
+      // Option 1: Use simulation (for demo purposes)
+      const progressPromise = simulateProgress();
+
+      // Option 2: Use Server-Sent Events (uncomment to use)
+      // const eventSource = trackProgressWithSSE();
+
+      // Option 3: Start polling (uncomment to use)
+      // const jobResponse = await fetch('/api/alerts/start', { method: 'POST' });
+      // const { jobId } = await jobResponse.json();
+      // const progressPromise = trackProgressWithPolling(jobId);
+
+      // Run both progress tracking and actual alert generation
+      const [_, result] = await Promise.all([
+        progressPromise,
+        generateAlerts(), // Your actual alert generation function
+      ]);
+
       const runTime = new Date();
       setLastRun(runTime);
       setLastResult({
@@ -90,12 +198,15 @@ export function ActionsSection({
       }
     } catch (error) {
       console.error("Failed to generate alerts:", error);
+      toast.dismiss(loadingToast);
       toast("❌ Failed to generate alerts", {
         description:
           "Something went wrong while checking for new apartments. Please try again.",
       });
     } finally {
       setIsRunning(false);
+      setProgress(0);
+      setCurrentStep("");
     }
   };
 
@@ -130,7 +241,7 @@ export function ActionsSection({
     }
   };
 
-  // Success rate calculation (mock data - you can track this in real usage)
+  // Success rate calculation
   const successRate = lastResult
     ? Math.round((lastResult.found / Math.max(lastResult.checked, 1)) * 100)
     : 0;
@@ -199,10 +310,15 @@ export function ActionsSection({
               {isRunning && (
                 <div className="mb-4">
                   <div className="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Scanning apartment listings...</span>
-                    <span>Please wait</span>
+                    <span>{currentStep}</span>
+                    <span>{Math.round(progress)}%</span>
                   </div>
-                  <Progress value={undefined} className="h-2" />
+                  <Progress value={progress} className="h-2 bg-gray-200">
+                    <div
+                      className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-300 ease-out rounded-full"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </Progress>
                 </div>
               )}
             </div>
