@@ -58,7 +58,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
   // Filter and sort alerts
   const filteredAndSortedAlerts = useMemo(() => {
-    let filtered = alerts.filter((alert) => {
+    const filtered = alerts.filter((alert) => {
       // Search term filter
       if (
         searchTerm &&
@@ -515,7 +515,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
               <span className="text-gray-500 text-xs">Active filters:</span>
               {searchTerm && (
                 <Badge variant="secondary" className="text-xs">
-                  Search: "{searchTerm}"
+                  Search: &ldquo;{searchTerm}&ldquo;
                 </Badge>
               )}
               {selectedCity !== "all" && (

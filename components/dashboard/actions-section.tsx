@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +74,7 @@ export function ActionsSection({
         await new Promise((resolve) =>
           setTimeout(resolve, animationDuration / animationSteps)
         );
-        setProgress((prev) =>
+        setProgress(() =>
           Math.min(100, startProgress + (j + 1) * stepIncrement)
         );
       }
@@ -82,52 +82,6 @@ export function ActionsSection({
 
     setProgress(100);
     setCurrentStep("Completed!");
-  };
-
-  // Alternative: Real-time progress tracking with Server-Sent Events (SSE)
-  const trackProgressWithSSE = () => {
-    const eventSource = new EventSource("/api/alerts/progress");
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setProgress(data.progress);
-      setCurrentStep(data.message);
-
-      if (data.progress >= 100) {
-        eventSource.close();
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      setCurrentStep("Connection error");
-    };
-
-    return eventSource;
-  };
-
-  // Alternative: Polling approach
-  const trackProgressWithPolling = async (jobId: string) => {
-    const pollInterval = 500; // Poll every 500ms
-
-    while (true) {
-      try {
-        const response = await fetch(`/api/alerts/progress/${jobId}`);
-        const data = await response.json();
-
-        setProgress(data.progress);
-        setCurrentStep(data.message);
-
-        if (data.progress >= 100 || data.status === "completed") {
-          break;
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, pollInterval));
-      } catch (error) {
-        console.error("Progress polling error:", error);
-        break;
-      }
-    }
   };
 
   const handleRunAlerts = async () => {
@@ -140,22 +94,9 @@ export function ActionsSection({
     });
 
     try {
-      // Option 1: Use simulation (for demo purposes)
       const progressPromise = simulateProgress();
 
-      // Option 2: Use Server-Sent Events (uncomment to use)
-      // const eventSource = trackProgressWithSSE();
-
-      // Option 3: Start polling (uncomment to use)
-      // const jobResponse = await fetch('/api/alerts/start', { method: 'POST' });
-      // const { jobId } = await jobResponse.json();
-      // const progressPromise = trackProgressWithPolling(jobId);
-
-      // Run both progress tracking and actual alert generation
-      const [_, result] = await Promise.all([
-        progressPromise,
-        generateAlerts(), // Your actual alert generation function
-      ]);
+      const [, result] = await Promise.all([progressPromise, generateAlerts()]);
 
       const runTime = new Date();
       setLastRun(runTime);
