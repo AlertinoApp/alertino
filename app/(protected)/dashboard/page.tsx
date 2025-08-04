@@ -1,3 +1,5 @@
+// app/dashboard/page.tsx - Clean and organized layout
+
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { ActionsSection } from "@/components/dashboard/actions-section";
 import { AlertsSection } from "@/components/dashboard/alerts-section";
@@ -42,6 +44,13 @@ export default async function DashboardPage() {
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
+  // Calculate analytics
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const newAlertsToday =
+    alerts?.filter((alert) => new Date(alert.created_at) >= today).length || 0;
+
   const { data: subscription } = await supabase
     .from("subscriptions")
     .select("*")
@@ -59,21 +68,25 @@ export default async function DashboardPage() {
         variant="dashboard"
         showNavigation={false}
       />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
+          {/* Page Header */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
             <p className="text-gray-600">
-              Manage your apartment alerts and filters
+              Manage your apartment alerts and search filters
             </p>
           </div>
 
+          {/* Upgrade Banner */}
           <UpgradeBanner
             filtersCount={filters?.length || 0}
             subscription={subscription}
             trialInfo={trialInfo}
           />
 
+          {/* Filters Section */}
           <FiltersSection
             filters={filters || []}
             userId={session.user.id}
@@ -81,9 +94,16 @@ export default async function DashboardPage() {
             filtersCount={filters?.length || 0}
           />
 
-          <AlertsSection alerts={alerts || []} />
+          {/* Actions Section */}
+          <ActionsSection
+            activeFiltersCount={activeFilters?.length || 0}
+            totalAlertsCount={alerts?.length || 0}
+            newAlertsToday={newAlertsToday}
+            lastRunDate={null}
+          />
 
-          <ActionsSection activeFiltersCount={activeFilters?.length || 0} />
+          {/* Alerts Section */}
+          <AlertsSection alerts={alerts || []} />
         </div>
       </div>
     </div>

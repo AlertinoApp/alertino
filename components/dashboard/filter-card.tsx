@@ -24,17 +24,18 @@ export function FilterCard({ filter }: FilterCardProps) {
 
   const handleToggleStatus = async (checked: boolean) => {
     setIsToggling(true);
+
     try {
       await toggleFilterStatus(filter.id, checked);
       setIsActive(checked);
 
       if (checked) {
         toast("🎯 Filter activated!", {
-          description: `We’ll start monitoring new listings for "${filter.city}" right away.`,
+          description: `We'll start monitoring new listings for "${filter.city}" right away.`,
         });
       } else {
         toast("⏸️ Filter deactivated", {
-          description: `We’ll stop checking new listings for "${filter.city}".`,
+          description: `We'll stop checking new listings for "${filter.city}".`,
         });
       }
     } catch (error) {
@@ -43,6 +44,11 @@ export function FilterCard({ filter }: FilterCardProps) {
         description:
           "Something went wrong while updating this filter. Please try again.",
       });
+      // Revert the optimistic update
+      setIsActive(!checked);
+    } finally {
+      // Always reset loading state
+      setIsToggling(false);
     }
   };
 
@@ -79,6 +85,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
                 className="h-8 w-8 p-0 hover:bg-gray-100"
+                disabled={isToggling}
               >
                 <Edit2 className="h-4 w-4" />
               </Button>
@@ -87,6 +94,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 size="sm"
                 onClick={() => setIsDeleteDialogOpen(true)}
                 className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+                disabled={isToggling}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -126,6 +134,11 @@ export function FilterCard({ filter }: FilterCardProps) {
               {!isActive && (
                 <p className="text-xs text-orange-600 font-medium">
                   Not monitoring
+                </p>
+              )}
+              {isToggling && (
+                <p className="text-xs text-blue-600 font-medium animate-pulse">
+                  Updating...
                 </p>
               )}
             </div>
