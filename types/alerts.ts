@@ -8,6 +8,7 @@ export interface Alert {
   created_at: string;
   status?: "active" | "not_interested";
   filter_id?: string | null;
+  is_favorite?: boolean;
   filters?: {
     id: string;
     name: string;

@@ -20,6 +20,7 @@ export type Database = {
           created_at: string | null;
           filter_id: string | null;
           id: string;
+          is_favorite: boolean;
           link: string;
           price: number;
           rooms: number;
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string | null;
           filter_id?: string | null;
           id?: string;
+          is_favorite?: boolean;
           link: string;
           price: number;
           rooms: number;
@@ -44,6 +46,7 @@ export type Database = {
           created_at?: string | null;
           filter_id?: string | null;
           id?: string;
+          is_favorite?: boolean;
           link?: string;
           price?: number;
           rooms?: number;

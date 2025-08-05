@@ -1,7 +1,7 @@
 Todos:
     ✔ [ ] replan paid plans with the max alerts per day (free, basic, pro) allow for trial only for basic plan @done(25-08-05 18:27)
     ✔ [ ] update Filter model with additional fields e.g. name, price range, type @done(25-08-05 19:42)
-    ☐ [ ] implement favourite alerts
+    ✔ [ ] implement favorite alerts @done(25-08-05 23:10)
     ☐ [ ] what should happen with alerts if user removes filter
     ✔ [ ] update filtering section to handle new fields e.g. dropdown for filter alerts from specific filter, default ‘All’ @done(25-08-05 19:42)
     ☐ [ ] implement admin?

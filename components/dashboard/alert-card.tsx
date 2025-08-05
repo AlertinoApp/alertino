@@ -12,12 +12,14 @@ import {
   EyeOff,
   RotateCcw,
   Loader2,
+  Star,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
   markAlertAsNotInterested,
   restoreAlert,
+  toggleAlertFavorite,
 } from "@/lib/actions/alert-actions";
 import { Alert } from "@/types/alerts";
 import Link from "next/link";
@@ -30,6 +32,8 @@ interface AlertCardProps {
 export function AlertCard({ alert }: AlertCardProps) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(alert.status);
+  const [isFavorite, setIsFavorite] = useState(alert.is_favorite || false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 
   const isNew =
     new Date(alert.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -78,6 +82,40 @@ export function AlertCard({ alert }: AlertCardProps) {
   // Use currentStatus instead of alert.status for rendering
   const isCurrentlyNotInterested = currentStatus === "not_interested";
 
+  const handleFavoriteToggle = async () => {
+    setIsTogglingFavorite(true);
+
+    const previousFavorite = isFavorite;
+
+    try {
+      // Optimistic update
+      setIsFavorite(!isFavorite);
+
+      await toggleAlertFavorite(alert.id);
+
+      toast(
+        isFavorite ? "⭐ Removed from favorites" : "⭐ Added to favorites",
+        {
+          description: isFavorite
+            ? "This listing has been removed from your favorites."
+            : "This listing has been added to your favorites.",
+        }
+      );
+    } catch (error) {
+      console.error("Failed to toggle favorite status:", error);
+
+      // Revert optimistic update on error
+      setIsFavorite(previousFavorite);
+
+      toast("❌ Failed to update favorite status", {
+        description:
+          "Something went wrong while updating this alert. Please try again.",
+      });
+    } finally {
+      setIsTogglingFavorite(false);
+    }
+  };
+
   return (
     <Card
       className={cn(
@@ -87,14 +125,34 @@ export function AlertCard({ alert }: AlertCardProps) {
     >
       <CardContent className="p-4 sm:p-6">
         <div className="mb-4">
-          <h3
-            className={cn(
-              "font-medium mb-2 text-sm sm:text-base leading-tight",
-              isCurrentlyNotInterested ? "text-gray-500" : "text-gray-900"
-            )}
-          >
-            {alert.title}
-          </h3>
+          <div className="flex items-start justify-between mb-2">
+            <h3
+              className={cn(
+                "font-medium text-sm sm:text-base leading-tight flex-1",
+                isCurrentlyNotInterested ? "text-gray-500" : "text-gray-900"
+              )}
+            >
+              {alert.title}
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleFavoriteToggle}
+              disabled={isTogglingFavorite}
+              className={cn(
+                "h-8 w-8 p-0 hover:bg-yellow-50 hover:text-yellow-600 transition-colors",
+                isFavorite && "text-yellow-500 hover:text-yellow-600"
+              )}
+            >
+              {isTogglingFavorite ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Star
+                  className={cn("h-4 w-4", isFavorite ? "fill-current" : "")}
+                />
+              )}
+            </Button>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             {isNew && !isCurrentlyNotInterested && (
               <Badge className="bg-green-100 text-green-800 border-green-200">
@@ -107,6 +165,11 @@ export function AlertCard({ alert }: AlertCardProps) {
                 className="bg-gray-100 text-gray-600 border-gray-200"
               >
                 Not Interested
+              </Badge>
+            )}
+            {isFavorite && (
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                ⭐ Favorite
               </Badge>
             )}
           </div>
