@@ -43,7 +43,10 @@ export async function restoreAlert(alertId: string) {
 
 export async function generateAlerts() {
   const supabase = await createClientForServer();
-  const { data: filters } = await supabase.from("filters").select("*");
+  const { data: filters } = await supabase
+    .from("filters")
+    .select("*")
+    .eq("is_active", true);
 
   if (!filters)
     return {
