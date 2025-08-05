@@ -65,9 +65,9 @@ export default async function BillingSuccessPage() {
     if (subscriptionStatus === "active") {
       const getPlanIcon = () => {
         switch (currentPlan) {
-          case "premium":
+          case "basic":
             return Crown;
-          case "business":
+          case "pro":
             return Building2;
           default:
             return Zap;
@@ -76,12 +76,12 @@ export default async function BillingSuccessPage() {
 
       const getPlanColors = () => {
         switch (currentPlan) {
-          case "premium":
+          case "basic":
             return {
               iconColor: "text-blue-600",
               bgColor: "bg-blue-100",
             };
-          case "business":
+          case "pro":
             return {
               iconColor: "text-purple-600",
               bgColor: "bg-purple-100",

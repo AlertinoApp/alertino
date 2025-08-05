@@ -1,0 +1,13 @@
+Todos:
+    ☐ [ ] replan paid plans with the max alerts per day (free, basic, pro) allow for trial only for basic plan
+    ☐ [ ] extend Filter model with additional fields e.g. name, price range, type
+    ☐ [ ] implement favourite alerts
+    ☐ [ ] what should happen with alerts if user removes filter
+    ☐ [ ] update filtering section to handle new fields e.g. dropdown for filter alerts from specific filter, default ‘All’
+    ☐ [ ] implement admin?
+    ☐ [ ] implement cron job
+
+UI:
+    ☐ [ ] add new button to run scraper for specific filter
+    ☐ [ ] update pricing page (build simple to Cursor pricing page)
+    ☐ [ ] implement dark theme 

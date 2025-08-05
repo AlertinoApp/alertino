@@ -69,7 +69,7 @@ export function UpgradeBanner({
       return {
         type: "trial_active",
         title: "Trial Active",
-        message: `Enjoying ${currentPlan === "premium" ? "Premium" : "Business"}? ${trialDaysRemaining !== null ? `${trialDaysRemaining} days remaining.` : ""} Convert anytime to continue.`,
+        message: `Enjoying ${currentPlan === "basic" ? "Basic" : "Pro"}? ${trialDaysRemaining !== null ? `${trialDaysRemaining} days remaining.` : ""} Convert anytime to continue.`,
         icon: Gift,
         iconColor: "text-orange-600",
         bgGradient: "from-orange-50 to-amber-50",
@@ -101,7 +101,7 @@ export function UpgradeBanner({
       return {
         type: "approaching_limit",
         title: "Approaching Filter Limit",
-        message: `You're using ${filtersCount}/3 filters. Upgrade for unlimited filters and premium features.`,
+        message: `You're using ${filtersCount}/3 filters. Upgrade for more filters and automated scraping.`,
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
@@ -118,7 +118,7 @@ export function UpgradeBanner({
         type: "new_user",
         title: "Unlock Premium Features",
         message:
-          "Get unlimited filters, priority notifications, and access to all Polish cities with a free 14-day trial.",
+          "Get more filters, automated scraping, and access to advanced features with a free 14-day trial.",
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
@@ -135,7 +135,7 @@ export function UpgradeBanner({
         type: "upgrade_available",
         title: "Upgrade to Premium",
         message:
-          "Get unlimited filters, priority notifications, and access to all premium features.",
+          "Get more filters, automated scraping, and access to all premium features.",
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",

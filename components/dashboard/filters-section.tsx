@@ -17,7 +17,7 @@ import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import type { Filter } from "@/types/filters";
 import type { SubscriptionPlan } from "@/types/subscription";
-import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
 
 interface FiltersSectionProps {
   filters: Filter[];
@@ -43,8 +43,8 @@ export function FiltersSection({
     (filter) => filter.is_active === false
   );
 
-  const subscriptionConfig = getSubscriptionConfig(currentPlan);
-  const maxFilters = subscriptionConfig.limits.maxFilters;
+  const subscriptionConfig = getEnhancedSubscriptionConfig(currentPlan);
+  const maxFilters = subscriptionConfig.limits.filtersLimit;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
   // Calculate filter statistics
@@ -374,6 +374,8 @@ export function FiltersSection({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         userId={userId}
+        currentPlan={currentPlan}
+        filtersCount={filtersCount}
       />
     </section>
   );

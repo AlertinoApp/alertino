@@ -15,8 +15,9 @@ import { useRouter } from "next/navigation";
 import { NumberTicker } from "../magicui/number-ticker";
 import { PlanButton } from "@/components/subscription/plan-button";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSmsNotificationStatus } from "@/lib/utils/subscription-utils";
 
-const plans: SubscriptionPlan[] = ["free", "premium", "business"];
+const plans: SubscriptionPlan[] = ["free", "basic", "pro"];
 
 interface PricingSectionProps {
   user?: User | null;
@@ -58,9 +59,9 @@ export function PricingSection({
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
-      case "premium":
+      case "basic":
         return <Crown className="w-6 h-6 text-blue-600" />;
-      case "business":
+      case "pro":
         return <Building2 className="w-6 h-6 text-purple-600" />;
       default:
         return <Zap className="w-6 h-6 text-slate-600" />;
@@ -69,9 +70,9 @@ export function PricingSection({
 
   const getPlanGradient = (plan: SubscriptionPlan) => {
     switch (plan) {
-      case "premium":
+      case "basic":
         return "from-blue-50 to-blue-100/50";
-      case "business":
+      case "pro":
         return "from-purple-50 to-purple-100/50";
       default:
         return "from-slate-50 to-slate-100/50";
@@ -243,7 +244,7 @@ export function PricingSection({
           {plans.map((plan, index) => {
             const planConfig = getSubscriptionConfig(plan);
             const priceData = getPrice(plan);
-            const isPopular = plan === "premium";
+            const isPopular = plan === "basic";
             const isCurrent = isCurrentPlan(plan);
             const isTrialPlanCard = isTrialPlan(plan);
             const isEndingSoonCard = isEndingSoon(plan);
@@ -382,16 +383,34 @@ export function PricingSection({
                         What&apos;s included:
                       </h4>
                       <ul className="space-y-3">
-                        {planConfig.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start">
-                            <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                              <Check className="w-3 h-3 text-green-600" />
-                            </div>
-                            <span className="text-slate-600 text-sm leading-relaxed">
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
+                        {planConfig.features.map((feature, featureIndex) => {
+                          const smsStatus = getSmsNotificationStatus(plan);
+                          const isSmsFeature = feature
+                            .toLowerCase()
+                            .includes("sms");
+
+                          return (
+                            <li key={featureIndex} className="flex items-start">
+                              <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <Check className="w-3 h-3 text-green-600" />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-slate-600 text-sm leading-relaxed">
+                                  {feature}
+                                </span>
+                                {isSmsFeature &&
+                                  smsStatus.status === "coming-soon" && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                                    >
+                                      Coming Soon
+                                    </Badge>
+                                  )}
+                              </div>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>

@@ -62,9 +62,9 @@ export function SubscriptionSection({
 
   const getPlanIcon = () => {
     switch (subscriptionPlan) {
-      case "premium":
+      case "basic":
         return <Crown className="w-5 h-5 text-blue-600" />;
-      case "business":
+      case "pro":
         return <Building2 className="w-5 h-5 text-purple-600" />;
       default:
         return <Zap className="w-5 h-5 text-slate-600" />;
@@ -145,12 +145,12 @@ export function SubscriptionSection({
 
   const nextTierFeatures =
     subscriptionPlan === "free"
-      ? getSubscriptionConfig("premium").features.slice(0, 3)
-      : subscriptionPlan === "premium"
-        ? getSubscriptionConfig("business").features.slice(0, 3)
+      ? getSubscriptionConfig("basic").features.slice(0, 3)
+      : subscriptionPlan === "basic"
+        ? getSubscriptionConfig("pro").features.slice(0, 3)
         : [];
 
-  const nextTierPlan = subscriptionPlan === "free" ? "premium" : "business";
+  const nextTierPlan = subscriptionPlan === "free" ? "basic" : "pro";
   const nextTierConfig = getSubscriptionConfig(nextTierPlan);
 
   return (
@@ -305,7 +305,7 @@ export function SubscriptionSection({
                     </div>
                     <p className="text-red-800 text-sm">
                       Your subscription has ended and you&apos;ve been moved to
-                      the free plan. You can upgrade anytime to restore premium
+                      the free plan. You can upgrade anytime to restore basic
                       features.
                     </p>
                   </div>
@@ -325,7 +325,7 @@ export function SubscriptionSection({
                     </div>
                     <p className="text-amber-800 text-sm">
                       Your payment is overdue. Please update your payment method
-                      to continue using premium features.
+                      to continue using basic features.
                     </p>
                   </div>
                 </div>
@@ -344,15 +344,15 @@ export function SubscriptionSection({
                     </div>
                     <p className="text-blue-800 text-sm">
                       Your trial ends on {currentPeriodEnd.toLocaleDateString()}
-                      . Upgrade now to continue enjoying premium features.
+                      . Upgrade now to continue enjoying basic features.
                     </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Upgrade Suggestion for non-Business plans */}
-            {subscriptionPlan !== "business" && (
+            {/* Upgrade Suggestion for non-pro plans */}
+            {subscriptionPlan !== "pro" && (
               <div
                 className={`${nextTierConfig.color.bg} border ${nextTierConfig.color.border} rounded-lg p-4`}
               >
@@ -365,8 +365,8 @@ export function SubscriptionSection({
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
                       {subscriptionPlan === "free"
-                        ? "Upgrade to Premium"
-                        : "Upgrade to Business"}
+                        ? "Upgrade to Basic"
+                        : "Upgrade to Pro"}
                     </h4>
                     <p className="text-sm text-slate-600 mb-3">
                       {upgradeMessage}
@@ -397,13 +397,13 @@ export function SubscriptionSection({
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-slate-900 mb-2">
-                    Upgrade to Premium
+                    Upgrade to basic
                   </h3>
                   <p className="text-sm text-slate-600 mb-4">
                     {upgradeMessage}
                   </p>
                   <div className="space-y-2">
-                    {getSubscriptionConfig("premium")
+                    {getSubscriptionConfig("basic")
                       .features.slice(0, 5)
                       .map((feature, index) => (
                         <div
@@ -425,7 +425,7 @@ export function SubscriptionSection({
             >
               <Link href="/pricing">
                 <Crown className="w-4 h-4 mr-2" />
-                Upgrade to Premium
+                Upgrade to basic
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>

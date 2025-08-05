@@ -187,7 +187,7 @@ export function PlanButton({
     }
 
     if (isPlanChange()) {
-      const planOrder = { free: 0, premium: 1, business: 2 };
+      const planOrder = { free: 0, basic: 1, pro: 2 };
       const isUpgrade = planOrder[plan] > planOrder[currentPlan];
       return `${isUpgrade ? "Upgrade" : "Switch"} to ${planConfig.name}`;
     }
@@ -307,13 +307,13 @@ export function PlanButton({
       return "";
     }
 
-    // Premium plan - blue with white text
-    if (plan === "premium") {
+    // Basic plan - blue with white text
+    if (plan === "basic") {
       return "bg-blue-600 hover:bg-blue-700 text-white hover:text-white border-blue-600 hover:border-blue-700";
     }
 
-    // Business plan - dark slate with white text
-    if (plan === "business") {
+    // Pro plan - dark slate with white text
+    if (plan === "pro") {
       return "bg-slate-900 hover:bg-slate-800 text-white hover:text-white border-slate-800 hover:border-slate-900";
     }
 

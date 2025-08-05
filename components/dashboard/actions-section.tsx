@@ -18,12 +18,19 @@ import {
 } from "lucide-react";
 import { generateAlerts } from "@/lib/actions/alert-actions";
 import { toast } from "sonner";
+import {
+  getScrapingIntervalDisplay,
+  getRemainingSearchesCount,
+  getDailySearchLimit,
+} from "@/lib/utils/subscription-utils";
 
 interface ActionsSectionProps {
   activeFiltersCount?: number;
   totalAlertsCount?: number;
   newAlertsToday?: number;
   lastRunDate?: Date | null;
+  currentPlan?: "free" | "basic" | "pro";
+  searchesUsedToday?: number;
 }
 
 // Mock progress steps - replace with your actual process steps
@@ -41,6 +48,8 @@ export function ActionsSection({
   totalAlertsCount = 0,
   newAlertsToday = 0,
   lastRunDate = null,
+  currentPlan = "free",
+  searchesUsedToday = 0,
 }: ActionsSectionProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -140,10 +149,25 @@ export function ActionsSection({
     } catch (error) {
       console.error("Failed to generate alerts:", error);
       toast.dismiss(loadingToast);
-      toast("❌ Failed to generate alerts", {
-        description:
-          "Something went wrong while checking for new apartments. Please try again.",
-      });
+
+      // Check if it's a search limit error
+      if (
+        error instanceof Error &&
+        error.message.includes("Search limit exceeded")
+      ) {
+        toast("🚫 Search limit exceeded", {
+          description: error.message,
+          action: {
+            label: "Upgrade Plan",
+            onClick: () => window.open("/pricing", "_blank"),
+          },
+        });
+      } else {
+        toast("❌ Failed to generate alerts", {
+          description:
+            "Something went wrong while checking for new apartments. Please try again.",
+        });
+      }
     } finally {
       setIsRunning(false);
       setProgress(0);
@@ -160,10 +184,15 @@ export function ActionsSection({
   const getButtonDescription = () => {
     if (activeFiltersCount === 0)
       return "You need at least one active filter to search for apartments";
+    if (getRemainingSearchesCount(currentPlan, searchesUsedToday) === 0)
+      return `You've reached your daily search limit (${searchesUsedToday}/${getDailySearchLimit(currentPlan)}). Upgrade your plan for more searches.`;
     return "Search for new apartments matching your active filters";
   };
 
-  const isButtonDisabled = isRunning || activeFiltersCount === 0;
+  const isButtonDisabled =
+    isRunning ||
+    activeFiltersCount === 0 ||
+    getRemainingSearchesCount(currentPlan, searchesUsedToday) === 0;
 
   // Calculate time since last run
   const getTimeSinceLastRun = () => {
@@ -210,6 +239,44 @@ export function ActionsSection({
               <p className="text-gray-600 mb-4">{getButtonDescription()}</p>
 
               {/* Status Indicators */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                {/* Subscription Limits */}
+                <div className="flex items-center gap-2">
+                  <Settings2 className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Plan:</span>
+                  <Badge variant="outline" className="text-xs">
+                    {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}
+                  </Badge>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Auto-scraping:</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {getScrapingIntervalDisplay(currentPlan)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Searches left:</span>
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${
+                      getRemainingSearchesCount(
+                        currentPlan,
+                        searchesUsedToday
+                      ) === 0
+                        ? "bg-red-50 text-red-700 border-red-200"
+                        : ""
+                    }`}
+                  >
+                    {getRemainingSearchesCount(currentPlan, searchesUsedToday)}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Action Status Indicators */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center gap-2">
                   <Target className="w-4 h-4 text-gray-400" />
