@@ -32,7 +32,7 @@ interface AlertsSectionProps {
   alerts: Alert[];
 }
 
-type SortField = "created_at" | "price" | "rooms" | "city" | "title";
+type SortField = "created_at" | "price" | "rooms" | "city" | "title" | "filter";
 type SortDirection = "asc" | "desc";
 type FilterStatus = "all" | "active" | "not_interested";
 
@@ -42,6 +42,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   // State for filters and pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [roomsFilter, setRoomsFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
@@ -50,10 +51,22 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Get unique cities for filter dropdown
+  // Get unique cities and filters for filter dropdown
   const uniqueCities = useMemo(() => {
     const cities = [...new Set(alerts.map((alert) => alert.city))].sort();
     return cities;
+  }, [alerts]);
+
+  const uniqueFilters = useMemo(() => {
+    const filters = alerts
+      .map((alert) => alert.filters)
+      .filter((filter): filter is NonNullable<typeof filter> => filter !== null)
+      .filter(
+        (filter, index, self) =>
+          self.findIndex((f) => f.id === filter.id) === index
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
+    return filters;
   }, [alerts]);
 
   // Filter and sort alerts
@@ -69,6 +82,11 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
       // City filter
       if (selectedCity !== "all" && alert.city !== selectedCity) {
+        return false;
+      }
+
+      // Filter filter
+      if (selectedFilter !== "all" && alert.filter_id !== selectedFilter) {
         return false;
       }
 
@@ -120,6 +138,11 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         case "title":
           comparison = a.title.localeCompare(b.title);
           break;
+        case "filter":
+          const aFilterName = a.filters?.name || "Unknown";
+          const bFilterName = b.filters?.name || "Unknown";
+          comparison = aFilterName.localeCompare(bFilterName);
+          break;
       }
 
       return sortDirection === "asc" ? comparison : -comparison;
@@ -130,6 +153,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
     alerts,
     searchTerm,
     selectedCity,
+    selectedFilter,
     priceRange,
     roomsFilter,
     statusFilter,
@@ -153,6 +177,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCity("all");
+    setSelectedFilter("all");
     setPriceRange({ min: "", max: "" });
     setRoomsFilter("all");
     setStatusFilter("all");
@@ -262,6 +287,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
             {(searchTerm ||
               selectedCity !== "all" ||
+              selectedFilter !== "all" ||
               priceRange.min ||
               priceRange.max ||
               roomsFilter !== "all" ||
@@ -342,6 +368,33 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                             className="capitalize"
                           >
                             {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Filter Filter */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                      <Filter className="w-3 h-3" />
+                      Filter
+                    </label>
+                    <Select
+                      value={selectedFilter}
+                      onValueChange={(value) => {
+                        setSelectedFilter(value);
+                        handleFilterChange();
+                      }}
+                    >
+                      <SelectTrigger className="w-full h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Filters</SelectItem>
+                        {uniqueFilters.map((filter) => (
+                          <SelectItem key={filter.id} value={filter.id}>
+                            {filter.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -45,7 +45,7 @@ export async function restoreAlert(alertId: string) {
   return updateAlertStatus(alertId, "active");
 }
 
-export async function generateAlerts() {
+export async function generateAlerts(selectedFilterIds?: string[]) {
   const supabase = await createClientForServer();
 
   // Get current user
@@ -66,11 +66,19 @@ export async function generateAlerts() {
     );
   }
 
-  const { data: filters } = await supabase
+  // Build query for filters
+  let filtersQuery = supabase
     .from("filters")
     .select("*")
     .eq("is_active", true)
     .eq("user_id", session.user.id);
+
+  // If specific filter IDs are provided, filter by them
+  if (selectedFilterIds && selectedFilterIds.length > 0) {
+    filtersQuery = filtersQuery.in("id", selectedFilterIds);
+  }
+
+  const { data: filters } = await filtersQuery;
 
   if (!filters || filters.length === 0)
     return {
@@ -95,11 +103,15 @@ export async function generateAlerts() {
     totalChecked += matched.length;
 
     if (matched.length === 0) {
-      console.log(`ℹ️ No listings found for filter: ${filter.city}`);
+      console.log(
+        `ℹ️ No listings found for filter: ${filter.name || filter.city}`
+      );
       continue;
     }
 
-    console.log(`📋 Found ${matched.length} listings for ${filter.city}`);
+    console.log(
+      `📋 Found ${matched.length} listings for ${filter.name || filter.city}`
+    );
 
     for (const listing of matched) {
       const { data: existing } = await supabase
@@ -122,6 +134,7 @@ export async function generateAlerts() {
         link: listing.link,
         rooms: listing.rooms,
         city: listing.city,
+        filter_id: filter.id,
       });
 
       if (error) {
@@ -184,8 +197,8 @@ export async function generateAlerts() {
     }
   }
 
-  // Increment search count after successful search
-  await incrementSearchCount(session.user.id, filtersProcessed);
+  // Increment search count after successful search (only 1 search per run)
+  await incrementSearchCount(session.user.id, 1);
 
   console.log(
     `🎯 Summary: Created ${totalCreated}, Checked ${totalChecked}, Duplicates ${duplicatesSkipped}, Filters ${filtersProcessed}`

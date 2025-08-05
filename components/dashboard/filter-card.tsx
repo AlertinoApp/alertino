@@ -105,6 +105,12 @@ export function FilterCard({ filter }: FilterCardProps) {
             <div
               className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
             >
+              <span className="font-semibold text-lg">{filter.name}</span>
+            </div>
+
+            <div
+              className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
+            >
               <MapPin className="w-4 h-4 mr-2 text-gray-400" />
               <span className="font-medium capitalize">{filter.city}</span>
             </div>

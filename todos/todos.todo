@@ -1,13 +1,13 @@
 Todos:
     ✔ [ ] replan paid plans with the max alerts per day (free, basic, pro) allow for trial only for basic plan @done(25-08-05 18:27)
-    ☐ [ ] extend Filter model with additional fields e.g. name, price range, type
+    ✔ [ ] update Filter model with additional fields e.g. name, price range, type @done(25-08-05 19:42)
     ☐ [ ] implement favourite alerts
     ☐ [ ] what should happen with alerts if user removes filter
-    ☐ [ ] update filtering section to handle new fields e.g. dropdown for filter alerts from specific filter, default ‘All’
+    ✔ [ ] update filtering section to handle new fields e.g. dropdown for filter alerts from specific filter, default ‘All’ @done(25-08-05 19:42)
     ☐ [ ] implement admin?
     ☐ [ ] implement cron job
+    ☐ [ ] what to do with expired offers
 
 UI:
-    ☐ [ ] add new button to run scraper for specific filter
     ☐ [ ] update pricing page (build simple to Cursor pricing page)
     ☐ [ ] implement dark theme 

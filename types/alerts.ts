@@ -7,4 +7,10 @@ export interface Alert {
   link: string;
   created_at: string;
   status?: "active" | "not_interested";
+  filter_id?: string | null;
+  filters?: {
+    id: string;
+    name: string;
+    city: string;
+  } | null;
 }

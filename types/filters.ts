@@ -5,5 +5,6 @@ export interface Filter {
   city: string;
   max_price: number;
   min_rooms: number;
+  name: string;
   created_at: string;
 }

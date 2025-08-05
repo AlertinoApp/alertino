@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           city: string;
           created_at: string | null;
+          filter_id: string | null;
           id: string;
           link: string;
           price: number;
@@ -29,6 +30,7 @@ export type Database = {
         Insert: {
           city: string;
           created_at?: string | null;
+          filter_id?: string | null;
           id?: string;
           link: string;
           price: number;
@@ -40,6 +42,7 @@ export type Database = {
         Update: {
           city?: string;
           created_at?: string | null;
+          filter_id?: string | null;
           id?: string;
           link?: string;
           price?: number;
@@ -56,6 +59,13 @@ export type Database = {
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "alerts_filter_id_fkey";
+            columns: ["filter_id"];
+            isOneToOne: false;
+            referencedRelation: "filters";
+            referencedColumns: ["id"];
+          },
         ];
       };
       filters: {
@@ -66,6 +76,7 @@ export type Database = {
           is_active: boolean;
           max_price: number;
           min_rooms: number;
+          name: string;
           updated_at: string | null;
           user_id: string;
         };
@@ -76,6 +87,7 @@ export type Database = {
           is_active?: boolean;
           max_price: number;
           min_rooms: number;
+          name?: string;
           updated_at?: string | null;
           user_id: string;
         };
@@ -86,6 +98,7 @@ export type Database = {
           is_active?: boolean;
           max_price?: number;
           min_rooms?: number;
+          name?: string;
           updated_at?: string | null;
           user_id?: string;
         };

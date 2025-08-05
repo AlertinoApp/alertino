@@ -27,12 +27,14 @@ export function EditFilterModal({
   onClose,
 }: EditFilterModalProps) {
   const [formData, setFormData] = useState({
+    name: filter.name || "",
     city: filter.city || "",
     max_price: filter.max_price.toString(),
     min_rooms: filter.min_rooms.toString(),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
+    name?: string;
     city?: string;
     max_price?: string;
     min_rooms?: string;
@@ -43,6 +45,7 @@ export function EditFilterModal({
     setErrors({});
 
     const parsed = filterSchema.safeParse({
+      name: formData.name || filter.name,
       city: formData.city,
       max_price: Number(formData.max_price),
       min_rooms: Number(formData.min_rooms),
@@ -71,6 +74,7 @@ export function EditFilterModal({
     try {
       const serverData = new FormData();
       serverData.append("filterId", filter.id);
+      serverData.append("name", formData.name);
       serverData.append("city", formData.city);
       serverData.append("max_price", formData.max_price);
       serverData.append("min_rooms", formData.min_rooms);
@@ -96,6 +100,7 @@ export function EditFilterModal({
     if (!isOpen) {
       setErrors({});
       setFormData({
+        name: filter.name || "",
         city: filter.city || "",
         max_price: filter.max_price.toString(),
         min_rooms: filter.min_rooms.toString(),
@@ -112,6 +117,22 @@ export function EditFilterModal({
 
         <form action={handleSubmit} className="space-y-4">
           <input type="hidden" name="filterId" value={filter.id} />
+
+          <div className="space-y-2">
+            <Label htmlFor="name">Filter Name</Label>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className={`w-full ${errors.name ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
