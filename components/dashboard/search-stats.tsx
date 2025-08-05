@@ -88,7 +88,7 @@ export function SearchStats({
           {/* Usage Progress */}
           <div>
             <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-              <span>Today's searches</span>
+              <span>Today&apos;s searches</span>
               <span className="font-medium">
                 {searchesUsedToday} / {dailyLimit}
               </span>
