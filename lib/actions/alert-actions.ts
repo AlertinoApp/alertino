@@ -4,6 +4,10 @@ import { createClientForServer } from "@/app/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getMatchedListings } from "@/lib/scraper/match";
 import { Resend } from "resend";
+import {
+  checkSearchLimit,
+  incrementSearchCount,
+} from "./search-tracking-actions";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -43,17 +47,38 @@ export async function restoreAlert(alertId: string) {
 
 export async function generateAlerts() {
   const supabase = await createClientForServer();
+
+  // Get current user
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  // Check search limits before proceeding
+  const searchLimit = await checkSearchLimit(session.user.id);
+
+  if (!searchLimit.canSearch) {
+    throw new Error(
+      `Search limit exceeded. You've used ${searchLimit.searchesUsed}/${searchLimit.searchesLimit} searches today. Upgrade your plan for more searches.`
+    );
+  }
+
   const { data: filters } = await supabase
     .from("filters")
     .select("*")
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("user_id", session.user.id);
 
-  if (!filters)
+  if (!filters || filters.length === 0)
     return {
       createdCount: 0,
       checkedCount: 0,
       filtersProcessed: 0,
       duplicatesSkipped: 0,
+      limitExceeded: false,
     };
 
   console.log("🔥 Running alerts...");
@@ -159,6 +184,9 @@ export async function generateAlerts() {
     }
   }
 
+  // Increment search count after successful search
+  await incrementSearchCount(session.user.id, filtersProcessed);
+
   console.log(
     `🎯 Summary: Created ${totalCreated}, Checked ${totalChecked}, Duplicates ${duplicatesSkipped}, Filters ${filtersProcessed}`
   );
@@ -170,5 +198,6 @@ export async function generateAlerts() {
     checkedCount: totalChecked,
     filtersProcessed,
     duplicatesSkipped,
+    limitExceeded: false,
   };
 }

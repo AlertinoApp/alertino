@@ -1,4 +1,6 @@
-export type SubscriptionPlan = "free" | "premium" | "business";
+import { LucideIcon } from "lucide-react";
+
+export type SubscriptionPlan = "free" | "basic" | "pro";
 export type SubscriptionStatus =
   | "active"
   | "canceled"
@@ -41,6 +43,37 @@ export interface PlanConfig {
   };
   features: string[];
   maxFilters: number;
+  trialDays: number;
+}
+
+// New enhanced plan configuration interface
+export interface EnhancedPlanConfig {
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  color: {
+    bg: string;
+    text: string;
+    border: string;
+    accent: string;
+  };
+  pricing: {
+    monthly: number;
+    yearly: number;
+  };
+  stripePriceIds: {
+    monthly: string;
+    yearly: string;
+  };
+  features: string[];
+  limits: {
+    filtersLimit: number;
+    searchesPerDay: number;
+    scrapingInterval: number; // in hours
+    notificationTypes: ("email" | "sms")[];
+    filtersType: "basic" | "advanced";
+    autoCheckLimit: number; // searches per day for auto scraping
+  };
   trialDays: number;
 }
 

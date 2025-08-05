@@ -13,17 +13,23 @@ import {
 import { addFilterAction } from "@/lib/actions/filter-actions";
 import { filterSchema } from "@/schemas/filters";
 import { toast } from "sonner";
+import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { Badge } from "@/components/ui/badge";
 
 interface AddFilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   userId: string;
+  currentPlan?: "free" | "basic" | "pro";
+  filtersCount?: number;
 }
 
 export function AddFilterModal({
   isOpen,
   onClose,
   userId,
+  currentPlan = "free",
+  filtersCount = 0,
 }: AddFilterModalProps) {
   const [formData, setFormData] = useState({
     city: "",
@@ -36,6 +42,11 @@ export function AddFilterModal({
     max_price?: string;
     min_rooms?: string;
   }>({});
+
+  // Get subscription limits
+  const subscriptionConfig = getEnhancedSubscriptionConfig(currentPlan);
+  const maxFilters = subscriptionConfig.limits.filtersLimit;
+  const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -106,6 +117,18 @@ export function AddFilterModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Filter</DialogTitle>
+          {maxFilters !== -1 && (
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-xs">
+                {filtersCount}/{maxFilters} filters used
+              </Badge>
+              {isAtLimit && (
+                <Badge variant="destructive" className="text-xs">
+                  Limit reached
+                </Badge>
+              )}
+            </div>
+          )}
         </DialogHeader>
 
         <form action={handleSubmit} className="space-y-4">
@@ -171,10 +194,14 @@ export function AddFilterModal({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700"
+              disabled={isSubmitting || isAtLimit}
+              className={`bg-blue-600 hover:bg-blue-700 ${isAtLimit ? "bg-gray-400 cursor-not-allowed" : ""}`}
             >
-              {isSubmitting ? "Adding..." : "Add Filter"}
+              {isSubmitting
+                ? "Adding..."
+                : isAtLimit
+                  ? "Limit Reached"
+                  : "Add Filter"}
             </Button>
           </div>
         </form>

@@ -17,6 +17,7 @@ import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
 import { signOut } from "@/lib/actions/auth-actions";
+import { ThemeToggle } from "@/components/themes/theme-toggle";
 
 interface NavbarProps {
   user?: User;
@@ -36,8 +37,7 @@ export function Navbar({
   const router = useRouter();
 
   const subscriptionPlan = (subscription?.plan as SubscriptionPlan) || "free";
-  const isPremium =
-    subscriptionPlan === "premium" || subscriptionPlan === "business";
+  const isPremium = subscriptionPlan === "basic" || subscriptionPlan === "pro";
 
   const userInitials =
     profile?.email?.charAt(0).toUpperCase() ||
@@ -109,11 +109,11 @@ export function Navbar({
                 )}
 
                 {/* Theme Toggle - Only show on dashboard */}
-                {/* {variant === "dashboard" && (
+                {variant === "dashboard" && (
                   <div className="flex items-center">
                     <ThemeToggle />
                   </div>
-                )} */}
+                )}
 
                 {/* User Dropdown */}
                 <DropdownMenu>

@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "@/types/subscription";
+import { SubscriptionPlan, EnhancedPlanConfig } from "@/types/subscription";
 import { Crown, Zap, Building2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -55,22 +55,22 @@ export const SUBSCRIPTION_CONFIGS: Record<
       yearly: "",
     },
     features: [
-      "Up to 3 active filters",
-      "Email notifications",
-      "Basic apartment alerts",
-      "Warsaw & Krakow coverage",
+      "3 active filters",
+      "10 searches per day (manual only)",
+      "Email notifications (weekly summary)",
+      "Basic filters only",
       "Community support",
     ],
     limits: {
       maxFilters: 3,
       cities: "Warsaw & Krakow",
-      notifications: "Standard speed",
+      notifications: "Weekly summary",
       support: "Community",
     },
     trialDays: 0,
   },
-  premium: {
-    name: "Premium",
+  basic: {
+    name: "Basic",
     description: "For serious apartment hunters who need more flexibility",
     icon: Crown,
     color: {
@@ -80,34 +80,33 @@ export const SUBSCRIPTION_CONFIGS: Record<
       accent: "text-blue-600",
     },
     pricing: {
-      monthly: 19,
-      yearly: 190,
+      monthly: 39,
+      yearly: 390,
     },
     stripePriceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_YEARLY_PRICE_ID!,
+      monthly: process.env.NEXT_PUBLIC_STRIPE_BASIC_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_BASIC_YEARLY_PRICE_ID!,
     },
     features: [
-      "Unlimited filters",
-      "Priority notifications (5min delay)",
-      "All Polish cities coverage",
-      "Advanced filter options",
-      "Email & SMS notifications",
+      "10 active filters",
+      "50 searches per day",
+      "Scraping every 4 hours",
+      "Email + SMS notifications",
+      "Access to advanced filters",
       "Priority support",
       "Export alerts to CSV",
-      "Custom notification schedules",
     ],
     limits: {
-      maxFilters: -1,
+      maxFilters: 10,
       cities: "All Polish cities",
-      notifications: "5-minute delay",
+      notifications: "Email + SMS",
       support: "Priority",
     },
     trialDays: TRIAL_DAYS,
   },
-  business: {
-    name: "Business",
-    description: "For real estate professionals and leading agencies",
+  pro: {
+    name: "Pro",
+    description: "For real estate professionals and power users",
     icon: Building2,
     color: {
       bg: "bg-purple-50",
@@ -116,28 +115,147 @@ export const SUBSCRIPTION_CONFIGS: Record<
       accent: "text-purple-600",
     },
     pricing: {
-      monthly: 49,
-      yearly: 490,
+      monthly: 99,
+      yearly: 990,
     },
     stripePriceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PRICE_ID!,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PRICE_ID!,
+      monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID!,
     },
     features: [
-      "Everything in Premium",
-      "Team collaboration (up to 5 users)",
-      "API access",
-      "White-label notifications",
+      "Unlimited filters",
+      "200 searches per day",
+      "Scraping every 1 hour",
+      "Email + SMS notifications",
+      "Access to advanced filters",
+      "Priority support",
+      "Export alerts to CSV",
+      "Custom notification schedules",
       "Advanced analytics",
-      "Dedicated account manager",
-      "Custom integrations",
-      "SLA guarantee",
     ],
     limits: {
       maxFilters: -1,
       cities: "All Polish cities",
-      notifications: "Instant",
-      support: "Dedicated manager",
+      notifications: "Email + SMS",
+      support: "Priority",
+    },
+    trialDays: TRIAL_DAYS,
+  },
+};
+
+// Enhanced subscription configuration with new limit fields
+export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
+  SubscriptionPlan,
+  EnhancedPlanConfig
+> = {
+  free: {
+    name: "Free",
+    description: "Perfect for getting started with apartment hunting",
+    icon: Zap,
+    color: {
+      bg: "bg-gray-50",
+      text: "text-gray-700",
+      border: "border-gray-200",
+      accent: "text-gray-600",
+    },
+    pricing: {
+      monthly: 0,
+      yearly: 0,
+    },
+    stripePriceIds: {
+      monthly: "",
+      yearly: "",
+    },
+    features: [
+      "3 active filters",
+      "10 searches per day (manual only)",
+      "Email notifications (weekly summary)",
+      "Basic filters only",
+      "Community support",
+    ],
+    limits: {
+      filtersLimit: 3,
+      searchesPerDay: 10,
+      scrapingInterval: 0, // No auto scraping for free
+      notificationTypes: ["email"],
+      filtersType: "basic",
+      autoCheckLimit: 0,
+    },
+    trialDays: 0,
+  },
+  basic: {
+    name: "Basic",
+    description: "For serious apartment hunters who need more flexibility",
+    icon: Crown,
+    color: {
+      bg: "bg-blue-50",
+      text: "text-blue-700",
+      border: "border-blue-200",
+      accent: "text-blue-600",
+    },
+    pricing: {
+      monthly: 39,
+      yearly: 390,
+    },
+    stripePriceIds: {
+      monthly: process.env.NEXT_PUBLIC_STRIPE_BASIC_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_BASIC_YEARLY_PRICE_ID!,
+    },
+    features: [
+      "10 active filters",
+      "50 searches per day",
+      "Scraping every 4 hours",
+      "Email + SMS notifications",
+      "Access to advanced filters",
+      "Priority support",
+      "Export alerts to CSV",
+    ],
+    limits: {
+      filtersLimit: 10,
+      searchesPerDay: 50,
+      scrapingInterval: 4, // 4 hours
+      notificationTypes: ["email", "sms"],
+      filtersType: "advanced",
+      autoCheckLimit: 50,
+    },
+    trialDays: TRIAL_DAYS,
+  },
+  pro: {
+    name: "Pro",
+    description: "For real estate professionals and power users",
+    icon: Building2,
+    color: {
+      bg: "bg-purple-50",
+      text: "text-purple-700",
+      border: "border-purple-200",
+      accent: "text-purple-600",
+    },
+    pricing: {
+      monthly: 99,
+      yearly: 990,
+    },
+    stripePriceIds: {
+      monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!,
+      yearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID!,
+    },
+    features: [
+      "Unlimited filters",
+      "200 searches per day",
+      "Scraping every 1 hour",
+      "Email + SMS notifications",
+      "Access to advanced filters",
+      "Priority support",
+      "Export alerts to CSV",
+      "Custom notification schedules",
+      "Advanced analytics",
+    ],
+    limits: {
+      filtersLimit: -1, // Unlimited
+      searchesPerDay: 200,
+      scrapingInterval: 1, // 1 hour
+      notificationTypes: ["email", "sms"],
+      filtersType: "advanced",
+      autoCheckLimit: 200,
     },
     trialDays: TRIAL_DAYS,
   },
@@ -153,15 +271,55 @@ export function getSubscriptionConfig(
   return config;
 }
 
+export function getEnhancedSubscriptionConfig(
+  plan: SubscriptionPlan
+): EnhancedPlanConfig {
+  const config = ENHANCED_SUBSCRIPTION_CONFIGS[plan];
+  if (!config) {
+    throw new Error(`Invalid subscription plan: ${plan}`);
+  }
+  return config;
+}
+
 export function getUpgradeMessage(currentPlan: SubscriptionPlan): string {
   switch (currentPlan) {
     case "free":
-      return "Upgrade to Premium for unlimited filters and priority notifications";
-    case "premium":
-      return "Upgrade to Business for team collaboration and API access";
-    case "business":
+      return "Upgrade to Basic for more filters and automated scraping";
+    case "basic":
+      return "Upgrade to Pro for unlimited filters and faster scraping";
+    case "pro":
       return "You're on our highest tier plan";
     default:
       return "Upgrade your plan for more features";
   }
+}
+
+// Helper function to check if user can access advanced filters
+export function canAccessAdvancedFilters(plan: SubscriptionPlan): boolean {
+  const config = getEnhancedSubscriptionConfig(plan);
+  return config.limits.filtersType === "advanced";
+}
+
+// Helper function to get user's filter limit
+export function getFilterLimit(plan: SubscriptionPlan): number {
+  const config = getEnhancedSubscriptionConfig(plan);
+  return config.limits.filtersLimit;
+}
+
+// Helper function to get user's daily search limit
+export function getDailySearchLimit(plan: SubscriptionPlan): number {
+  const config = getEnhancedSubscriptionConfig(plan);
+  return config.limits.searchesPerDay;
+}
+
+// Helper function to get user's scraping interval
+export function getScrapingInterval(plan: SubscriptionPlan): number {
+  const config = getEnhancedSubscriptionConfig(plan);
+  return config.limits.scrapingInterval;
+}
+
+// Helper function to check if user has SMS notifications
+export function hasSmsNotifications(plan: SubscriptionPlan): boolean {
+  const config = getEnhancedSubscriptionConfig(plan);
+  return config.limits.notificationTypes.includes("sms");
 }

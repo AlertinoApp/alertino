@@ -31,7 +31,7 @@ export function CTASection({ user }: CTASectionProps) {
 
           <p className="text-xl text-blue-100 mb-8 leading-relaxed">
             {user
-              ? "Upgrade to Premium for unlimited filters and priority notifications."
+              ? "Upgrade to Basic or Pro for more filters and automated scraping."
               : "Join hundreds of satisfied users who found their dream apartments with Alertino. Set up your first alert in under 2 minutes."}
           </p>
 
@@ -41,7 +41,7 @@ export function CTASection({ user }: CTASectionProps) {
               onClick={() => router.push(user ? "/pricing" : "/login")}
               className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 font-semibold"
             >
-              {user ? "Upgrade to Premium" : "Get Started for Free"}
+              {user ? "View Plans" : "Get Started for Free"}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button

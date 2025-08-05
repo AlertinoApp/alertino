@@ -4,9 +4,11 @@ import { createClientForServer } from "@/app/utils/supabase/server";
 import { ActionsSection } from "@/components/dashboard/actions-section";
 import { AlertsSection } from "@/components/dashboard/alerts-section";
 import { FiltersSection } from "@/components/dashboard/filters-section";
+import { SearchStats } from "@/components/dashboard/search-stats";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 import { Navbar } from "@/components/common/navbar";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
+import { getTodaySearchCount } from "@/lib/actions/search-tracking-actions";
 
 export default async function DashboardPage() {
   const supabase = await createClientForServer();
@@ -58,6 +60,7 @@ export default async function DashboardPage() {
     .single();
 
   const trialInfo = await getTrialInfoAction();
+  const searchesUsedToday = await getTodaySearchCount(session.user.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -84,6 +87,7 @@ export default async function DashboardPage() {
             filtersCount={filters?.length || 0}
             subscription={subscription}
             trialInfo={trialInfo}
+            searchesUsedToday={searchesUsedToday}
           />
 
           {/* Filters Section */}
@@ -94,12 +98,20 @@ export default async function DashboardPage() {
             filtersCount={filters?.length || 0}
           />
 
+          {/* Search Stats */}
+          <SearchStats
+            currentPlan={subscription?.plan || "free"}
+            searchesUsedToday={searchesUsedToday}
+          />
+
           {/* Actions Section */}
           <ActionsSection
             activeFiltersCount={activeFilters?.length || 0}
             totalAlertsCount={alerts?.length || 0}
             newAlertsToday={newAlertsToday}
             lastRunDate={null}
+            currentPlan={subscription?.plan || "free"}
+            searchesUsedToday={searchesUsedToday}
           />
 
           {/* Alerts Section */}

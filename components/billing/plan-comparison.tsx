@@ -21,7 +21,7 @@ import type {
 import { User } from "@supabase/supabase-js";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
-const plans: SubscriptionPlan[] = ["free", "premium", "business"];
+const plans: SubscriptionPlan[] = ["free", "basic", "pro"];
 
 interface PlanComparisonProps {
   user: User | null;
@@ -77,9 +77,9 @@ export function PlanComparison({
 
   const getPlanIcon = (plan: SubscriptionPlan) => {
     switch (plan) {
-      case "premium":
+      case "basic":
         return <Crown className="w-4 h-4 text-blue-600" />;
-      case "business":
+      case "pro":
         return <Building2 className="w-4 h-4 text-purple-600" />;
       default:
         return <Zap className="w-4 h-4 text-slate-600" />;
@@ -88,9 +88,9 @@ export function PlanComparison({
 
   const getPlanBgColor = (plan: SubscriptionPlan) => {
     switch (plan) {
-      case "premium":
+      case "basic":
         return "bg-blue-50";
-      case "business":
+      case "pro":
         return "bg-purple-50";
       default:
         return "bg-slate-50";
@@ -99,9 +99,9 @@ export function PlanComparison({
 
   const getPlanBorderColor = (plan: SubscriptionPlan) => {
     switch (plan) {
-      case "premium":
+      case "basic":
         return "border-blue-200";
-      case "business":
+      case "pro":
         return "border-purple-200";
       default:
         return "border-slate-200";
@@ -225,7 +225,7 @@ export function PlanComparison({
     checkInterval: SubscriptionInterval
   ) => {
     const isExactMatch = isCurrentPlanAndInterval(plan, checkInterval);
-    const isPopular = plan === "premium";
+    const isPopular = plan === "basic";
 
     if (isExactMatch) {
       if (isTrialActive) {
@@ -344,7 +344,7 @@ export function PlanComparison({
             const planConfig = getSubscriptionConfig(plan);
             const price = getPrice(plan);
             const yearlyDiscount = getYearlyDiscount(plan);
-            const isPopular = plan === "premium";
+            const isPopular = plan === "basic";
             const currentBadge = getCurrentPlanBadge(plan, interval);
             const trialNote = getTrialEligibilityNote(plan);
 

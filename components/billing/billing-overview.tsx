@@ -78,9 +78,9 @@ export function BillingOverview({
 
   const getPlanIcon = () => {
     switch (currentPlan) {
-      case "premium":
+      case "basic":
         return <Crown className="w-6 h-6 text-blue-600" />;
-      case "business":
+      case "pro":
         return <Building2 className="w-6 h-6 text-purple-600" />;
       default:
         return <Zap className="w-6 h-6 text-slate-600" />;
