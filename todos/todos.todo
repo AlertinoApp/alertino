@@ -1,5 +1,5 @@
 Todos:
-    ☐ [ ] replan paid plans with the max alerts per day (free, basic, pro) allow for trial only for basic plan
+    ✔ [ ] replan paid plans with the max alerts per day (free, basic, pro) allow for trial only for basic plan @done(25-08-05 18:27)
     ☐ [ ] extend Filter model with additional fields e.g. name, price range, type
     ☐ [ ] implement favourite alerts
     ☐ [ ] what should happen with alerts if user removes filter
