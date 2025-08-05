@@ -87,6 +87,7 @@ export default async function DashboardPage() {
             filtersCount={filters?.length || 0}
             subscription={subscription}
             trialInfo={trialInfo}
+            searchesUsedToday={searchesUsedToday}
           />
 
           {/* Filters Section */}

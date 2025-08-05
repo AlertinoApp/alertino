@@ -7,17 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, X, Zap, Timer, Gift, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import type { Subscription, TrialInfo } from "@/types/subscription";
+import { getFilterLimit, getDailySearchLimit } from "@/lib/stripe/plans";
 
 interface UpgradeBannerProps {
   filtersCount: number;
   subscription?: Subscription | null;
   trialInfo?: TrialInfo | null;
+  searchesUsedToday?: number;
 }
 
 export function UpgradeBanner({
   filtersCount,
   subscription,
   trialInfo,
+  searchesUsedToday = 0,
 }: UpgradeBannerProps) {
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -96,17 +99,57 @@ export function UpgradeBanner({
       };
     }
 
-    // Free plan user approaching filter limit
-    if (currentPlan === "free" && filtersCount >= 2) {
+    // Get plan limits
+    const filterLimit = getFilterLimit(currentPlan);
+    const searchLimit = getDailySearchLimit(currentPlan);
+    const isAtFilterLimit = filterLimit !== -1 && filtersCount >= filterLimit;
+    const isAtSearchLimit = searchesUsedToday >= searchLimit;
+    const isNearFilterLimit =
+      filterLimit !== -1 && filtersCount >= Math.ceil(filterLimit * 0.6); // Within 60% of limit
+
+    // Check for search limit exceeded first (highest priority)
+    if (isAtSearchLimit) {
+      return {
+        type: "search_limit_reached",
+        title: "Search Limit Reached",
+        message: `You've used ${searchesUsedToday}/${searchLimit} searches today. Upgrade for more daily searches.`,
+        icon: AlertTriangle,
+        iconColor: "text-red-600",
+        bgGradient: "from-red-50 to-pink-50",
+        borderColor: "border-red-200",
+        buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
+        buttonVariant: "upgrade" as const,
+        showDismiss: true,
+      };
+    }
+
+    // Check for filter limit reached
+    if (isAtFilterLimit) {
+      return {
+        type: "filter_limit_reached",
+        title: "Filter Limit Reached",
+        message: `You've reached your limit of ${filterLimit} filters. Upgrade for more filters and advanced features.`,
+        icon: Crown,
+        iconColor: "text-red-600",
+        bgGradient: "from-red-50 to-pink-50",
+        borderColor: "border-red-200",
+        buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
+        buttonVariant: "upgrade" as const,
+        showDismiss: true,
+      };
+    }
+
+    // Check for approaching filter limit
+    if (isNearFilterLimit && !isAtFilterLimit) {
       return {
         type: "approaching_limit",
         title: "Approaching Filter Limit",
-        message: `You're using ${filtersCount}/3 filters. Upgrade for more filters and automated scraping.`,
+        message: `You're using ${filtersCount}/${filterLimit} filters. Upgrade for more filters and automated scraping.`,
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
         borderColor: "border-blue-200",
-        buttonText: hasUsedTrial ? "Upgrade Now" : "Try Premium Free",
+        buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
       };
@@ -116,7 +159,7 @@ export function UpgradeBanner({
     if (currentPlan === "free" && filtersCount === 0 && !hasUsedTrial) {
       return {
         type: "new_user",
-        title: "Unlock Premium Features",
+        title: "Unlock Advanced Features",
         message:
           "Get more filters, automated scraping, and access to advanced features with a free 14-day trial.",
         icon: Crown,
@@ -133,7 +176,7 @@ export function UpgradeBanner({
     if (currentPlan === "free" && filtersCount === 0 && hasUsedTrial) {
       return {
         type: "upgrade_available",
-        title: "Upgrade to Premium",
+        title: "Upgrade to Basic",
         message:
           "Get more filters, automated scraping, and access to all premium features.",
         icon: Crown,
@@ -141,6 +184,25 @@ export function UpgradeBanner({
         bgGradient: "from-blue-50 to-indigo-50",
         borderColor: "border-blue-200",
         buttonText: "Upgrade Now",
+        buttonVariant: "upgrade" as const,
+        showDismiss: true,
+      };
+    }
+
+    // Basic plan user approaching Pro limits
+    if (
+      currentPlan === "basic" &&
+      (isNearFilterLimit || searchesUsedToday >= Math.ceil(searchLimit * 0.8))
+    ) {
+      return {
+        type: "upgrade_to_pro",
+        title: "Upgrade to Pro",
+        message: `Get unlimited filters and ${getDailySearchLimit("pro")} searches per day for maximum flexibility.`,
+        icon: Crown,
+        iconColor: "text-purple-600",
+        bgGradient: "from-purple-50 to-indigo-50",
+        borderColor: "border-purple-200",
+        buttonText: "Upgrade to Pro",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
       };
