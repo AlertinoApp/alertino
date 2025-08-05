@@ -53,7 +53,7 @@ export function Navbar({
     : email?.split("@")[0] || "User";
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+    <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -65,7 +65,9 @@ export function Navbar({
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
-              <h1 className="text-xl font-bold text-slate-900">Alertino</h1>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-gray-100">
+                Alertino
+              </h1>
             </Link>
           </div>
 
@@ -74,19 +76,19 @@ export function Navbar({
             <nav className="hidden md:flex items-center space-x-8">
               <Link
                 href="/#features"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
               >
                 Features
               </Link>
               <Link
                 href="/#how-it-works"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
               >
                 How it Works
               </Link>
               <Link
                 href="/pricing"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
               >
                 Pricing
               </Link>
@@ -100,18 +102,25 @@ export function Navbar({
                 {/* Welcome Message - Only show on dashboard */}
                 {variant === "dashboard" && (
                   <div className="hidden md:flex items-center gap-3">
-                    <span className="text-slate-700 font-medium">
+                    <span className="text-slate-700 dark:text-gray-300 font-medium">
                       Hi, {welcomeName}!
                     </span>
                   </div>
                 )}
+
+                {/* Theme Toggle - Only show on dashboard */}
+                {/* {variant === "dashboard" && (
+                  <div className="flex items-center">
+                    <ThemeToggle />
+                  </div>
+                )} */}
 
                 {/* User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative h-10 w-10 rounded-full hover:bg-slate-100"
+                      className="relative h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-gray-700"
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={avatarUrl || "/placeholder.svg"} />
@@ -121,9 +130,12 @@ export function Navbar({
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64" align="end">
+                  <DropdownMenuContent
+                    className="w-64 bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700"
+                    align="end"
+                  >
                     {/* User Info */}
-                    <div className="px-3 py-2 border-b border-slate-100">
+                    <div className="px-3 py-2 border-b border-slate-100 dark:border-gray-700">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={avatarUrl || "/placeholder.svg"} />
@@ -132,10 +144,10 @@ export function Navbar({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 truncate">
+                          <p className="font-medium text-slate-900 dark:text-gray-100 truncate">
                             {displayName}
                           </p>
-                          <p className="text-sm text-slate-500 truncate">
+                          <p className="text-sm text-slate-500 dark:text-gray-400 truncate">
                             {email}
                           </p>
                           <div className="mt-1">
@@ -152,7 +164,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/dashboard"
-                        className="flex items-center w-full px-3 py-2"
+                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <Home className="mr-3 h-4 w-4" />
                         <span>Dashboard</span>
@@ -162,7 +174,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/profile"
-                        className="flex items-center w-full px-3 py-2"
+                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <UserIcon className="mr-3 h-4 w-4" />
                         <span>Profile Settings</span>
@@ -172,7 +184,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/billing"
-                        className="flex items-center w-full px-3 py-2"
+                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <CreditCard className="mr-3 h-4 w-4" />
                         <span>Billing & Subscription</span>
@@ -183,23 +195,23 @@ export function Navbar({
                       <DropdownMenuItem asChild>
                         <Link
                           href="/pricing"
-                          className="flex items-center w-full px-3 py-2 text-blue-700 hover:text-blue-700!"
+                          className="flex items-center w-full px-3 py-2 text-blue-700 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-gray-700"
                         >
-                          <Crown className="mr-3 h-4 w-4 text-blue-700" />
+                          <Crown className="mr-3 h-4 w-4 text-blue-700 dark:text-blue-400" />
                           <span>Upgrade to Premium</span>
                         </Link>
                       </DropdownMenuItem>
                     )}
 
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="bg-slate-200 dark:bg-gray-700" />
 
                     <DropdownMenuItem asChild>
                       <form action={signOut} className="p-0! w-full">
                         <button
                           type="submit"
-                          className="flex items-center w-full px-3 py-2 text-red-600"
+                          className="flex items-center w-full px-3 py-2 text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-gray-700"
                         >
-                          <LogOut className="mr-3 h-4 w-4 text-red-600" />
+                          <LogOut className="mr-3 h-4 w-4 text-red-600 dark:text-red-400" />
                           <span>Sign out</span>
                         </button>
                       </form>
@@ -209,12 +221,16 @@ export function Navbar({
               </>
             ) : (
               <>
-                <Button variant="ghost" onClick={() => router.push("/login")}>
+                <Button
+                  variant="ghost"
+                  onClick={() => router.push("/login")}
+                  className="dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-700"
+                >
                   Sign In
                 </Button>
                 <Button
                   onClick={() => router.push("/login")}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
                 >
                   Get Started
                 </Button>
