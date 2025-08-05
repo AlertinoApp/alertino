@@ -17,7 +17,6 @@ import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
 import { signOut } from "@/lib/actions/auth-actions";
-import { ThemeToggle } from "../themes/theme-toggle";
 
 interface NavbarProps {
   user?: User;
