@@ -32,12 +32,14 @@ export function AddFilterModal({
   filtersCount = 0,
 }: AddFilterModalProps) {
   const [formData, setFormData] = useState({
+    name: "",
     city: "",
     max_price: "",
     min_rooms: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
+    name?: string;
     city?: string;
     max_price?: string;
     min_rooms?: string;
@@ -53,6 +55,7 @@ export function AddFilterModal({
     setErrors({});
 
     const parsed = filterSchema.safeParse({
+      name: formData.name || `Filter ${filtersCount + 1}`,
       city: formData.city,
       max_price: Number(formData.max_price),
       min_rooms: Number(formData.min_rooms),
@@ -81,6 +84,7 @@ export function AddFilterModal({
     try {
       const serverData = new FormData();
       serverData.append("userId", userId);
+      serverData.append("name", formData.name || `Filter ${filtersCount + 1}`);
       serverData.append("city", formData.city);
       serverData.append("max_price", formData.max_price);
       serverData.append("min_rooms", formData.min_rooms);
@@ -92,7 +96,7 @@ export function AddFilterModal({
       });
 
       onClose();
-      setFormData({ city: "", max_price: "", min_rooms: "" });
+      setFormData({ name: "", city: "", max_price: "", min_rooms: "" });
     } catch (error) {
       console.error("Failed to add filter:", error);
       toast.dismiss(loadingToast);
@@ -108,7 +112,7 @@ export function AddFilterModal({
   useEffect(() => {
     if (!isOpen) {
       setErrors({});
-      setFormData({ city: "", max_price: "", min_rooms: "" });
+      setFormData({ name: "", city: "", max_price: "", min_rooms: "" });
     }
   }, [isOpen]);
 
@@ -133,6 +137,26 @@ export function AddFilterModal({
 
         <form action={handleSubmit} className="space-y-4">
           <input type="hidden" name="userId" value={userId} />
+
+          <div className="space-y-2">
+            <Label htmlFor="name">Filter Name (Optional)</Label>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              placeholder={`e.g. ${filtersCount + 1 > 1 ? `Warsaw ${filtersCount + 1}` : "Warsaw Apartments"}`}
+              className={`w-full ${errors.name ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
+            <p className="text-xs text-gray-500">
+              Leave empty to auto-generate a name
+            </p>
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>

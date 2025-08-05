@@ -7,6 +7,7 @@ export async function addFilterAction(formData: FormData) {
   const city = formData.get("city") as string;
   const max_price = Number(formData.get("max_price"));
   const min_rooms = Number(formData.get("min_rooms"));
+  const name = formData.get("name") as string;
 
   const supabase = await createClientForServer();
   const {
@@ -17,11 +18,24 @@ export async function addFilterAction(formData: FormData) {
     throw new Error("Not authenticated");
   }
 
+  // Generate default name if not provided
+  let filterName = name?.trim();
+  if (!filterName) {
+    // Get count of existing filters for this user
+    const { count } = await supabase
+      .from("filters")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", session.user.id);
+
+    filterName = `Filter ${(count || 0) + 1}`;
+  }
+
   const { error } = await supabase.from("filters").insert({
     user_id: session.user.id,
     city: city.trim(),
     max_price,
     min_rooms,
+    name: filterName,
     is_active: true,
   });
 
@@ -37,6 +51,7 @@ export async function updateFilterAction(formData: FormData) {
   const city = formData.get("city") as string;
   const max_price = Number(formData.get("max_price"));
   const min_rooms = Number(formData.get("min_rooms"));
+  const name = formData.get("name") as string;
 
   const supabase = await createClientForServer();
   const {
@@ -53,6 +68,7 @@ export async function updateFilterAction(formData: FormData) {
       city: city.trim(),
       max_price,
       min_rooms,
+      name: name?.trim(),
     })
     .eq("id", filterId)
     .eq("user_id", session.user.id);

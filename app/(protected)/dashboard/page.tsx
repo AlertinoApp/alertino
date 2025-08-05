@@ -39,10 +39,19 @@ export default async function DashboardPage() {
     .eq("is_active", true)
     .order("created_at", { ascending: false });
 
-  // Fetch user alerts
+  // Fetch user alerts with filter information
   const { data: alerts } = await supabase
     .from("alerts")
-    .select("*")
+    .select(
+      `
+      *,
+      filters (
+        id,
+        name,
+        city
+      )
+    `
+    )
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
@@ -112,6 +121,7 @@ export default async function DashboardPage() {
             lastRunDate={null}
             currentPlan={subscription?.plan || "free"}
             searchesUsedToday={searchesUsedToday}
+            filters={filters || []}
           />
 
           {/* Alerts Section */}

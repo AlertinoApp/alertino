@@ -31,6 +31,11 @@ interface ActionsSectionProps {
   lastRunDate?: Date | null;
   currentPlan?: "free" | "basic" | "pro";
   searchesUsedToday?: number;
+  filters?: Array<{
+    id: string;
+    name: string;
+    is_active: boolean;
+  }>;
 }
 
 // Mock progress steps - replace with your actual process steps
@@ -50,6 +55,7 @@ export function ActionsSection({
   lastRunDate = null,
   currentPlan = "free",
   searchesUsedToday = 0,
+  filters = [],
 }: ActionsSectionProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -60,6 +66,8 @@ export function ActionsSection({
     checked: number;
     duplicates: number;
   } | null>(null);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [showFilterSelector, setShowFilterSelector] = useState(false);
 
   // Simulate progress updates - replace with real progress tracking
   const simulateProgress = async () => {
@@ -98,14 +106,22 @@ export function ActionsSection({
     setProgress(0);
     setCurrentStep("Starting scan...");
 
+    // Use selected filters or all active filters if none selected
+    const filtersToRun =
+      selectedFilters.length > 0 ? selectedFilters : undefined;
+    const filterCount = filtersToRun ? filtersToRun.length : activeFiltersCount;
+
     const loadingToast = toast.loading("🔍 Searching for new apartments...", {
-      description: `Scanning ${activeFiltersCount} filter${activeFiltersCount > 1 ? "s" : ""} across all listing sources`,
+      description: `Scanning ${filterCount} filter${filterCount > 1 ? "s" : ""} across all listing sources`,
     });
 
     try {
       const progressPromise = simulateProgress();
 
-      const [, result] = await Promise.all([progressPromise, generateAlerts()]);
+      const [, result] = await Promise.all([
+        progressPromise,
+        generateAlerts(filtersToRun),
+      ]);
 
       const runTime = new Date();
       setLastRun(runTime);
@@ -127,23 +143,44 @@ export function ActionsSection({
             description: `${result.createdCount} new listings from ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""}${result.duplicatesSkipped > 0 ? ` (${result.duplicatesSkipped} duplicates skipped)` : ""}`,
           });
         } else {
+          const filterNames = filtersToRun
+            ? filters
+                .filter((f) => filtersToRun.includes(f.id))
+                .map((f) => f.name)
+                .join(", ")
+            : "all filters";
+
           toast(`🔥 Jackpot! Found ${result.createdCount} new apartments!`, {
-            description: `${result.createdCount} new listings from ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""}${result.duplicatesSkipped > 0 ? ` (${result.duplicatesSkipped} duplicates skipped)` : ""}`,
+            description: `${result.createdCount} new listings from ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""} (${filterNames})${result.duplicatesSkipped > 0 ? ` (${result.duplicatesSkipped} duplicates skipped)` : ""}`,
           });
         }
       } else if (result.checkedCount > 0) {
+        const filterNames = filtersToRun
+          ? filters
+              .filter((f) => filtersToRun.includes(f.id))
+              .map((f) => f.name)
+              .join(", ")
+          : "all filters";
+
         if (result.duplicatesSkipped > 0) {
           toast("🔁 No new apartments found", {
-            description: `Checked ${result.checkedCount} listing${result.checkedCount > 1 ? "s" : ""} but found ${result.duplicatesSkipped} duplicate${result.duplicatesSkipped > 1 ? "s" : ""} we've already alerted you about`,
+            description: `Checked ${result.checkedCount} listing${result.checkedCount > 1 ? "s" : ""} using ${filterNames} but found ${result.duplicatesSkipped} duplicate${result.duplicatesSkipped > 1 ? "s" : ""} we've already alerted you about`,
           });
         } else {
           toast("🔁 No new apartments this time", {
-            description: `Checked ${result.checkedCount} listing${result.checkedCount > 1 ? "s" : ""} from ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""}, but no new matches found`,
+            description: `Checked ${result.checkedCount} listing${result.checkedCount > 1 ? "s" : ""} from ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""} (${filterNames}), but no new matches found`,
           });
         }
       } else {
+        const filterNames = filtersToRun
+          ? filters
+              .filter((f) => filtersToRun.includes(f.id))
+              .map((f) => f.name)
+              .join(", ")
+          : "all filters";
+
         toast("🚫 No listings available right now", {
-          description: `Processed ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""} but no listings found from your selected sources`,
+          description: `Processed ${result.filtersProcessed} filter${result.filtersProcessed > 1 ? "s" : ""} (${filterNames}) but no listings found from your selected sources`,
         });
       }
     } catch (error) {
@@ -313,6 +350,70 @@ export function ActionsSection({
                   </div>
                 )}
               </div>
+
+              {/* Filter Selector */}
+              {filters.length > 1 && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowFilterSelector(!showFilterSelector)}
+                      className="text-sm"
+                    >
+                      {selectedFilters.length > 0
+                        ? `${selectedFilters.length} filter${selectedFilters.length > 1 ? "s" : ""} selected`
+                        : "Select Filters"}
+                    </Button>
+                    {selectedFilters.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedFilters([])}
+                        className="text-sm text-gray-500"
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+
+                  {showFilterSelector && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 bg-gray-50 rounded-lg border">
+                      {filters
+                        .filter((f) => f.is_active)
+                        .map((filter) => (
+                          <label
+                            key={filter.id}
+                            className="flex items-center space-x-2 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedFilters.includes(filter.id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedFilters([
+                                    ...selectedFilters,
+                                    filter.id,
+                                  ]);
+                                } else {
+                                  setSelectedFilters(
+                                    selectedFilters.filter(
+                                      (id) => id !== filter.id
+                                    )
+                                  );
+                                }
+                              }}
+                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {filter.name}
+                            </span>
+                          </label>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Progress indicator when running */}
               {isRunning && (

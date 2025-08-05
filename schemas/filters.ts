@@ -8,4 +8,8 @@ export const filterSchema = z.object({
   min_rooms: z
     .number({ invalid_type_error: "Min rooms must be a number" })
     .min(1, "Must have at least 1 room"),
+  name: z
+    .string()
+    .min(1, "Filter name is required")
+    .max(50, "Filter name must be less than 50 characters"),
 });
