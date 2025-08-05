@@ -106,7 +106,7 @@ export function UpgradeBanner({
     const isAtSearchLimit = searchesUsedToday >= searchLimit;
     const isNearFilterLimit =
       filterLimit !== -1 && filtersCount >= Math.ceil(filterLimit * 0.6); // Within 60% of limit
-
+    // test
     // Check for search limit exceeded first (highest priority)
     if (isAtSearchLimit) {
       return {
