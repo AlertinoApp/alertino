@@ -34,7 +34,7 @@ interface AlertsSectionProps {
 
 type SortField = "created_at" | "price" | "rooms" | "city" | "title" | "filter";
 type SortDirection = "asc" | "desc";
-type FilterStatus = "all" | "active" | "not_interested";
+type FilterStatus = "all" | "active" | "not_interested" | "favorites";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -111,6 +111,9 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         statusFilter === "not_interested" &&
         alert.status !== "not_interested"
       ) {
+        return false;
+      }
+      if (statusFilter === "favorites" && !alert.is_favorite) {
         return false;
       }
 
@@ -337,6 +340,12 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                           <div className="flex items-center">
                             <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
                             Archived Only
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="favorites">
+                          <div className="flex items-center">
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                            Favorites Only
                           </div>
                         </SelectItem>
                       </SelectContent>

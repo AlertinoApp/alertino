@@ -214,3 +214,45 @@ export async function generateAlerts(selectedFilterIds?: string[]) {
     limitExceeded: false,
   };
 }
+
+export async function toggleAlertFavorite(alertId: string) {
+  const supabase = await createClientForServer();
+
+  // Get current user
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  // First, get the current favorite status
+  const { data: alert, error: fetchError } = await supabase
+    .from("alerts")
+    .select("is_favorite")
+    .eq("id", alertId)
+    .eq("user_id", session.user.id)
+    .single();
+
+  if (fetchError) {
+    throw new Error("Alert not found or access denied");
+  }
+
+  // Toggle the favorite status
+  const { error: updateError } = await supabase
+    .from("alerts")
+    .update({ is_favorite: !alert.is_favorite })
+    .eq("id", alertId)
+    .eq("user_id", session.user.id);
+
+  if (updateError) {
+    throw new Error("Failed to update favorite status");
+  }
+
+  revalidatePath("/dashboard");
+
+  return {
+    is_favorite: !alert.is_favorite,
+  };
+}
