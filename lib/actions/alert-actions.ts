@@ -256,3 +256,118 @@ export async function toggleAlertFavorite(alertId: string) {
     is_favorite: !alert.is_favorite,
   };
 }
+
+export async function checkAlertExpired(alertId: string) {
+  const supabase = await createClientForServer();
+
+  // Get current user
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  // Get the alert details
+  const { data: alert, error: fetchError } = await supabase
+    .from("alerts")
+    .select("link, status")
+    .eq("id", alertId)
+    .eq("user_id", session.user.id)
+    .single();
+
+  if (fetchError) {
+    throw new Error("Alert not found or access denied");
+  }
+
+  // If already marked as expired, return early
+  if (alert.status === "expired") {
+    return { is_expired: true };
+  }
+
+  try {
+    // Check if the offer is still available
+    const response = await fetch(alert.link, {
+      method: "GET",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
+      // Add a timeout to prevent hanging requests
+      signal: AbortSignal.timeout(10000), // 10 seconds timeout
+    });
+
+    let isExpired = false;
+
+    // Check for HTTP status codes that indicate the offer is no longer available
+    if (response.status === 404 || response.status === 410) {
+      isExpired = true;
+    } else if (response.status === 200) {
+      // If status is 200, check the content for "offer not available" patterns
+      const text = await response.text();
+      const lowerText = text.toLowerCase();
+
+      // Common patterns that indicate an offer is no longer available
+      const expiredPatterns = [
+        "offer not available",
+        "offer is no longer available",
+        "this offer has expired",
+        "offer expired",
+        "no longer available",
+        "offer removed",
+        "offer deleted",
+        "nie jest już dostępna", // Polish
+        "nie jest już dostępne", // Polish
+        "oferta nie jest już dostępna", // Polish
+        "oferta wygasła", // Polish
+        "oferta została usunięta", // Polish
+        "oferta została skasowana", // Polish
+        "oferta nieaktualna", // Polish
+        "oferta niedostępna", // Polish
+      ];
+
+      isExpired = expiredPatterns.some((pattern) =>
+        lowerText.includes(pattern)
+      );
+    } else {
+      // For other status codes, assume the offer might be expired
+      isExpired = true;
+    }
+
+    // Update the alert if it's expired
+    if (isExpired) {
+      const { error: updateError } = await supabase
+        .from("alerts")
+        .update({ status: "expired" })
+        .eq("id", alertId)
+        .eq("user_id", session.user.id);
+
+      if (updateError) {
+        console.error("Failed to update alert as expired:", updateError);
+      } else {
+        revalidatePath("/dashboard");
+      }
+    }
+
+    return { is_expired: isExpired };
+  } catch (error) {
+    console.error("Error checking alert expiration:", error);
+
+    // If we can't check the offer (network error, timeout, etc.),
+    // we'll assume it might be expired and mark it as such
+    const { error: updateError } = await supabase
+      .from("alerts")
+      .update({ status: "expired" })
+      .eq("id", alertId)
+      .eq("user_id", session.user.id);
+
+    if (updateError) {
+      console.error("Failed to update alert as expired:", updateError);
+    } else {
+      revalidatePath("/dashboard");
+    }
+
+    return { is_expired: true };
+  }
+}

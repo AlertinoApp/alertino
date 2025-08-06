@@ -59,8 +59,12 @@ export default async function DashboardPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Filter out expired alerts for active counts
+  const activeAlerts =
+    alerts?.filter((alert) => alert.status !== "expired") || [];
   const newAlertsToday =
-    alerts?.filter((alert) => new Date(alert.created_at) >= today).length || 0;
+    activeAlerts.filter((alert) => new Date(alert.created_at) >= today)
+      .length || 0;
 
   const { data: subscription } = await supabase
     .from("subscriptions")
@@ -116,7 +120,7 @@ export default async function DashboardPage() {
           {/* Actions Section */}
           <ActionsSection
             activeFiltersCount={activeFilters?.length || 0}
-            totalAlertsCount={alerts?.length || 0}
+            totalAlertsCount={activeAlerts.length}
             newAlertsToday={newAlertsToday}
             lastRunDate={null}
             currentPlan={subscription?.plan || "free"}

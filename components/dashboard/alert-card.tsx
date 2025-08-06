@@ -20,6 +20,7 @@ import {
   markAlertAsNotInterested,
   restoreAlert,
   toggleAlertFavorite,
+  checkAlertExpired,
 } from "@/lib/actions/alert-actions";
 import { Alert } from "@/types/alerts";
 import Link from "next/link";
@@ -34,10 +35,12 @@ export function AlertCard({ alert }: AlertCardProps) {
   const [currentStatus, setCurrentStatus] = useState(alert.status);
   const [isFavorite, setIsFavorite] = useState(alert.is_favorite || false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [isCheckingExpired, setIsCheckingExpired] = useState(false);
 
   const isNew =
     new Date(alert.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
   const isNotInterested = currentStatus === "not_interested";
+  const isExpired = currentStatus === "expired";
 
   const handleStatusToggle = async () => {
     setIsUpdating(true);
@@ -82,6 +85,33 @@ export function AlertCard({ alert }: AlertCardProps) {
   // Use currentStatus instead of alert.status for rendering
   const isCurrentlyNotInterested = currentStatus === "not_interested";
 
+  const handleCheckExpired = async () => {
+    setIsCheckingExpired(true);
+
+    try {
+      const result = await checkAlertExpired(alert.id);
+
+      if (result.is_expired) {
+        setCurrentStatus("expired");
+        toast("⚠️ Offer no longer available", {
+          description:
+            "This alert has expired. If the offer remains unavailable, it will be automatically removed after 7 days.",
+        });
+      } else {
+        toast("✅ Offer is still available", {
+          description: "This offer is still active and available.",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to check alert expiration:", error);
+      toast("❌ Failed to check offer status", {
+        description: "Unable to verify if this offer is still available.",
+      });
+    } finally {
+      setIsCheckingExpired(false);
+    }
+  };
+
   const handleFavoriteToggle = async () => {
     setIsTogglingFavorite(true);
 
@@ -120,7 +150,8 @@ export function AlertCard({ alert }: AlertCardProps) {
     <Card
       className={cn(
         "hover:shadow-md transition-all duration-200",
-        isCurrentlyNotInterested && "opacity-60 bg-gray-50 border-gray-200"
+        (isCurrentlyNotInterested || isExpired) &&
+          "opacity-60 bg-gray-50 border-gray-200"
       )}
     >
       <CardContent className="p-4 sm:p-6">
@@ -129,7 +160,10 @@ export function AlertCard({ alert }: AlertCardProps) {
             <h3
               className={cn(
                 "font-medium text-sm sm:text-base leading-tight flex-1",
-                isCurrentlyNotInterested ? "text-gray-500" : "text-gray-900"
+                isCurrentlyNotInterested || isExpired
+                  ? "text-gray-500"
+                  : "text-gray-900",
+                isExpired && "line-through"
               )}
             >
               {alert.title}
@@ -170,6 +204,11 @@ export function AlertCard({ alert }: AlertCardProps) {
             {isFavorite && (
               <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
                 ⭐ Favorite
+              </Badge>
+            )}
+            {isExpired && (
+              <Badge className="bg-red-100 text-red-800 border-red-200">
+                ⚠️ Expired
               </Badge>
             )}
           </div>
@@ -228,53 +267,71 @@ export function AlertCard({ alert }: AlertCardProps) {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button
-            asChild
-            className={cn(
-              "flex-1 min-w-0 text-sm",
-              isCurrentlyNotInterested
-                ? "bg-gray-400 hover:bg-gray-500 text-white"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
-            )}
-            disabled={isCurrentlyNotInterested}
-          >
-            <Link
-              href={alert.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center"
+          {isExpired ? (
+            <Button
+              onClick={handleCheckExpired}
+              disabled={isCheckingExpired}
+              className="flex-1 min-w-0 text-sm bg-gray-400 hover:bg-gray-500 text-white"
+              title="Check if this offer is still available"
             >
-              <span className="truncate">View Listing</span>
-              <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
-            </Link>
-          </Button>
+              {isCheckingExpired ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <span>Check Availability</span>
+              )}
+            </Button>
+          ) : (
+            <>
+              <Button
+                asChild
+                className={cn(
+                  "flex-1 min-w-0 text-sm",
+                  isCurrentlyNotInterested
+                    ? "bg-gray-400 hover:bg-gray-500 text-white"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                )}
+                disabled={isCurrentlyNotInterested}
+              >
+                <Link
+                  href={alert.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center"
+                  onClick={handleCheckExpired}
+                >
+                  <span className="truncate">View Listing</span>
+                  <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
+                </Link>
+              </Button>
 
-          <Button
-            variant={isCurrentlyNotInterested ? "default" : "outline"}
-            onClick={handleStatusToggle}
-            disabled={isUpdating}
-            className={cn(
-              "sm:px-3 sm:min-w-0 sm:w-auto w-full text-sm",
-              isCurrentlyNotInterested
-                ? "bg-green-600 hover:bg-green-700 text-white"
-                : "hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-            )}
-          >
-            {isUpdating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : isCurrentlyNotInterested ? (
-              <>
-                <RotateCcw className="w-4 h-4 mr-1 flex-shrink-0" />
-                Restore
-              </>
-            ) : (
-              <>
-                <EyeOff className="w-4 h-4 mr-1 flex-shrink-0" />
-                <span className="sm:hidden">Not Interested</span>
-                <span className="hidden sm:inline">Not Interested</span>
-              </>
-            )}
-          </Button>
+              <Button
+                variant={isCurrentlyNotInterested ? "default" : "outline"}
+                onClick={handleStatusToggle}
+                disabled={isUpdating}
+                className={cn(
+                  "sm:px-3 sm:min-w-0 sm:w-auto w-full text-sm",
+                  isCurrentlyNotInterested
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                )}
+              >
+                {isUpdating ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : isCurrentlyNotInterested ? (
+                  <>
+                    <RotateCcw className="w-4 h-4 mr-1 flex-shrink-0" />
+                    Restore
+                  </>
+                ) : (
+                  <>
+                    <EyeOff className="w-4 h-4 mr-1 flex-shrink-0" />
+                    <span className="sm:hidden">Not Interested</span>
+                    <span className="hidden sm:inline">Not Interested</span>
+                  </>
+                )}
+              </Button>
+            </>
+          )}
         </div>
 
         <div className="mt-4 pt-4 border-t border-gray-100">

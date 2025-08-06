@@ -34,7 +34,12 @@ interface AlertsSectionProps {
 
 type SortField = "created_at" | "price" | "rooms" | "city" | "title" | "filter";
 type SortDirection = "asc" | "desc";
-type FilterStatus = "all" | "active" | "not_interested" | "favorites";
+type FilterStatus =
+  | "all"
+  | "active"
+  | "not_interested"
+  | "favorites"
+  | "expired";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -104,7 +109,10 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
       }
 
       // Status filter
-      if (statusFilter === "active" && alert.status === "not_interested") {
+      if (
+        statusFilter === "active" &&
+        (alert.status === "not_interested" || alert.status === "expired")
+      ) {
         return false;
       }
       if (
@@ -116,12 +124,46 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
       if (statusFilter === "favorites" && !alert.is_favorite) {
         return false;
       }
+      if (statusFilter === "expired" && alert.status !== "expired") {
+        return false;
+      }
 
       return true;
     });
 
     // Sort alerts
     filtered.sort((a, b) => {
+      // Priority sorting: favorites first, expired last
+      const aFavorite = a.is_favorite || false;
+      const bFavorite = b.is_favorite || false;
+      const aExpired = a.status === "expired";
+      const bExpired = b.status === "expired";
+
+      // Favorites always come first
+      if (aFavorite && !bFavorite) return -1; // a is favorite, b is not - put a before b
+      if (!aFavorite && bFavorite) return 1; // a is not favorite, b is - put a after b
+
+      // If both are favorites or both are not favorites, check status priority
+      if (aFavorite === bFavorite) {
+        // Status priority: active > not_interested > expired
+        const getStatusPriority = (
+          status: string | undefined,
+          isExpired: boolean
+        ) => {
+          if (isExpired) return 3; // expired = lowest priority
+          if (status === "not_interested") return 2; // not_interested = medium priority
+          return 1; // active = highest priority
+        };
+
+        const aPriority = getStatusPriority(a.status, aExpired);
+        const bPriority = getStatusPriority(b.status, bExpired);
+
+        if (aPriority !== bPriority) {
+          return aPriority - bPriority; // Lower number = higher priority
+        }
+      }
+
+      // If both have same favorite and status priority, apply normal sorting
       let comparison = 0;
 
       switch (sortField) {
@@ -346,6 +388,12 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                           <div className="flex items-center">
                             <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
                             Favorites Only
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="expired">
+                          <div className="flex items-center">
+                            <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                            Expired Only
                           </div>
                         </SelectItem>
                       </SelectContent>

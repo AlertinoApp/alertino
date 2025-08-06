@@ -6,7 +6,7 @@ export interface Alert {
   city: string;
   link: string;
   created_at: string;
-  status?: "active" | "not_interested";
+  status?: "active" | "not_interested" | "expired";
   filter_id?: string | null;
   is_favorite?: boolean;
   filters?: {
