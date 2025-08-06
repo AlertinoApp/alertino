@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
@@ -17,14 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Shield,
-  LogOut,
   Edit,
   Globe,
   Bell,
   Smartphone,
-  Monitor,
   AlertCircle,
   Cookie,
+  Lock,
+  Database,
 } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Profile } from "@/types/users";
@@ -33,6 +32,7 @@ import {
   deleteAccountAction,
 } from "@/lib/actions/profile-actions";
 import { toast } from "sonner";
+import { CookiePreferencesModal } from "@/components/account-settings/cookie-preferences-modal";
 
 interface SettingsTabProps {
   user: SupabaseUser;
@@ -40,7 +40,6 @@ interface SettingsTabProps {
 }
 
 export function SettingsTab({ profile }: SettingsTabProps) {
-  const [usageBasedPricing, setUsageBasedPricing] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(
     profile?.email_notifications ?? true
   );
@@ -156,60 +155,6 @@ export function SettingsTab({ profile }: SettingsTabProps) {
         </CardContent>
       </Card>
 
-      {/* Active Sessions */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Monitor className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Active Sessions</CardTitle>
-              <p className="text-sm text-slate-600">
-                Manage your active sessions
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <Monitor className="w-4 h-4 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Web</p>
-                <p className="text-sm text-slate-600">
-                  Chrome on macOS • Active now
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Revoke
-            </Button>
-          </div>
-
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <Smartphone className="w-4 h-4 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium">Mobile App</p>
-                <p className="text-sm text-slate-600">
-                  iOS App • Last active 2 hours ago
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Revoke
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Privacy Settings */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
@@ -226,61 +171,89 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Cookie Preferences */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Cookie className="w-4 h-4 text-slate-500" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">Cookie Preferences</p>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Manage your cookie settings and tracking preferences
+                </p>
+              </div>
+            </div>
+            <CookiePreferencesModal>
+              <Button variant="outline" size="sm">
+                <Edit className="w-4 h-4 mr-2" />
+                Manage
+              </Button>
+            </CookiePreferencesModal>
+          </div>
+
+          <Separator />
+
+          {/* Data Collection */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Database className="w-4 h-4 text-slate-500" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">Data Collection</p>
+                </div>
+                <p className="text-sm text-slate-600">
+                  We collect only essential data needed to provide our service
+                </p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" disabled>
+              <Edit className="w-4 h-4 mr-2" />
+              View Details
+            </Button>
+          </div>
+
+          <Separator />
+
+          {/* Third-Party Services */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Globe className="w-4 h-4 text-slate-500" />
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-medium">Share Data</p>
-                  <Badge variant="secondary" className="text-xs">
-                    Active
-                  </Badge>
+                  <p className="font-medium">Third-Party Services</p>
                 </div>
                 <p className="text-sm text-slate-600">
-                  Code data is shared to help improve Alertino.
+                  We use minimal third-party services for essential
+                  functionality
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" disabled>
               <Edit className="w-4 h-4 mr-2" />
-              Edit
+              View Details
             </Button>
           </div>
 
           <Separator />
 
+          {/* Data Retention */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Cookie className="w-4 h-4 text-slate-500" />
+              <Lock className="w-4 h-4 text-slate-500" />
               <div>
-                <p className="font-medium">Cookie Preferences</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">Data Retention</p>
+                </div>
                 <p className="text-sm text-slate-600">
-                  Manage your cookie settings and preferences
+                  Inactive data is automatically deleted after 12 months
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" disabled>
               <Edit className="w-4 h-4 mr-2" />
-              Edit
+              View Details
             </Button>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Monitor className="w-4 h-4 text-slate-500" />
-              <div>
-                <p className="font-medium">Usage-Based Pricing</p>
-                <p className="text-sm text-slate-600">
-                  Pay only for what you use
-                </p>
-              </div>
-            </div>
-            <Switch
-              checked={usageBasedPricing}
-              onCheckedChange={setUsageBasedPricing}
-            />
           </div>
         </CardContent>
       </Card>
