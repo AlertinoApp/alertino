@@ -226,7 +226,9 @@ export function AccountSettingsClient({
                           </DialogHeader>
                           <div className="space-y-4">
                             <div>
-                              <Label htmlFor="name">Full Name</Label>
+                              <Label htmlFor="name" className="mb-2">
+                                Full Name
+                              </Label>
                               <Input
                                 id="name"
                                 value={editName}

@@ -17,7 +17,6 @@ import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
 import { signOut } from "@/lib/actions/auth-actions";
-import { ThemeToggle } from "@/components/themes/theme-toggle";
 
 interface NavbarProps {
   user?: User;
@@ -48,9 +47,6 @@ export function Navbar({
   const avatarUrl = user?.user_metadata?.avatar_url;
 
   const displayName = fullName || "User";
-  const welcomeName = fullName
-    ? fullName.split(" ")[0]
-    : email?.split("@")[0] || "User";
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 transition-colors">
@@ -99,21 +95,12 @@ export function Navbar({
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                {/* Welcome Message - Only show on dashboard */}
-                {variant === "dashboard" && (
-                  <div className="hidden md:flex items-center gap-3">
-                    <span className="text-slate-700 dark:text-gray-300 font-medium">
-                      Hi, {welcomeName}!
-                    </span>
-                  </div>
-                )}
-
                 {/* Theme Toggle - Only show on dashboard */}
-                {variant === "dashboard" && (
+                {/* {variant === "dashboard" && (
                   <div className="flex items-center">
                     <ThemeToggle />
                   </div>
-                )}
+                )} */}
 
                 {/* User Dropdown */}
                 <DropdownMenu>

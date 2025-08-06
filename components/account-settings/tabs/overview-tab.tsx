@@ -234,10 +234,8 @@ export function OverviewTab({ subscription, trialInfo }: OverviewTabProps) {
                   </div>
                 </div>
 
-                {/* Button section - always at bottom */}
                 <div className="pt-4">
                   <Button
-                    variant="outline"
                     className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                     onClick={handleUpgradeToPro}
                     disabled={isLoading}
