@@ -160,6 +160,7 @@ export function FilterCard({ filter }: FilterCardProps) {
 
       <DeleteFilterDialog
         filterId={filter.id}
+        filterName={filter.name}
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
       />
