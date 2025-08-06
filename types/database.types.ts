@@ -163,6 +163,9 @@ export type Database = {
           status: string | null;
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
+          trial_end: string | null;
+          trial_start: string | null;
+          trial_used: boolean | null;
           updated_at: string | null;
           user_id: string | null;
         };
@@ -178,6 +181,9 @@ export type Database = {
           status?: string | null;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          trial_end?: string | null;
+          trial_start?: string | null;
+          trial_used?: boolean | null;
           updated_at?: string | null;
           user_id?: string | null;
         };
@@ -193,6 +199,9 @@ export type Database = {
           status?: string | null;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          trial_end?: string | null;
+          trial_start?: string | null;
+          trial_used?: boolean | null;
           updated_at?: string | null;
           user_id?: string | null;
         };

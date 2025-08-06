@@ -29,11 +29,19 @@ function calculateTrialDates(subscription: Stripe.Subscription) {
 
 export function determineTrialStatus(
   subscription: Stripe.Subscription,
-  existingSubscription: Subscription
+  existingSubscription: Subscription | null
 ): { trialStart: string | null; trialEnd: string | null; trialUsed: boolean } {
   const status = subscription.status as SubscriptionStatus;
   let { trialStart, trialEnd } = calculateTrialDates(subscription);
   let trialUsed = false;
+
+  console.log("Determining trial status:", {
+    subscriptionId: subscription.id,
+    status,
+    trialStart,
+    trialEnd,
+    existingTrialUsed: existingSubscription?.trial_used,
+  });
 
   // Mark trial as used if we have trial dates or status is trialing
   if (trialStart || trialEnd || status === "trialing") {
@@ -56,6 +64,12 @@ export function determineTrialStatus(
     if (!trialStart) trialStart = existingSubscription.trial_start;
     if (!trialEnd) trialEnd = existingSubscription.trial_end;
   }
+
+  console.log("Trial status determined:", {
+    trialStart,
+    trialEnd,
+    trialUsed,
+  });
 
   return { trialStart, trialEnd, trialUsed };
 }

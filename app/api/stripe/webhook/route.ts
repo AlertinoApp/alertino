@@ -30,24 +30,29 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       // Checkout events
       case "checkout.session.completed":
+        console.log("Processing checkout.session.completed webhook");
         await handleCheckoutSessionCompleted(event.data.object);
         break;
 
       // Subscription lifecycle events
       case "customer.subscription.created":
+        console.log("Processing customer.subscription.created webhook");
         await handleSubscriptionChange(event.data.object);
         break;
 
       case "customer.subscription.updated":
+        console.log("Processing customer.subscription.updated webhook");
         await handleSubscriptionChange(event.data.object);
         break;
 
       case "customer.subscription.deleted":
+        console.log("Processing customer.subscription.deleted webhook");
         await handleSubscriptionDeleted(event.data.object);
         break;
 
       // Trial events
       case "customer.subscription.trial_will_end":
+        console.log("Processing customer.subscription.trial_will_end webhook");
         await handleSubscriptionTrialWillEnd(event.data.object);
         break;
 

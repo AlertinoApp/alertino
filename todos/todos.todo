@@ -10,4 +10,6 @@ Todos:
 
 UI:
     ☐ [ ] update pricing page (build simple to Cursor pricing page)
+    ☐ [ ] rebuild profile and billing pages to one account page
+    ☐ [ ] update /billing/success and /billing/cancel
     ☐ [ ] implement dark theme 

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@supabase/supabase-js";
-import { LogOut, UserIcon, CreditCard, Home, Crown } from "lucide-react";
+import { LogOut, UserIcon, Home, Crown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Subscription, SubscriptionPlan } from "@/types/subscription";
@@ -173,21 +173,11 @@ export function Navbar({
 
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/profile"
+                        href="/account-settings"
                         className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <UserIcon className="mr-3 h-4 w-4" />
-                        <span>Profile Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/billing"
-                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
-                      >
-                        <CreditCard className="mr-3 h-4 w-4" />
-                        <span>Billing & Subscription</span>
+                        <span>Account Settings</span>
                       </Link>
                     </DropdownMenuItem>
 
