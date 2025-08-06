@@ -80,6 +80,29 @@ export async function updateFilterAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+export async function getFilterAlertCount(filterId: string) {
+  const supabase = await createClientForServer();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  const { count, error } = await supabase
+    .from("alerts")
+    .select("*", { count: "exact", head: true })
+    .eq("filter_id", filterId)
+    .eq("user_id", session.user.id);
+
+  if (error) {
+    throw new Error("Failed to count alerts");
+  }
+
+  return count || 0;
+}
+
 export async function deleteFilterAction(filterId: string) {
   const supabase = await createClientForServer();
   const {
@@ -90,6 +113,18 @@ export async function deleteFilterAction(filterId: string) {
     throw new Error("Not authenticated");
   }
 
+  // Delete associated alerts first
+  const { error: alertsError } = await supabase
+    .from("alerts")
+    .delete()
+    .eq("filter_id", filterId)
+    .eq("user_id", session.user.id);
+
+  if (alertsError) {
+    throw new Error("Failed to delete associated alerts");
+  }
+
+  // Delete the filter
   const { error } = await supabase
     .from("filters")
     .delete()
