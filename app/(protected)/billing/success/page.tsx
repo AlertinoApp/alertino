@@ -132,7 +132,8 @@ export default async function BillingSuccessPage() {
       href: "/dashboard",
       label: isTrialActive ? "Start Exploring" : "Go to Dashboard",
       icon: ArrowRight,
-      className: "w-full bg-blue-600 hover:bg-blue-700 h-12",
+      className:
+        "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
     },
   ];
 
@@ -140,24 +141,24 @@ export default async function BillingSuccessPage() {
   const secondaryActions: StatusPageAction[] = [
     {
       href: "/billing",
-      label: "Billing",
+      label: "View Billing",
       icon: Settings,
       variant: "outline",
-      className: "bg-transparent",
+      className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
     },
     isTrialActive
       ? {
           href: "/pricing",
-          label: "Plans",
+          label: "View Plans",
           icon: Crown,
           variant: "outline",
-          className: "bg-transparent",
+          className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
         }
       : {
           href: "/contact",
-          label: "Support",
+          label: "Get Support",
           variant: "outline",
-          className: "bg-transparent",
+          className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
         },
   ];
 
@@ -180,7 +181,7 @@ export default async function BillingSuccessPage() {
       iconColor={context.iconColor}
       iconBgColor={context.bgColor}
       showHeader={false}
-      contentClassName="p-8 text-center"
+      contentClassName="p-8 text-center max-w-2xl mx-auto"
       badge={badge}
       banner={banner}
       primaryActions={primaryActions}

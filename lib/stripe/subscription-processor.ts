@@ -31,6 +31,9 @@ export async function processSubscriptionUpdate(
     existingSubscription
   );
 
+  // Determine the actual plan - for trial subscriptions, use the plan from the price
+  const actualPlan = status === "canceled" ? "free" : plan;
+
   const subscriptionData: Partial<Subscription> & {
     user_id: string;
     stripe_subscription_id: string;
@@ -38,7 +41,7 @@ export async function processSubscriptionUpdate(
     user_id: userId,
     stripe_subscription_id: subscription.id,
     stripe_customer_id: customerId,
-    plan: status === "canceled" ? "free" : plan,
+    plan: actualPlan,
     status,
     interval: status === "canceled" ? null : interval,
     current_period_start: timestampToDate(
@@ -55,6 +58,16 @@ export async function processSubscriptionUpdate(
       ? timestampToDate(subscription.canceled_at).toISOString()
       : null,
   };
+
+  console.log("Processing subscription update:", {
+    userId,
+    subscriptionId: subscription.id,
+    plan: actualPlan,
+    status,
+    trialStart,
+    trialEnd,
+    trialUsed,
+  });
 
   await updateSubscription(subscriptionData);
 }

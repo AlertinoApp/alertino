@@ -10,14 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@supabase/supabase-js";
-import { LogOut, UserIcon, CreditCard, Home, Crown } from "lucide-react";
+import { LogOut, UserIcon, Home, Crown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
 import { signOut } from "@/lib/actions/auth-actions";
-import { ThemeToggle } from "@/components/themes/theme-toggle";
 
 interface NavbarProps {
   user?: User;
@@ -48,9 +47,6 @@ export function Navbar({
   const avatarUrl = user?.user_metadata?.avatar_url;
 
   const displayName = fullName || "User";
-  const welcomeName = fullName
-    ? fullName.split(" ")[0]
-    : email?.split("@")[0] || "User";
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 transition-colors">
@@ -99,21 +95,12 @@ export function Navbar({
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                {/* Welcome Message - Only show on dashboard */}
-                {variant === "dashboard" && (
-                  <div className="hidden md:flex items-center gap-3">
-                    <span className="text-slate-700 dark:text-gray-300 font-medium">
-                      Hi, {welcomeName}!
-                    </span>
-                  </div>
-                )}
-
                 {/* Theme Toggle - Only show on dashboard */}
-                {variant === "dashboard" && (
+                {/* {variant === "dashboard" && (
                   <div className="flex items-center">
                     <ThemeToggle />
                   </div>
-                )}
+                )} */}
 
                 {/* User Dropdown */}
                 <DropdownMenu>
@@ -173,21 +160,11 @@ export function Navbar({
 
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/profile"
+                        href="/account-settings"
                         className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <UserIcon className="mr-3 h-4 w-4" />
-                        <span>Profile Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/billing"
-                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
-                      >
-                        <CreditCard className="mr-3 h-4 w-4" />
-                        <span>Billing & Subscription</span>
+                        <span>Account Settings</span>
                       </Link>
                     </DropdownMenuItem>
 

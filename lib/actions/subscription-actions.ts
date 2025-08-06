@@ -78,6 +78,13 @@ export async function createPortalSessionAction() {
   const user = await getAuthenticatedUser();
   const subscription = await getUserSubscription(user.id);
 
+  // Check if user has a subscription with stripe_customer_id
+  if (!subscription || !subscription.stripe_customer_id) {
+    throw new Error(
+      "No active subscription found. Please subscribe to a plan first."
+    );
+  }
+
   const portalSession = await createCustomerPortalSession(
     subscription.stripe_customer_id,
     getAppUrl("/billing")

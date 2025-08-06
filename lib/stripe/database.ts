@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { stripe } from "./config";
 import type { Subscription } from "@/types/subscription";
 
 const supabaseAdmin = createClient(
@@ -8,7 +9,7 @@ const supabaseAdmin = createClient(
 
 export async function getUserSubscription(
   userId: string
-): Promise<Subscription> {
+): Promise<Subscription | null> {
   if (!userId) {
     throw new Error("User ID is required");
   }
@@ -74,4 +75,59 @@ export async function getUserIdByStripeSubscription(
     .single();
 
   return subRecord?.user_id || null;
+}
+
+export async function getUserIdByStripeCustomer(
+  customerId: string
+): Promise<string | null> {
+  const { data: subRecord } = await supabaseAdmin
+    .from("subscriptions")
+    .select("user_id")
+    .eq("stripe_customer_id", customerId)
+    .single();
+
+  return subRecord?.user_id || null;
+}
+
+export async function syncSubscriptionFromStripe(
+  customerId: string
+): Promise<void> {
+  try {
+    // Get all subscriptions for this customer from Stripe
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      limit: 1,
+      expand: ["data.items.data.price"],
+    });
+
+    if (subscriptions.data.length === 0) {
+      console.log("No subscriptions found for customer:", customerId);
+      return;
+    }
+
+    const subscription = subscriptions.data[0];
+    const userId = await getUserIdByStripeCustomer(customerId);
+
+    if (!userId) {
+      console.error("No user found for customer:", customerId);
+      return;
+    }
+
+    console.log("Syncing subscription from Stripe:", {
+      subscriptionId: subscription.id,
+      userId,
+      status: subscription.status,
+    });
+
+    // Process the subscription update
+    const { processSubscriptionUpdate } = await import(
+      "./subscription-processor"
+    );
+    await processSubscriptionUpdate(subscription, userId, customerId);
+
+    console.log("Successfully synced subscription from Stripe");
+  } catch (error) {
+    console.error("Error syncing subscription from Stripe:", error);
+    throw error;
+  }
 }

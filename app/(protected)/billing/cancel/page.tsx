@@ -119,13 +119,16 @@ export default async function BillingCancelPage() {
           href: "/billing",
           label: "Convert Trial",
           icon: Crown,
-          className: "flex-1 bg-orange-600 hover:bg-orange-700",
+          className:
+            "flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium h-12 rounded-lg shadow-sm",
         },
         {
           href: "/dashboard",
           label: "Continue Trial",
           icon: ArrowLeft,
           variant: "outline",
+          className:
+            "flex-1 bg-white border-slate-200 hover:bg-slate-50 font-medium h-12 rounded-lg",
         },
       ]
     : [
@@ -133,13 +136,16 @@ export default async function BillingCancelPage() {
           href: "/pricing",
           label: hasUsedTrial ? "Upgrade Now" : "Try Premium Free",
           icon: Crown,
-          className: "flex-1 bg-blue-600 hover:bg-blue-700",
+          className:
+            "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
         },
         {
           href: "/billing",
           label: "Back to Billing",
           icon: ArrowLeft,
           variant: "outline",
+          className:
+            "flex-1 bg-white border-slate-200 hover:bg-slate-50 font-medium h-12 rounded-lg",
         },
       ];
 
@@ -154,7 +160,7 @@ export default async function BillingCancelPage() {
     label: "Contact Support",
     icon: HelpCircle,
     variant: "ghost",
-    className: "text-blue-600 hover:text-blue-700",
+    className: "text-blue-600 hover:text-blue-700 font-medium",
   };
 
   return (
@@ -165,6 +171,7 @@ export default async function BillingCancelPage() {
       iconColor={context.iconColor}
       iconBgColor={context.bgColor}
       backgroundGradient="from-gray-50 via-white to-gray-50"
+      contentClassName="p-8 text-center max-w-2xl mx-auto"
       banner={banner}
       primaryActions={primaryActions}
       supportText={supportText}
