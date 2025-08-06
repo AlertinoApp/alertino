@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  User,
-  CreditCard,
-  Settings,
-  BarChart3,
-  MessageSquare,
-  Edit,
-} from "lucide-react";
+import { User, CreditCard, Settings, MessageSquare, Edit } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +16,6 @@ import { Label } from "@/components/ui/label";
 import { OverviewTab } from "./tabs/overview-tab";
 import { SettingsTab } from "./tabs/settings-tab";
 import { BillingTab } from "./tabs/billing-tab";
-import { UsageTab } from "./tabs/usage-tab";
 import { ContactTab } from "./tabs/contact-tab";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Subscription, TrialInfo } from "@/types/subscription";
@@ -41,7 +33,7 @@ interface AccountSettingsClientProps {
   defaultTab: string;
 }
 
-type TabType = "overview" | "settings" | "billing" | "usage" | "contact";
+type TabType = "overview" | "settings" | "billing" | "contact";
 
 interface TabItem {
   id: TabType;
@@ -55,7 +47,7 @@ const tabs: TabItem[] = [
     id: "overview",
     label: "Overview",
     icon: <User className="w-4 h-4" />,
-    description: "Account summary and quick actions",
+    description: "Account summary and usage analytics",
   },
   {
     id: "settings",
@@ -68,12 +60,6 @@ const tabs: TabItem[] = [
     label: "Billing & Invoices",
     icon: <CreditCard className="w-4 h-4" />,
     description: "Subscription and payment management",
-  },
-  {
-    id: "usage",
-    label: "Usage",
-    icon: <BarChart3 className="w-4 h-4" />,
-    description: "Usage statistics and limits",
   },
   {
     id: "contact",
@@ -169,10 +155,6 @@ export function AccountSettingsClient({
             subscription={subscription}
             trialInfo={trialInfo}
           />
-        );
-      case "usage":
-        return (
-          <UsageTab filtersCount={filtersCount} alertsCount={alertsCount} />
         );
       case "contact":
         return <ContactTab />;

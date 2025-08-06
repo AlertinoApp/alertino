@@ -191,3 +191,26 @@ export async function resetSearchCount(
 
   revalidatePath("/dashboard");
 }
+
+/**
+ * Get the last run date for a user
+ */
+export async function getLastRunDate(userId: string): Promise<Date | null> {
+  const supabase = await createClientForServer();
+
+  const { data, error } = await supabase
+    .from("search_logs")
+    .select("updated_at")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 is "not found"
+    console.error("Error fetching last run date:", error);
+    return null;
+  }
+
+  return data?.updated_at ? new Date(data.updated_at) : null;
+}

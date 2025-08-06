@@ -1,223 +1,263 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  MessageSquare,
   Mail,
-  HelpCircle,
-  FileText,
-  ExternalLink,
+  MapPin,
   Clock,
-  Users,
+  MessageCircle,
+  Send,
+  CheckCircle,
+  HelpCircle,
+  ExternalLink,
 } from "lucide-react";
+import { toast } from "sonner";
+
+const contactMethods = [
+  {
+    icon: Mail,
+    title: "Email Support",
+    description: "Get help via email",
+    contact: "support@alertino.com",
+    action: "mailto:support@alertino.com",
+  },
+  {
+    icon: MessageCircle,
+    title: "Live Chat",
+    description: "Chat with our team",
+    contact: "Available 9 AM - 6 PM CET",
+    action: "#",
+  },
+  {
+    icon: MapPin,
+    title: "Office",
+    description: "Visit our office",
+    contact: "Warsaw, Poland",
+    action: "#",
+  },
+  {
+    icon: Clock,
+    title: "Response Time",
+    description: "We typically respond",
+    contact: "Within 24 hours",
+    action: null,
+  },
+];
 
 export function ContactTab() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    // Simulate form submission
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // In a real app, you would send this to your backend
+    console.log("Contact form submitted:", formData);
+
+    setStatus("success");
+    setFormData({ name: "", email: "", subject: "", message: "" });
+    toast.success("Message sent successfully!", {
+      description: "We'll get back to you within 24 hours.",
+    });
+
+    // Reset success message after 5 seconds
+    setTimeout(() => setStatus("idle"), 5000);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   return (
     <div className="space-y-6">
-      {/* Support Options */}
+      {/* Contact Form */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <HelpCircle className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Get Help</CardTitle>
-              <p className="text-sm text-slate-600">
-                Choose how you&apos;d like to get support
-              </p>
-            </div>
-          </div>
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            Send us a message
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Documentation */}
-            <div className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-medium">Documentation</h3>
-                  <p className="text-sm text-slate-600">
-                    Browse our guides and tutorials
-                  </p>
-                </div>
+          {status === "success" && (
+            <Alert className="mb-6 border-green-200 bg-green-50">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">
+                Thank you for your message! We&apos;ll get back to you within 24
+                hours.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your name"
+                />
               </div>
-              <Button variant="outline" className="w-full">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View Docs
-              </Button>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="your@email.com"
+                />
+              </div>
             </div>
 
-            {/* Email Support */}
-            <div className="p-4 border border-slate-200 rounded-lg hover:border-green-300 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-medium">Email Support</h3>
-                  <p className="text-sm text-slate-600">Get help via email</p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full">
-                <Mail className="w-4 h-4 mr-2" />
-                Send Email
-              </Button>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Subject</Label>
+              <Input
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+                placeholder="What can we help you with?"
+              />
             </div>
-          </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="message">Message</Label>
+              <Textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                placeholder="Tell us more about your question or issue..."
+                rows={5}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full sm:w-auto"
+            >
+              {status === "loading" ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Message
+                </>
+              )}
+            </Button>
+          </form>
         </CardContent>
       </Card>
 
       {/* Contact Information */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Contact Information</CardTitle>
-              <p className="text-sm text-slate-600">
-                Get in touch with our team
-              </p>
-            </div>
-          </div>
+          <CardTitle className="text-xl font-bold text-gray-900">
+            Get in touch
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-medium">Email Support</p>
-                  <p className="text-sm text-slate-600">support@alertino.com</p>
-                </div>
-              </div>
-              <Badge variant="secondary">24/7</Badge>
-            </div>
+          <p className="text-gray-600 mb-8">
+            We&apos;re here to help! Choose the best way to reach us and
+            we&apos;ll get back to you as soon as possible.
+          </p>
 
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-green-600" />
-                </div>
-                <div>
-                  <p className="font-medium">Response Time</p>
-                  <p className="text-sm text-slate-600">
-                    Usually within 2-4 hours
-                  </p>
-                </div>
-              </div>
-              <Badge variant="secondary">Fast</Badge>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Users className="w-4 h-4 text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-medium">Support Team</p>
-                  <p className="text-sm text-slate-600">
-                    Expert team ready to help
-                  </p>
-                </div>
-              </div>
-              <Badge variant="secondary">Online</Badge>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {contactMethods.map((method, index) => (
+              <Card
+                key={index}
+                className="hover:shadow-md transition-shadow duration-200 border-0 shadow-sm"
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <method.icon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {method.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {method.description}
+                      </p>
+                      {method.action ? (
+                        <a
+                          href={method.action}
+                          className="text-blue-600 hover:text-blue-700 font-medium text-sm inline-flex items-center gap-1"
+                        >
+                          {method.contact}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span className="text-gray-900 font-medium text-sm">
+                          {method.contact}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* FAQ */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <HelpCircle className="w-5 h-5 text-purple-600" />
+      {/* Help Center */}
+      <Card className="border-0 shadow-sm bg-blue-50 border-blue-200">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <HelpCircle className="w-5 h-5 text-blue-600" />
             </div>
-            <div>
-              <CardTitle className="text-lg">
-                Frequently Asked Questions
-              </CardTitle>
-              <p className="text-sm text-slate-600">
-                Find answers to common questions
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="border-b border-slate-200 pb-4">
-              <h3 className="font-medium text-slate-900 mb-2">
-                How do I create my first filter?
+            <div className="flex-1">
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Need immediate help?
               </h3>
-              <p className="text-sm text-slate-600">
-                Go to your dashboard and click &lsquo;Add Filter&lsquo; to
-                create your first search filter. You can specify city, price
-                range, and number of rooms.
+              <p className="text-blue-800 text-sm mb-4">
+                Check our Help Center for instant answers to common questions
+                about setting up filters, managing alerts, and troubleshooting.
               </p>
+              <a
+                href="/help"
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm"
+              >
+                Visit Help Center →
+              </a>
             </div>
-
-            <div className="border-b border-slate-200 pb-4">
-              <h3 className="font-medium text-slate-900 mb-2">
-                How often are alerts checked?
-              </h3>
-              <p className="text-sm text-slate-600">
-                Alerts are checked automatically based on your plan: Free
-                (manual), Basic (every 4 hours), Pro (every 1 hour).
-              </p>
-            </div>
-
-            <div className="border-b border-slate-200 pb-4">
-              <h3 className="font-medium text-slate-900 mb-2">
-                Can I cancel my subscription anytime?
-              </h3>
-              <p className="text-sm text-slate-600">
-                Yes, you can cancel your subscription at any time. You&apos;ll
-                continue to have access until the end of your current billing
-                period.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-medium text-slate-900 mb-2">
-                How do I upgrade my plan?
-              </h3>
-              <p className="text-sm text-slate-600">
-                Go to the Billing tab in your account settings to view available
-                plans and upgrade options. You can upgrade at any time.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Quick Actions */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" className="flex-1">
-              <FileText className="w-4 h-4 mr-2" />
-              View Documentation
-            </Button>
-            <Button variant="outline" className="flex-1">
-              <Mail className="w-4 h-4 mr-2" />
-              Contact Support
-            </Button>
-            <Button variant="outline" className="flex-1">
-              <HelpCircle className="w-4 h-4 mr-2" />
-              Report a Bug
-            </Button>
           </div>
         </CardContent>
       </Card>
