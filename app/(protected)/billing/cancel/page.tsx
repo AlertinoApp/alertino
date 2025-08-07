@@ -122,7 +122,7 @@ export default async function BillingCancelPage() {
     : [
         {
           href: "/pricing",
-          label: hasUsedTrial ? "Upgrade Now" : "Try Premium Free",
+          label: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
           icon: Crown,
           className:
             "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
