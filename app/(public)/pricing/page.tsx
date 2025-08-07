@@ -5,17 +5,12 @@ import { getUserAndSubscription } from "@/lib/actions/auth-actions";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
 
 export default async function PricingPage() {
-  const { session, subscription } = await getUserAndSubscription();
-
-  const trialInfo = await getTrialInfoAction();
+  const { session } = await getUserAndSubscription();
+  const trialInfo = session ? await getTrialInfoAction() : null;
 
   return (
     <div className="min-h-screen bg-white">
-      <PricingSection
-        user={session?.user}
-        subscription={subscription}
-        trialInfo={trialInfo}
-      />
+      <PricingSection user={session?.user} trialInfo={trialInfo} />
       <PricingFAQ />
       <LandingFooter />
     </div>

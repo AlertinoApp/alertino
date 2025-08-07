@@ -41,7 +41,7 @@ export function OverviewTab({
   trialInfo,
 }: OverviewTabProps) {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<"basic" | "pro" | null>(null);
   const [searchStats, setSearchStats] = useState<{
     today: number;
     weekTotal: number;
@@ -163,7 +163,7 @@ export function OverviewTab({
   };
 
   const handleStartBasicNow = async () => {
-    setIsLoading(true);
+    setLoadingPlan("basic");
     const loadingToast = toast.loading("Starting Basic plan...", {
       description: "Redirecting to checkout.",
     });
@@ -178,12 +178,12 @@ export function OverviewTab({
       toast("❌ Failed to start Basic plan", {
         description: "Please try again shortly.",
       });
-      setIsLoading(false);
+      setLoadingPlan(null);
     }
   };
 
   const handleUpgradeToPro = async () => {
-    setIsLoading(true);
+    setLoadingPlan("pro");
     const loadingToast = toast.loading("Upgrading to Pro...", {
       description: "Redirecting to checkout.",
     });
@@ -197,7 +197,7 @@ export function OverviewTab({
       toast("❌ Failed to upgrade to Pro", {
         description: "Please try again shortly.",
       });
-      setIsLoading(false);
+      setLoadingPlan(null);
     }
   };
 
@@ -273,9 +273,28 @@ export function OverviewTab({
                   <Button
                     variant="outline"
                     className="w-fit !py-1 rounded-md !px-2 !text-sm !text-white !bg-gray-900 hover:!bg-gray-800 disabled:opacity-50 mt-4"
-                    onClick={() => setIsUpgradeModalOpen(true)}
+                    onClick={async () => {
+                      setLoadingPlan("basic");
+                      const loadingToast = toast.loading("Starting trial...", {
+                        description: "Redirecting to checkout.",
+                      });
+                      try {
+                        await subscribeToAction("basic", "month");
+                        toast.dismiss(loadingToast);
+                      } catch (error) {
+                        console.error("Failed to start trial:", error);
+                        toast.dismiss(loadingToast);
+                        toast("❌ Failed to start trial", {
+                          description: "Please try again shortly.",
+                        });
+                        setLoadingPlan(null);
+                      }
+                    }}
+                    disabled={loadingPlan === "basic"}
                   >
-                    Start 14-day trial
+                    {loadingPlan === "basic"
+                      ? "Redirecting..."
+                      : "Start 14-day trial"}
                   </Button>
                 </div>
               </div>
@@ -300,9 +319,11 @@ export function OverviewTab({
                   <Button
                     className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                     onClick={handleUpgradeToPro}
-                    disabled={isLoading}
+                    disabled={loadingPlan === "pro"}
                   >
-                    {isLoading ? "Redirecting..." : "Upgrade to Pro"}
+                    {loadingPlan === "pro"
+                      ? "Redirecting..."
+                      : "Upgrade to Pro"}
                   </Button>
                 </div>
               </div>
@@ -382,9 +403,11 @@ export function OverviewTab({
                   <Button
                     className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                     onClick={handleUpgradeToPro}
-                    disabled={isLoading}
+                    disabled={loadingPlan === "pro"}
                   >
-                    {isLoading ? "Redirecting..." : "Upgrade to Pro"}
+                    {loadingPlan === "pro"
+                      ? "Redirecting..."
+                      : "Upgrade to Pro"}
                   </Button>
                 </div>
               </div>
@@ -801,9 +824,9 @@ export function OverviewTab({
               <Button
                 className="w-full sm:flex-1 h-11 sm:h-10 !text-white !bg-gray-900 hover:!bg-gray-800 border-gray-900 hover:border-gray-800"
                 onClick={handleStartBasicNow}
-                disabled={isLoading}
+                disabled={loadingPlan === "basic"}
               >
-                {isLoading ? "Starting..." : "Start Basic Now"}
+                {loadingPlan === "basic" ? "Starting..." : "Start Basic Now"}
               </Button>
             </div>
           </div>
