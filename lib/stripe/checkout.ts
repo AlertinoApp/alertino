@@ -1,6 +1,5 @@
 import { stripe } from "./config";
 import { getOrCreateCustomer } from "./customer";
-import { TRIAL_DAYS } from "./constants";
 import type Stripe from "stripe";
 import { getUserTrialInfo } from "./subscription";
 
@@ -20,6 +19,18 @@ export async function createCheckoutSession({
   const customerId = await getOrCreateCustomer(userId, userEmail);
   const trialInfo = await getUserTrialInfo(userId);
 
+  // Get the plan type from the price ID mapping
+  const { PLAN_MAPPING } = await import("./constants");
+  const planType = PLAN_MAPPING[priceId];
+
+  // Get the plan configuration to check trial days
+  const { getEnhancedSubscriptionConfig } = await import("./plans");
+  const planConfig = planType ? getEnhancedSubscriptionConfig(planType) : null;
+
+  // Only add trial if plan supports it and user is eligible
+  const trialDays =
+    planConfig?.trialDays && trialInfo.isEligible ? planConfig.trialDays : null;
+
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     customer: customerId,
     line_items: [{ price: priceId, quantity: 1 }],
@@ -29,7 +40,7 @@ export async function createCheckoutSession({
     metadata: { user_id: userId },
     subscription_data: {
       metadata: { user_id: userId },
-      ...(trialInfo.isEligible && { trial_period_days: TRIAL_DAYS }),
+      ...(trialDays && { trial_period_days: trialDays }),
     },
     allow_promotion_codes: true,
   };

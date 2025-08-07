@@ -257,7 +257,7 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
       filtersType: "advanced",
       autoCheckLimit: 200,
     },
-    trialDays: TRIAL_DAYS,
+    trialDays: 0,
   },
 };
 

@@ -3,20 +3,38 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { NumberTicker } from "@/components/magicui/number-ticker";
+import { useRouter } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
+import { createCheckoutSessionAction } from "@/lib/actions/subscription-actions";
+import { toast } from "sonner";
+import { getPriceId } from "@/lib/stripe/utils";
+import type { SubscriptionPlan } from "@/types/subscription";
 
 type SubscriptionInterval = "month" | "year";
 
-interface PricingSectionProps {}
+interface PricingSectionProps {
+  user?: User | null;
+  trialInfo?: {
+    isEligible: boolean;
+    daysRemaining: number | null;
+    isActive: boolean;
+    hasUsedTrial: boolean;
+  } | null;
+}
 
-export function PricingSection({}: PricingSectionProps) {
+export function PricingSection({ user, trialInfo }: PricingSectionProps) {
   const [interval, setInterval] = useState<SubscriptionInterval>("month");
+  const router = useRouter();
+  const isLoggedIn = !!user;
+  const canStartTrial = trialInfo?.isEligible ?? false;
 
   const plans = [
     {
       name: "Free",
       price: { monthly: 0, yearly: 0 },
-      description: "Perfect for getting started",
+      description: "Hunt your apartment with basic features",
       features: [
         "3 active filters",
         "10 searches per day",
@@ -27,7 +45,7 @@ export function PricingSection({}: PricingSectionProps) {
     {
       name: "Basic",
       price: { monthly: 39, yearly: 312 }, // 20% discount
-      description: "Everything you need to find your apartment",
+      description: "Perfect for serious apartment hunters",
       popular: true,
       features: [
         "10 active filters",
@@ -40,7 +58,7 @@ export function PricingSection({}: PricingSectionProps) {
     {
       name: "Pro",
       price: { monthly: 99, yearly: 792 }, // 20% discount
-      description: "For power users who need maximum flexibility",
+      description: "Maximum power and flexibility",
       features: [
         "Unlimited filters",
         "200 searches per day",
@@ -60,39 +78,49 @@ export function PricingSection({}: PricingSectionProps) {
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-16">
-          <h2 className="text-left text-2xl font-semibold mb-8 text-slate-900">
-            Individual Plans
-          </h2>
+        <div className="text-center mb-16">
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
+            Simple, Transparent Pricing
+          </h1>
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+            Choose the perfect plan for your apartment hunting needs. Start free
+            and upgrade as you grow.
+          </p>
 
           {/* Interval Toggle */}
           <div className="flex justify-center mb-12">
-            <div className="relative flex w-fit overflow-hidden rounded-md border border-slate-200">
-              <button
-                onClick={() => setInterval("month")}
-                className={`relative z-10 flex items-center justify-center px-6 py-3 text-sm font-mono uppercase tracking-wider transition-colors duration-300 ${
-                  interval === "month"
-                    ? "text-slate-900"
-                    : "text-slate-400 hover:text-slate-600"
+            <div className="inline-flex items-center gap-3 p-1 bg-white rounded-xl shadow-sm border border-slate-200">
+              <span
+                className={`text-sm font-medium px-3 py-1 ${
+                  interval === "month" ? "text-slate-900" : "text-slate-600"
                 }`}
               >
                 Monthly
-              </button>
+              </span>
               <button
-                onClick={() => setInterval("year")}
-                className={`relative z-10 flex items-center justify-center px-6 py-3 text-sm font-mono uppercase tracking-wider transition-colors duration-300 ${
-                  interval === "year"
-                    ? "text-slate-900"
-                    : "text-slate-400 hover:text-slate-600"
+                onClick={() =>
+                  setInterval(interval === "month" ? "year" : "month")
+                }
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  interval === "year" ? "bg-blue-600" : "bg-slate-200"
                 }`}
+                aria-label={`Switch to ${interval === "month" ? "yearly" : "monthly"} billing`}
               >
-                Yearly (save 20%)
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
+                    interval === "year" ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
               </button>
-              <span
-                className={`absolute top-0 z-[1] rounded-md bg-white border border-slate-200 transition-all duration-400 ease-out h-full ${
-                  interval === "year" ? "left-[50%] w-[50%]" : "left-0 w-[50%]"
-                }`}
-              />
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-sm font-medium px-3 py-1 ${
+                    interval === "year" ? "text-slate-900" : "text-slate-600"
+                  }`}
+                >
+                  Yearly (save 20%)
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -105,18 +133,31 @@ export function PricingSection({}: PricingSectionProps) {
             return (
               <div key={index} className="list-none">
                 <div className="relative h-full rounded-2xl md:rounded-3xl">
-                  <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8">
+                  <div
+                    className={`relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border ${plan.popular ? "border-blue-500 shadow-blue-100" : "border-slate-200"} bg-white p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8`}
+                  >
                     <div className="relative flex flex-col gap-3.5 md:gap-4">
-                      <h2 className="text-base md:text-xl font-semibold">
-                        {plan.name}
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl md:text-2xl font-semibold">
+                          {plan.name}
+                        </h2>
+                        {plan.popular && (
+                          <Badge className="bg-blue-600 text-white">
+                            Most Popular
+                          </Badge>
+                        )}
+                      </div>
+
+                      <p className="text-sm md:text-base text-slate-600">
+                        {plan.description}
+                      </p>
 
                       <p className="text-5xl leading-tight font-semibold flex items-baseline gap-1 md:gap-2">
                         {plan.name === "Free" ? (
                           "Free"
                         ) : (
                           <>
-                            ${Math.round(price)}
+                            $<NumberTicker value={Math.round(price)} />
                             <span className="text-sm md:text-base font-normal text-slate-400">
                               /mo
                             </span>
@@ -127,7 +168,7 @@ export function PricingSection({}: PricingSectionProps) {
                       <hr className="border-slate-200" />
 
                       <div className="flex flex-col gap-4 mt-2 mb-3">
-                        <p className="text-sm md:text-base mb-0 flex items-center gap-2 font-semibold text-slate-400">
+                        <p className="text-sm md:text-base mb-0 flex items-center gap-2 font-semibold text-slate-600">
                           {index === 0
                             ? "Includes"
                             : `Everything in ${plans[index - 1].name}, plus`}
@@ -139,7 +180,7 @@ export function PricingSection({}: PricingSectionProps) {
                               key={featureIndex}
                               className="text-sm md:text-base mb-0 flex items-center gap-2 text-slate-700"
                             >
-                              <Check className="w-3 h-3 text-slate-600 flex-shrink-0" />
+                              <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
                               <span>{feature}</span>
                             </li>
                           ))}
@@ -149,14 +190,46 @@ export function PricingSection({}: PricingSectionProps) {
 
                     <div className="relative">
                       <Button
-                        asChild
+                        onClick={async () => {
+                          if (isLoggedIn) {
+                            if (plan.name === "Free") {
+                              router.push("/dashboard");
+                              return;
+                            }
+                            try {
+                              const planType =
+                                plan.name.toLowerCase() as SubscriptionPlan;
+                              // Only Basic plan can have trial
+                              if (planType === "basic" && canStartTrial) {
+                                const priceId = getPriceId("basic", interval);
+                                await createCheckoutSessionAction(priceId);
+                              } else if (planType === "pro") {
+                                const priceId = getPriceId("pro", interval);
+                                await createCheckoutSessionAction(priceId);
+                              } else {
+                                const priceId = getPriceId("basic", interval);
+                                await createCheckoutSessionAction(priceId);
+                              }
+                            } catch (error) {
+                              console.error(
+                                "Failed to create checkout session:",
+                                error
+                              );
+                              toast.error(
+                                "Failed to redirect to checkout. Please try again."
+                              );
+                            }
+                          } else {
+                            router.push("/login");
+                          }
+                        }}
                         className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium p-3 md:px-4 md:py-3.5 text-sm md:text-base"
                       >
-                        <Link href="/login">
-                          {plan.name === "Free"
-                            ? "Get Started"
+                        {plan.name === "Free"
+                          ? "Get Started"
+                          : plan.name === "Basic" && canStartTrial
+                            ? "Start Basic Trial"
                             : `Get ${plan.name}`}
-                        </Link>
                       </Button>
                     </div>
                   </div>
