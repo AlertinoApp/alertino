@@ -56,6 +56,38 @@ export async function POST(request: NextRequest) {
         await handleSubscriptionTrialWillEnd(event.data.object);
         break;
 
+      // Invoice events (for billing data)
+      case "invoice.created":
+        console.log("Processing invoice.created webhook");
+        // No action needed - invoices are fetched on-demand
+        break;
+
+      case "invoice.payment_succeeded":
+        console.log("Processing invoice.payment_succeeded webhook");
+        // No action needed - invoices are fetched on-demand
+        break;
+
+      case "invoice.payment_failed":
+        console.log("Processing invoice.payment_failed webhook");
+        // No action needed - invoices are fetched on-demand
+        break;
+
+      // Payment method events
+      case "payment_method.attached":
+        console.log("Processing payment_method.attached webhook");
+        // No action needed - payment methods are fetched on-demand
+        break;
+
+      case "payment_method.detached":
+        console.log("Processing payment_method.detached webhook");
+        // No action needed - payment methods are fetched on-demand
+        break;
+
+      case "payment_method.updated":
+        console.log("Processing payment_method.updated webhook");
+        // No action needed - payment methods are fetched on-demand
+        break;
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
