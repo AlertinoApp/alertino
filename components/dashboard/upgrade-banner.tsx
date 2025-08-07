@@ -238,7 +238,7 @@ export function UpgradeBanner({
       case "trial_ending":
       case "trial_active":
       case "ending_soon":
-        return "/billing";
+        return "/account-settings?tab=billing";
       case "approaching_limit":
       case "new_user":
       case "upgrade_available":

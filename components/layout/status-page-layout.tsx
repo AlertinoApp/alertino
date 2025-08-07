@@ -1,8 +1,9 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
+import Link from "next/link";
 
 export interface StatusPageAction {
   href: string;
@@ -106,7 +107,6 @@ export function StatusPageLayout({
   supportText,
   supportAction,
   children,
-  showHeader = true,
   cardClassName = "",
   contentClassName = "",
 }: StatusPageLayoutProps) {
@@ -118,18 +118,18 @@ export function StatusPageLayout({
 
     return (
       <div
-        className={`${variant.bgColor} border ${variant.borderColor} rounded-lg p-4 mb-6`}
+        className={`${variant.bgColor} border ${variant.borderColor} rounded-lg p-4`}
       >
-        <div className="flex items-start">
+        <div className="flex items-start gap-3">
           {BannerIcon && (
-            <BannerIcon
-              className={`w-5 h-5 ${variant.iconColor} mr-2 mt-0.5 flex-shrink-0`}
-            />
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+              <BannerIcon className={`w-4 h-4 ${variant.iconColor}`} />
+            </div>
           )}
           <div>
-            <p className={`text-sm font-medium ${variant.titleColor} mb-1`}>
+            <div className={`font-medium ${variant.titleColor} mb-1`}>
               {banner.title}
-            </p>
+            </div>
             <p className={`text-sm ${variant.textColor}`}>
               {banner.description}
             </p>
@@ -145,12 +145,12 @@ export function StatusPageLayout({
     const BadgeIcon = badge.icon;
 
     return (
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center">
         <Badge
           variant={badge.variant || "default"}
-          className={`text-sm px-3 py-1 ${badge.className || ""}`}
+          className={badge.className || ""}
         >
-          {BadgeIcon && <BadgeIcon className="w-4 h-4 mr-1" />}
+          {BadgeIcon && <BadgeIcon className="w-3 h-3 mr-1" />}
           {badge.label}
         </Badge>
       </div>
@@ -167,27 +167,38 @@ export function StatusPageLayout({
       <div className={className}>
         {actions.map((action, index) => {
           const ActionIcon = action.icon;
-          const ButtonComponent = action.external ? "a" : "button";
 
-          return (
-            <Button
-              key={index}
-              asChild
-              variant={action.variant || "default"}
-              className={action.className || ""}
-            >
-              <ButtonComponent
-                href={action.href}
-                {...(action.external && {
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                })}
+          if (action.external) {
+            // External link - use anchor tag
+            return (
+              <Button
+                key={index}
+                asChild
+                variant={action.variant || "default"}
+                className={action.className || ""}
               >
-                {ActionIcon && <ActionIcon className="w-4 h-4 mr-2" />}
-                {action.label}
-              </ButtonComponent>
-            </Button>
-          );
+                <a href={action.href} target="_blank" rel="noopener noreferrer">
+                  {ActionIcon && <ActionIcon className="w-4 h-4 mr-2" />}
+                  {action.label}
+                </a>
+              </Button>
+            );
+          } else {
+            // Internal link - use Next.js Link
+            return (
+              <Button
+                key={index}
+                asChild
+                variant={action.variant || "default"}
+                className={action.className || ""}
+              >
+                <Link href={action.href}>
+                  {ActionIcon && <ActionIcon className="w-4 h-4 mr-2" />}
+                  {action.label}
+                </Link>
+              </Button>
+            );
+          }
         })}
       </div>
     );
@@ -210,37 +221,19 @@ export function StatusPageLayout({
     <div
       className={`min-h-screen bg-gradient-to-br ${backgroundGradient} flex items-center justify-center px-4`}
     >
-      <Card className={`max-w-lg w-full my-4 ${cardClassName}`}>
-        {showHeader && (
-          <CardHeader className="text-center pb-4">
-            <div
-              className={`w-20 h-20 mx-auto mb-6 ${iconBgColor} rounded-full flex items-center justify-center`}
-            >
-              <Icon className={`w-10 h-10 ${iconColor}`} />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-            <p className="text-lg text-gray-600">{description}</p>
-          </CardHeader>
-        )}
-
+      <Card className={`max-w-lg w-full py-0 my-4 ${cardClassName}`}>
         <CardContent className={`space-y-6 ${contentClassName}`}>
-          {!showHeader && (
-            <>
-              <div
-                className={`w-20 h-20 ${iconBgColor} rounded-full flex items-center justify-center mx-auto mb-6`}
-              >
-                <Icon className={`w-10 h-10 ${iconColor}`} />
-              </div>
-              <div className="text-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {title}
-                </h1>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  {description}
-                </p>
-              </div>
-            </>
-          )}
+          <div
+            className={`w-20 h-20 ${iconBgColor} rounded-full flex items-center justify-center mx-auto mb-6`}
+          >
+            <Icon className={`w-10 h-10 ${iconColor}`} />
+          </div>
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              {description}
+            </p>
+          </div>
 
           {renderBadge()}
           {renderBanner()}

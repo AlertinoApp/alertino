@@ -4,17 +4,13 @@ import { getUserSubscription } from "@/lib/stripe/database";
 import {
   StatusPageLayout,
   StatusPageAction,
-  StatusPageBadge,
-  StatusPageBanner,
 } from "@/components/layout/status-page-layout";
 import {
-  CheckCircle,
   ArrowRight,
   Crown,
   Building2,
   Zap,
   Gift,
-  Timer,
   Settings,
 } from "lucide-react";
 
@@ -113,19 +109,6 @@ export default async function BillingSuccessPage() {
 
   const context = getSuccessContext();
 
-  // Configure badge
-  const badge: StatusPageBadge = isTrialActive
-    ? {
-        label: "Free Trial Active",
-        icon: Timer,
-        className: "bg-orange-100 text-orange-800 border-orange-300",
-      }
-    : {
-        label: "Subscription Active",
-        icon: CheckCircle,
-        className: "bg-green-100 text-green-800 border-green-300",
-      };
-
   // Configure primary action
   const primaryActions: StatusPageAction[] = [
     {
@@ -140,7 +123,7 @@ export default async function BillingSuccessPage() {
   // Configure secondary actions
   const secondaryActions: StatusPageAction[] = [
     {
-      href: "/billing",
+      href: "/account-settings?tab=billing",
       label: "View Billing",
       icon: Settings,
       variant: "outline",
@@ -162,17 +145,6 @@ export default async function BillingSuccessPage() {
         },
   ];
 
-  // Configure trial banner
-  const banner: StatusPageBanner | undefined = isTrialActive
-    ? {
-        title: "Trial Information",
-        description:
-          "Your trial will automatically end in 14 days. You can convert to a paid subscription anytime to continue using premium features without interruption.",
-        icon: Timer,
-        variant: "warning",
-      }
-    : undefined;
-
   return (
     <StatusPageLayout
       title={context.title}
@@ -180,10 +152,7 @@ export default async function BillingSuccessPage() {
       icon={context.icon}
       iconColor={context.iconColor}
       iconBgColor={context.bgColor}
-      showHeader={false}
       contentClassName="p-8 text-center max-w-2xl mx-auto"
-      badge={badge}
-      banner={banner}
       primaryActions={primaryActions}
       secondaryActions={secondaryActions}
     />

@@ -47,7 +47,11 @@ export default function ProtectedError({
       };
     }
 
-    if (pathname.includes("/profile") || pathname.includes("/settings")) {
+    if (
+      pathname.includes("/profile") ||
+      pathname.includes("/settings") ||
+      pathname.includes("/account-settings")
+    ) {
       return {
         customTitle: "Settings Error",
         customDescription:

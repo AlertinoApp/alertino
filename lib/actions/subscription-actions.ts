@@ -87,7 +87,7 @@ export async function createPortalSessionAction() {
 
   const portalSession = await createCustomerPortalSession(
     subscription.stripe_customer_id,
-    getAppUrl("/billing")
+    getAppUrl("/account-settings?tab=billing")
   );
 
   if (!portalSession.url) {

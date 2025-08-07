@@ -5,14 +5,12 @@ import { getUserTrialInfo } from "@/lib/stripe/subscription";
 import {
   StatusPageLayout,
   StatusPageAction,
-  StatusPageBanner,
 } from "@/components/layout/status-page-layout";
 import {
   XCircle,
   ArrowLeft,
   Crown,
   HelpCircle,
-  Timer,
   CheckCircle,
   Gift,
 } from "lucide-react";
@@ -54,7 +52,7 @@ export default async function BillingCancelPage() {
         type: "trial_conversion_cancelled",
         title: "Trial Conversion Cancelled",
         description: `Good news! Your ${planConfig.name} trial is still active.`,
-        icon: Timer,
+        icon: CheckCircle,
         iconColor: "text-orange-600",
         bgColor: "bg-orange-100",
       };
@@ -102,21 +100,11 @@ export default async function BillingCancelPage() {
 
   const context = getPageContext();
 
-  // Configure banner for trial active state
-  const banner: StatusPageBanner | undefined = isTrialActive
-    ? {
-        title: "Your trial is still active!",
-        description: `You can continue enjoying ${planConfig.name} features for your remaining trial period. Convert to a paid plan anytime to continue after your trial ends.`,
-        icon: Timer,
-        variant: "warning",
-      }
-    : undefined;
-
   // Configure primary actions
   const primaryActions: StatusPageAction[] = isTrialActive
     ? [
         {
-          href: "/billing",
+          href: "/account-settings?tab=billing",
           label: "Convert Trial",
           icon: Crown,
           className:
@@ -140,7 +128,7 @@ export default async function BillingCancelPage() {
             "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
         },
         {
-          href: "/billing",
+          href: "/account-settings?tab=billing",
           label: "Back to Billing",
           icon: ArrowLeft,
           variant: "outline",
@@ -172,7 +160,6 @@ export default async function BillingCancelPage() {
       iconBgColor={context.bgColor}
       backgroundGradient="from-gray-50 via-white to-gray-50"
       contentClassName="p-8 text-center max-w-2xl mx-auto"
-      banner={banner}
       primaryActions={primaryActions}
       supportText={supportText}
       supportAction={supportAction}

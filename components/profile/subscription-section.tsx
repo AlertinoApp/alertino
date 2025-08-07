@@ -235,7 +235,7 @@ export function SubscriptionSection({
                 asChild
                 className="flex-1 bg-slate-900 hover:bg-slate-800"
               >
-                <Link href="/billing">
+                <Link href="/account-settings?tab=billing">
                   <Settings className="w-4 h-4 mr-2" />
                   Manage Subscription
                 </Link>
