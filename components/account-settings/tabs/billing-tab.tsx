@@ -43,7 +43,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
 
   useEffect(() => {
     const fetchBillingData = async () => {
-      if (!subscription?.stripe_customer_id) {
+      if (!subscription?.stripe_subscription_id) {
         setIsLoading(false);
         return;
       }
@@ -64,7 +64,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
     };
 
     fetchBillingData();
-  }, [subscription?.stripe_customer_id]);
+  }, [subscription?.stripe_subscription_id]);
 
   const getPlanName = (plan: string) => {
     switch (plan) {
@@ -217,10 +217,10 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               variant="outline"
               size="sm"
               onClick={handleManageSubscription}
-              disabled={!subscription?.stripe_customer_id}
+              disabled={!subscription?.stripe_subscription_id}
             >
               <Eye className="w-4 h-4 mr-2" />
-              {subscription?.stripe_customer_id
+              {subscription?.stripe_subscription_id
                 ? "Manage Subscription"
                 : "No Active Subscription"}
             </Button>
