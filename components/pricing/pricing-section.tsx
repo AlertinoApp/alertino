@@ -11,6 +11,7 @@ import { createCheckoutSessionAction } from "@/lib/actions/subscription-actions"
 import { toast } from "sonner";
 import { getPriceId } from "@/lib/stripe/utils";
 import type { SubscriptionPlan } from "@/types/subscription";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type SubscriptionInterval = "month" | "year";
 
@@ -89,39 +90,28 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
 
           {/* Interval Toggle */}
           <div className="flex justify-center mb-12">
-            <div className="inline-flex items-center gap-3 p-1 bg-white rounded-xl shadow-sm border border-slate-200">
-              <span
-                className={`text-sm font-medium px-3 py-1 ${
-                  interval === "month" ? "text-slate-900" : "text-slate-600"
-                }`}
-              >
-                Monthly
-              </span>
-              <button
-                onClick={() =>
-                  setInterval(interval === "month" ? "year" : "month")
-                }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  interval === "year" ? "bg-blue-600" : "bg-slate-200"
-                }`}
-                aria-label={`Switch to ${interval === "month" ? "yearly" : "monthly"} billing`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
-                    interval === "year" ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`text-sm font-medium px-3 py-1 ${
-                    interval === "year" ? "text-slate-900" : "text-slate-600"
-                  }`}
+            <Tabs
+              value={interval}
+              onValueChange={(value) =>
+                setInterval(value as SubscriptionInterval)
+              }
+              className="w-fit"
+            >
+              <TabsList className="grid w-full grid-cols-2 bg-slate-100 border border-slate-200 shadow-sm">
+                <TabsTrigger
+                  value="month"
+                  className="text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+                >
+                  Monthly
+                </TabsTrigger>
+                <TabsTrigger
+                  value="year"
+                  className="text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
                 >
                   Yearly (save 20%)
-                </span>
-              </div>
-            </div>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 
