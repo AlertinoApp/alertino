@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@supabase/supabase-js";
@@ -122,7 +121,7 @@ export function Navbar({
                     align="end"
                   >
                     {/* User Info */}
-                    <div className="px-3 py-2 border-b border-slate-100 dark:border-gray-700">
+                    <div className="mb-1 px-3 py-2 border-b border-slate-100 dark:border-gray-700">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={avatarUrl || "/placeholder.svg"} />
@@ -151,7 +150,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/dashboard"
-                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
+                        className="flex items-center w-full px-3 py-2 gap-0! text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <Home className="mr-3 h-4 w-4" />
                         <span>Dashboard</span>
@@ -161,7 +160,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/account-settings"
-                        className="flex items-center w-full px-3 py-2 text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
+                        className="flex items-center w-full px-3 py-2 gap-0! text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
                       >
                         <UserIcon className="mr-3 h-4 w-4" />
                         <span>Account Settings</span>
@@ -180,13 +179,11 @@ export function Navbar({
                       </DropdownMenuItem>
                     )}
 
-                    <DropdownMenuSeparator className="bg-slate-200 dark:bg-gray-700" />
-
                     <DropdownMenuItem asChild>
                       <form action={signOut} className="p-0! w-full">
                         <button
                           type="submit"
-                          className="flex items-center w-full px-3 py-2 text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-gray-700"
+                          className="flex items-center w-full px-3 py-2 rounded-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-gray-700"
                         >
                           <LogOut className="mr-3 h-4 w-4 text-red-600 dark:text-red-400" />
                           <span>Sign out</span>
