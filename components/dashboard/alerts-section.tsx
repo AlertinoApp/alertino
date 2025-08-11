@@ -338,7 +338,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
               roomsFilter !== "all" ||
               statusFilter !== "all") && (
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={clearFilters}
                 className="h-10 px-3 text-gray-500 hover:text-gray-700"
               >

@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
-  Play,
   Clock,
   Activity,
   TrendingUp,
   Settings2,
   BarChart3,
-  Zap,
   Calendar,
   Target,
+  Search,
 } from "lucide-react";
 import { generateAlerts } from "@/lib/actions/alert-actions";
 import { toast } from "sonner";
@@ -67,7 +67,14 @@ export function ActionsSection({
     duplicates: number;
   } | null>(null);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [showFilterSelector, setShowFilterSelector] = useState(false);
+
+  // Convert filters to the format expected by MultiSelect
+  const filterOptions = filters
+    .filter((f) => f.is_active)
+    .map((filter) => ({
+      value: filter.id,
+      label: filter.name,
+    }));
 
   // Simulate progress updates - replace with real progress tracking
   const simulateProgress = async () => {
@@ -213,9 +220,18 @@ export function ActionsSection({
   };
 
   const getButtonText = () => {
-    if (isRunning) return "Scanning...";
+    if (isRunning) return "Searching...";
     if (activeFiltersCount === 0) return "Create Filter First";
-    return "Run Alerts";
+
+    if (selectedFilters.length === 0) {
+      return "Search All Filters";
+    } else if (selectedFilters.length === 1) {
+      const filterName =
+        filters.find((f) => f.id === selectedFilters[0])?.name || "Filter";
+      return `Search "${filterName}"`;
+    } else {
+      return `Search ${selectedFilters.length} Filters`;
+    }
   };
 
   const getButtonDescription = () => {
@@ -223,7 +239,16 @@ export function ActionsSection({
       return "You need at least one active filter to search for apartments";
     if (getRemainingSearchesCount(currentPlan, searchesUsedToday) === 0)
       return `You've reached your daily search limit (${searchesUsedToday}/${getDailySearchLimit(currentPlan)}). Upgrade your plan for more searches.`;
-    return "Search for new apartments matching your active filters";
+
+    if (selectedFilters.length === 0) {
+      return "Search for new apartments using all your active filters";
+    } else {
+      const filterNames = selectedFilters
+        .map((filterId) => filters.find((f) => f.id === filterId)?.name)
+        .filter(Boolean)
+        .join(", ");
+      return `Search for new apartments using: ${filterNames}`;
+    }
   };
 
   const isButtonDisabled =
@@ -262,13 +287,13 @@ export function ActionsSection({
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-6 h-6 text-green-600" />
+                <Search className="w-6 h-6 text-green-600" />
                 <h3 className="text-xl font-semibold text-gray-900">
-                  Run Alerts Now
+                  Search for New Apartments
                 </h3>
                 {isRunning && (
                   <Badge className="bg-orange-100 text-orange-700 border-orange-200 animate-pulse">
-                    Scanning
+                    Searching
                   </Badge>
                 )}
               </div>
@@ -353,64 +378,24 @@ export function ActionsSection({
 
               {/* Filter Selector */}
               {filters.length > 1 && (
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-4">
+                  <MultiSelect
+                    options={filterOptions}
+                    value={selectedFilters}
+                    onValueChange={setSelectedFilters}
+                    placeholder="Choose filters to search (or leave empty to search all)"
+                    className="flex-1"
+                    maxSelected={activeFiltersCount}
+                  />
+                  {selectedFilters.length > 0 && (
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowFilterSelector(!showFilterSelector)}
-                      className="text-sm"
+                      onClick={() => setSelectedFilters([])}
+                      className="h-10 px-3 text-gray-500 hover:text-gray-700"
                     >
-                      {selectedFilters.length > 0
-                        ? `${selectedFilters.length} filter${selectedFilters.length > 1 ? "s" : ""} selected`
-                        : "Select Filters"}
+                      Clear
                     </Button>
-                    {selectedFilters.length > 0 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedFilters([])}
-                        className="text-sm text-gray-500"
-                      >
-                        Clear
-                      </Button>
-                    )}
-                  </div>
-
-                  {showFilterSelector && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 bg-gray-50 rounded-lg border">
-                      {filters
-                        .filter((f) => f.is_active)
-                        .map((filter) => (
-                          <label
-                            key={filter.id}
-                            className="flex items-center space-x-2 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedFilters.includes(filter.id)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedFilters([
-                                    ...selectedFilters,
-                                    filter.id,
-                                  ]);
-                                } else {
-                                  setSelectedFilters(
-                                    selectedFilters.filter(
-                                      (id) => id !== filter.id
-                                    )
-                                  );
-                                }
-                              }}
-                              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                            />
-                            <span className="text-sm text-gray-700">
-                              {filter.name}
-                            </span>
-                          </label>
-                        ))}
-                    </div>
                   )}
                 </div>
               )}
@@ -446,11 +431,11 @@ export function ActionsSection({
                 {isRunning ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Scanning...
+                    Searching...
                   </>
                 ) : (
                   <>
-                    <Play className="w-5 h-5 mr-2" />
+                    <Search className="w-5 h-5 mr-2" />
                     {getButtonText()}
                   </>
                 )}
@@ -558,7 +543,7 @@ export function ActionsSection({
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Activity className="w-5 h-5 text-gray-600" />
-              Last Scan Results
+              Last Search Results
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -589,7 +574,7 @@ export function ActionsSection({
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <p className="text-sm text-gray-600 flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  Last scan completed: {lastRun.toLocaleString()}
+                  Last search completed: {lastRun.toLocaleString()}
                 </p>
               </div>
             )}
@@ -608,9 +593,9 @@ export function ActionsSection({
               <div>
                 <h4 className="font-medium text-blue-900 mb-1">Get Started</h4>
                 <p className="text-sm text-blue-800 mb-3">
-                  Create your first filter to start receiving apartment alerts.
-                  You can specify your preferred city, price range, and number
-                  of rooms.
+                  Create your first filter to start searching for apartment
+                  alerts. You can specify your preferred city, price range, and
+                  number of rooms.
                 </p>
                 <div className="flex flex-wrap gap-2 text-xs">
                   <Badge className="bg-blue-100 text-blue-700 border-blue-300">

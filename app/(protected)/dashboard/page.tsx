@@ -4,7 +4,6 @@ import { createClientForServer } from "@/app/utils/supabase/server";
 import { ActionsSection } from "@/components/dashboard/actions-section";
 import { AlertsSection } from "@/components/dashboard/alerts-section";
 import { FiltersSection } from "@/components/dashboard/filters-section";
-import { SearchStats } from "@/components/dashboard/search-stats";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 import { Navbar } from "@/components/common/navbar";
 import { getTrialInfoAction } from "@/lib/actions/subscription-actions";
@@ -109,12 +108,6 @@ export default async function DashboardPage() {
             userId={session.user.id}
             currentPlan={subscription?.plan || "free"}
             filtersCount={filters?.length || 0}
-          />
-
-          {/* Search Stats */}
-          <SearchStats
-            currentPlan={subscription?.plan || "free"}
-            searchesUsedToday={searchesUsedToday}
           />
 
           {/* Actions Section */}
