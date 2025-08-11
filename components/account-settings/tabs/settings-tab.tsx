@@ -17,13 +17,13 @@ import { Label } from "@/components/ui/label";
 import {
   Shield,
   Edit,
-  Globe,
   Bell,
   Smartphone,
   AlertCircle,
   Cookie,
   Lock,
   Database,
+  Mail,
 } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Profile } from "@/types/users";
@@ -118,8 +118,8 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-blue-600" />
+                <div className="hidden sm:flex w-8 h-8 bg-blue-100 rounded-full items-center justify-center">
+                  <Mail className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
                   <p className="font-medium">Email Notifications</p>
@@ -137,7 +137,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
 
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg opacity-60">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                <div className="hidden sm:flex w-8 h-8 bg-slate-100 rounded-full items-center justify-center">
                   <Smartphone className="w-4 h-4 text-slate-400" />
                 </div>
                 <div>
@@ -172,9 +172,11 @@ export function SettingsTab({ profile }: SettingsTabProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Cookie Preferences */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Cookie className="w-4 h-4 text-slate-500" />
+              <div className="hidden sm:flex">
+                <Cookie className="w-4 h-4 text-slate-500" />
+              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Cookie Preferences</p>
@@ -195,37 +197,17 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <Separator />
 
           {/* Data Collection */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Database className="w-4 h-4 text-slate-500" />
+              <div className="hidden sm:flex">
+                <Database className="w-4 h-4 text-slate-500" />
+              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Data Collection</p>
                 </div>
                 <p className="text-sm text-slate-600">
-                  We collect only essential data needed to provide our service
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm" disabled>
-              <Edit className="w-4 h-4 mr-2" />
-              View Details
-            </Button>
-          </div>
-
-          <Separator />
-
-          {/* Third-Party Services */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Globe className="w-4 h-4 text-slate-500" />
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="font-medium">Third-Party Services</p>
-                </div>
-                <p className="text-sm text-slate-600">
-                  We use minimal third-party services for essential
-                  functionality
+                  Control what data we collect and how we use it
                 </p>
               </div>
             </div>
@@ -238,9 +220,11 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <Separator />
 
           {/* Data Retention */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Lock className="w-4 h-4 text-slate-500" />
+              <div className="hidden sm:flex">
+                <Lock className="w-4 h-4 text-slate-500" />
+              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Data Retention</p>
@@ -277,7 +261,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
         </CardHeader>
         <CardContent>
           <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h3 className="font-medium text-red-900 mb-1">
                   Delete Account
@@ -292,7 +276,11 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                 onOpenChange={setShowDeleteConfirmation}
               >
                 <DialogTrigger asChild>
-                  <Button variant="destructive" size="sm">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full sm:w-auto"
+                  >
                     <AlertCircle className="w-4 h-4 mr-2" />
                     Delete
                   </Button>
@@ -327,14 +315,14 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                         className="border-red-300 focus:border-red-500"
                       />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Button
                         variant="outline"
                         onClick={() => {
                           setShowDeleteConfirmation(false);
                           setConfirmationText("");
                         }}
-                        className="border-gray-300"
+                        className="border-gray-300 w-full sm:w-auto"
                       >
                         Cancel
                       </Button>
@@ -342,7 +330,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                         variant="destructive"
                         onClick={handleDeleteAccount}
                         disabled={confirmationText !== "DELETE" || isDeleting}
-                        className="bg-red-600 hover:bg-red-700"
+                        className="bg-red-600 hover:bg-red-700 w-full sm:w-auto"
                       >
                         <AlertCircle className="w-4 h-4 mr-2" />
                         {isDeleting ? "Deleting..." : "Delete Account"}
