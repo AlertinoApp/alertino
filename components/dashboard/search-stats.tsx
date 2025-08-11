@@ -116,21 +116,6 @@ export function SearchStats({
               <div className="text-xs text-gray-600">Daily Limit</div>
             </div>
           </div>
-
-          {/* Plan Info */}
-          <div className="text-xs text-gray-500 text-center">
-            {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan
-            {isAtLimit && (
-              <div className="mt-2">
-                <a
-                  href="/pricing"
-                  className="text-blue-600 hover:text-blue-700 font-medium"
-                >
-                  Upgrade for more searches →
-                </a>
-              </div>
-            )}
-          </div>
         </div>
       </CardContent>
     </Card>

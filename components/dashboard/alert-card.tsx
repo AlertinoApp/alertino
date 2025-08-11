@@ -187,7 +187,23 @@ export function AlertCard({ alert }: AlertCardProps) {
               )}
             </Button>
           </div>
+
           <div className="flex flex-wrap items-center gap-2">
+            {alert.filters && (
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested ? "text-gray-500" : "text-gray-700"
+                )}
+              >
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                >
+                  {alert.filters.name}
+                </Badge>
+              </div>
+            )}
             {isNew && !isCurrentlyNotInterested && (
               <Badge className="bg-green-100 text-green-800 border-green-200">
                 NEW
@@ -248,22 +264,6 @@ export function AlertCard({ alert }: AlertCardProps) {
             <MapPin className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
             <span className="capitalize">{alert.city}</span>
           </div>
-
-          {alert.filters && (
-            <div
-              className={cn(
-                "flex items-center text-sm",
-                isCurrentlyNotInterested ? "text-gray-500" : "text-gray-700"
-              )}
-            >
-              <Badge
-                variant="outline"
-                className="text-xs bg-blue-50 text-blue-700 border-blue-200"
-              >
-                {alert.filters.name}
-              </Badge>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
