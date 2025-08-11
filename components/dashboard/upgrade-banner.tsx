@@ -56,7 +56,7 @@ export function UpgradeBanner({
       return {
         type: "trial_ending",
         title: "Trial Ending Soon",
-        message: `Your trial ends in ${trialDaysRemaining} ${trialDaysRemaining === 1 ? "day" : "days"}. Convert now to keep premium features.`,
+        message: `Your ${currentPlan === "basic" ? "Basic" : "Pro"} trial ends in ${trialDaysRemaining} ${trialDaysRemaining === 1 ? "day" : "days"}. Convert now to keep automated scraping and premium features.`,
         icon: Timer,
         iconColor: "text-orange-600",
         bgGradient: "from-orange-50 to-red-50",
@@ -72,7 +72,7 @@ export function UpgradeBanner({
       return {
         type: "trial_active",
         title: "Trial Active",
-        message: `Enjoying ${currentPlan === "basic" ? "Basic" : "Pro"}? ${trialDaysRemaining !== null ? `${trialDaysRemaining} days remaining.` : ""} Convert anytime to continue.`,
+        message: `Enjoying ${currentPlan === "basic" ? "Basic" : "Pro"} features? Convert anytime to continue automated scraping and premium support.`,
         icon: Gift,
         iconColor: "text-orange-600",
         bgGradient: "from-orange-50 to-amber-50",
@@ -88,7 +88,7 @@ export function UpgradeBanner({
       return {
         type: "ending_soon",
         title: "Subscription Ending Soon",
-        message: `Your subscription ends on ${subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "your next billing date"}. Reactivate to continue.`,
+        message: `Your ${currentPlan === "basic" ? "Basic" : currentPlan === "pro" ? "Pro" : "Free"} subscription ends on ${subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "your next billing date"}. Reactivate to continue automated scraping and premium features.`,
         icon: AlertTriangle,
         iconColor: "text-amber-600",
         bgGradient: "from-amber-50 to-orange-50",
@@ -111,8 +111,8 @@ export function UpgradeBanner({
     if (isAtSearchLimit) {
       return {
         type: "search_limit_reached",
-        title: "Search Limit Reached",
-        message: `You've used ${searchesUsedToday}/${searchLimit} searches today. Upgrade for more daily searches.`,
+        title: "Daily Search Limit Reached",
+        message: `You've used all ${searchLimit} daily searches. Upgrade to Basic for ${getDailySearchLimit("basic")} searches/day or Pro for unlimited searches.`,
         icon: AlertTriangle,
         iconColor: "text-red-600",
         bgGradient: "from-red-50 to-pink-50",
@@ -128,7 +128,7 @@ export function UpgradeBanner({
       return {
         type: "filter_limit_reached",
         title: "Filter Limit Reached",
-        message: `You've reached your limit of ${filterLimit} filters. Upgrade for more filters and advanced features.`,
+        message: `You've reached your limit of ${filterLimit} filters. Upgrade to Basic for ${getFilterLimit("basic")} filters or Pro for unlimited filters with automated scraping.`,
         icon: Crown,
         iconColor: "text-red-600",
         bgGradient: "from-red-50 to-pink-50",
@@ -144,8 +144,26 @@ export function UpgradeBanner({
       return {
         type: "approaching_limit",
         title: "Approaching Filter Limit",
-        message: `You're using ${filtersCount}/${filterLimit} filters. Upgrade for more filters and automated scraping.`,
+        message: `You're using ${filtersCount}/${filterLimit} filters (${Math.round((filtersCount / filterLimit) * 100)}% used). Upgrade for more filters and automated scraping to find apartments faster.`,
         icon: Crown,
+        iconColor: "text-blue-600",
+        bgGradient: "from-blue-50 to-indigo-50",
+        borderColor: "border-blue-200",
+        buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
+        buttonVariant: "upgrade" as const,
+        showDismiss: true,
+      };
+    }
+
+    // Check for approaching search limit
+    const isNearSearchLimit =
+      searchLimit !== -1 && searchesUsedToday >= Math.ceil(searchLimit * 0.8);
+    if (isNearSearchLimit && !isAtSearchLimit) {
+      return {
+        type: "approaching_search_limit",
+        title: "Approaching Search Limit",
+        message: `You've used ${searchesUsedToday}/${searchLimit} searches today (${Math.round((searchesUsedToday / searchLimit) * 100)}% used). Upgrade for more daily searches and automated scraping.`,
+        icon: AlertTriangle,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
         borderColor: "border-blue-200",
@@ -159,9 +177,9 @@ export function UpgradeBanner({
     if (currentPlan === "free" && filtersCount === 0 && !hasUsedTrial) {
       return {
         type: "new_user",
-        title: "Unlock Advanced Features",
+        title: "Start Finding Apartments Today",
         message:
-          "Get more filters, automated scraping, and access to advanced features with a free 14-day trial.",
+          "Create your first filter and get a free 14-day trial of Basic plan. Enjoy automated scraping, more filters, and priority support.",
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
@@ -176,9 +194,9 @@ export function UpgradeBanner({
     if (currentPlan === "free" && filtersCount === 0 && hasUsedTrial) {
       return {
         type: "upgrade_available",
-        title: "Upgrade to Basic",
+        title: "Ready to Upgrade?",
         message:
-          "Get more filters, automated scraping, and access to all premium features.",
+          "Get back to finding apartments with Basic plan: 10 filters, automated scraping every 6 hours, and priority support.",
         icon: Crown,
         iconColor: "text-blue-600",
         bgGradient: "from-blue-50 to-indigo-50",
@@ -197,12 +215,32 @@ export function UpgradeBanner({
       return {
         type: "upgrade_to_pro",
         title: "Upgrade to Pro",
-        message: `Get unlimited filters and ${getDailySearchLimit("pro")} searches per day for maximum flexibility.`,
+        message: `Get unlimited filters and ${getDailySearchLimit("pro")} searches per day for maximum flexibility. Perfect for power users and real estate professionals.`,
         icon: Crown,
         iconColor: "text-purple-600",
         bgGradient: "from-purple-50 to-indigo-50",
         borderColor: "border-purple-200",
         buttonText: "Upgrade to Pro",
+        buttonVariant: "upgrade" as const,
+        showDismiss: true,
+      };
+    }
+
+    // Basic plan user with high usage (not necessarily at limits)
+    if (
+      currentPlan === "basic" &&
+      filtersCount >= 5 &&
+      searchesUsedToday >= Math.ceil(searchLimit * 0.6)
+    ) {
+      return {
+        type: "pro_recommendation",
+        title: "Pro Plan Recommended",
+        message: `You're a power user! Consider Pro for unlimited filters, ${getDailySearchLimit("pro")} searches/day, and priority support to maximize your apartment hunting efficiency.`,
+        icon: Crown,
+        iconColor: "text-purple-600",
+        bgGradient: "from-purple-50 to-indigo-50",
+        borderColor: "border-purple-200",
+        buttonText: "View Pro Plan",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
       };
@@ -240,8 +278,11 @@ export function UpgradeBanner({
       case "ending_soon":
         return "/account-settings?tab=billing";
       case "approaching_limit":
+      case "approaching_search_limit":
       case "new_user":
       case "upgrade_available":
+      case "upgrade_to_pro":
+      case "pro_recommendation":
       default:
         return "/pricing";
     }
@@ -281,6 +322,13 @@ export function UpgradeBanner({
                 >
                   {bannerContext.title}
                 </h3>
+                {(bannerContext.type === "trial_ending" ||
+                  bannerContext.type === "trial_active") &&
+                  trialDaysRemaining !== null && (
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs w-fit">
+                      {trialDaysRemaining} days remaining
+                    </Badge>
+                  )}
               </div>
               <p
                 className={`${bannerContext.iconColor.replace("600", "800")} text-sm leading-relaxed`}
@@ -321,22 +369,22 @@ export function UpgradeBanner({
               <BannerIcon className={`w-5 h-5 ${bannerContext.iconColor}`} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                 <h3
-                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} text-sm`}
+                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} text-base`}
                 >
                   {bannerContext.title}
                 </h3>
                 {(bannerContext.type === "trial_ending" ||
                   bannerContext.type === "trial_active") &&
                   trialDaysRemaining !== null && (
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs">
-                      {trialDaysRemaining}d
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs w-fit">
+                      {trialDaysRemaining} days remaining
                     </Badge>
                   )}
               </div>
               <p
-                className={`${bannerContext.iconColor.replace("600", "800")} text-xs leading-relaxed`}
+                className={`${bannerContext.iconColor.replace("600", "800")} text-sm leading-relaxed`}
               >
                 {bannerContext.message}
               </p>
@@ -345,21 +393,10 @@ export function UpgradeBanner({
 
           {/* Action Button for mobile */}
           <div className="flex justify-start">
-            <Button asChild className={`${getButtonColor()} text-xs px-3`}>
+            <Button asChild className={`${getButtonColor()} w-full sm:w-auto`}>
               <Link href={getHref()}>
-                <Zap className="w-3 h-3 mr-1" />
-                <span className="hidden xs:inline">
-                  {bannerContext.buttonText}
-                </span>
-                <span className="xs:hidden">
-                  {bannerContext.type === "trial_ending"
-                    ? "Convert"
-                    : bannerContext.type === "trial_active"
-                      ? "Convert"
-                      : bannerContext.type === "ending_soon"
-                        ? "Reactivate"
-                        : "Upgrade"}
-                </span>
+                <Zap className="w-4 h-4 mr-2" />
+                {bannerContext.buttonText}
               </Link>
             </Button>
           </div>
