@@ -74,6 +74,27 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
     return filters;
   }, [alerts]);
 
+  // Compute stats for badges
+  const activeAlerts = useMemo(
+    () => alerts.filter((alert) => alert.status !== "expired"),
+    [alerts]
+  );
+
+  const newToday = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return alerts.filter((alert) => {
+      const alertDate = new Date(alert.created_at);
+      alertDate.setHours(0, 0, 0, 0);
+      return alertDate.getTime() === today.getTime();
+    });
+  }, [alerts]);
+
+  const archivedAlerts = useMemo(
+    () => alerts.filter((alert) => alert.status === "expired"),
+    [alerts]
+  );
+
   // Filter and sort alerts
   const filteredAndSortedAlerts = useMemo(() => {
     const filtered = alerts.filter((alert) => {
@@ -229,77 +250,46 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
     setCurrentPage(1);
   };
 
-  // Quick stats
-  const activeAlerts = filteredAndSortedAlerts.filter(
-    (alert) => alert.status !== "not_interested"
-  );
-  const archivedAlerts = filteredAndSortedAlerts.filter(
-    (alert) => alert.status === "not_interested"
-  );
-  const newToday = filteredAndSortedAlerts.filter(
-    (alert) =>
-      new Date(alert.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
-  );
-
   return (
     <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+            <Bell className="w-5 h-5 text-blue-600" />
+          </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-gray-900">
               Apartment Alerts
             </h2>
             <p className="text-sm text-gray-600">
               Latest listings matching your filters
             </p>
           </div>
-
-          {/* Quick Stats */}
-          <div className="hidden md:flex items-center gap-2">
-            <Badge
-              variant="secondary"
-              className="bg-blue-50 text-blue-700 border-blue-200"
-            >
-              {activeAlerts.length} Active
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="bg-green-50 text-green-700 border-green-200"
-            >
-              {newToday.length} New Today
-            </Badge>
-            {archivedAlerts.length > 0 && (
-              <Badge
-                variant="secondary"
-                className="bg-gray-100 text-gray-600 border-gray-200"
-              >
-                {archivedAlerts.length} Archived
-              </Badge>
-            )}
-          </div>
         </div>
 
-        {/* Mobile Stats */}
-        <div className="md:hidden grid grid-cols-3 gap-2 mb-4">
-          <div className="text-center p-2 bg-blue-50 rounded border border-blue-200">
-            <div className="font-semibold text-blue-700">
-              {activeAlerts.length}
-            </div>
-            <div className="text-xs text-blue-600">Active</div>
-          </div>
-          <div className="text-center p-2 bg-green-50 rounded border border-green-200">
-            <div className="font-semibold text-green-700">
-              {newToday.length}
-            </div>
-            <div className="text-xs text-green-600">New Today</div>
-          </div>
-          <div className="text-center p-2 bg-gray-50 rounded border border-gray-200">
-            <div className="font-semibold text-gray-700">
-              {archivedAlerts.length}
-            </div>
-            <div className="text-xs text-gray-600">Archived</div>
-          </div>
+        {/* Quick Stats */}
+        <div className="flex items-center gap-2 mb-4">
+          <Badge
+            variant="secondary"
+            className="bg-blue-50 text-blue-700 border-blue-200"
+          >
+            {activeAlerts.length} Active
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-green-50 text-green-700 border-green-200"
+          >
+            {newToday.length} New Today
+          </Badge>
+          {archivedAlerts.length > 0 && (
+            <Badge
+              variant="secondary"
+              className="bg-gray-100 text-gray-600 border-gray-200"
+            >
+              {archivedAlerts.length} Archived
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -350,7 +340,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
         {/* Advanced Filters Panel */}
         {showAdvancedFilters && (
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="py-0! border-gray-200 shadow-sm">
             <CardContent className="p-4">
               <div className="space-y-4">
                 {/* Filter Controls - All in same grid */}
@@ -358,6 +348,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                   {/* Status Filter */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                      <Bell className="w-3 h-3" />
                       Status
                     </label>
                     <Select
@@ -530,7 +521,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Sort */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex gap-1">
+                    <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                      <SortAsc className="w-3 h-3" />
                       Sort By
                     </label>
                     <div className="flex gap-1">

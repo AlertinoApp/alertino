@@ -281,24 +281,28 @@ export function ActionsSection({
   return (
     <section className="space-y-6">
       {/* Main Action Card */}
-      <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+      <Card className="py-0! bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 overflow-hidden relative">
         <CardContent className="p-6 relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <Search className="w-6 h-6 text-green-600" />
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Search for New Apartments
-                </h3>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Search className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Search for New Apartments
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {getButtonDescription()}
+                  </p>
+                </div>
                 {isRunning && (
-                  <Badge className="bg-orange-100 text-orange-700 border-orange-200 animate-pulse">
+                  <Badge className="bg-orange-100 text-orange-700 border-orange-200 animate-pulse ml-auto">
                     Searching
                   </Badge>
                 )}
               </div>
-
-              <p className="text-gray-600 mb-4">{getButtonDescription()}</p>
 
               {/* Status Indicators */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
@@ -376,30 +380,6 @@ export function ActionsSection({
                 )}
               </div>
 
-              {/* Filter Selector */}
-              {filters.length > 1 && (
-                <div className="flex items-center gap-2 mb-4">
-                  <MultiSelect
-                    options={filterOptions}
-                    value={selectedFilters}
-                    onValueChange={setSelectedFilters}
-                    placeholder="Choose filters to search (or leave empty to search all)"
-                    className="flex-1"
-                    maxSelected={activeFiltersCount}
-                  />
-                  {selectedFilters.length > 0 && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedFilters([])}
-                      className="h-10 px-3 text-gray-500 hover:text-gray-700"
-                    >
-                      Clear
-                    </Button>
-                  )}
-                </div>
-              )}
-
               {/* Progress indicator when running */}
               {isRunning && (
                 <div className="mb-4">
@@ -422,7 +402,7 @@ export function ActionsSection({
                 onClick={handleRunAlerts}
                 disabled={isButtonDisabled}
                 size="lg"
-                className={`px-8 py-3 text-lg font-medium transition-all duration-200 ${
+                className={`mb-4 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
                     ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
                     : "bg-green-600 hover:bg-green-700 hover:scale-105 shadow-lg"
@@ -440,6 +420,29 @@ export function ActionsSection({
                   </>
                 )}
               </Button>
+              {/* Filter Selector */}
+              {filters.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <MultiSelect
+                    options={filterOptions}
+                    value={selectedFilters}
+                    onValueChange={setSelectedFilters}
+                    placeholder="Choose filters to search"
+                    className="w-full"
+                    maxSelected={activeFiltersCount}
+                  />
+                  {selectedFilters.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedFilters([])}
+                      className="h-10 px-3 text-gray-500 hover:text-gray-700"
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

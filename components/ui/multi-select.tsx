@@ -90,7 +90,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
               role="combobox"
               aria-expanded={open}
               className={cn(
-                "w-full justify-between min-h-[42px] h-auto p-1 border-input bg-background hover:bg-background hover:text-foreground",
+                "w-full justify-between min-h-[42px] h-auto px-3 py-1 border-input bg-background hover:bg-background hover:text-foreground",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
               disabled={disabled}
