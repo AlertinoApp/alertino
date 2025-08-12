@@ -61,6 +61,7 @@ export default async function AccountSettingsPage({ searchParams }: PageProps) {
         subscription={subscription}
         variant="dashboard"
         showNavigation={false}
+        currentPage="Account Settings"
       />
 
       <AccountSettingsClient

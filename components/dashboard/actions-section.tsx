@@ -402,10 +402,10 @@ export function ActionsSection({
                 onClick={handleRunAlerts}
                 disabled={isButtonDisabled}
                 size="lg"
-                className={`mb-4 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
+                className={`mb-2 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
                     ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700 hover:scale-105 shadow-lg"
+                    : "bg-green-600 hover:bg-green-700 hover:scale-102 shadow-lg"
                 } text-white min-w-[160px]`}
               >
                 {isRunning ? (

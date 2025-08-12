@@ -41,7 +41,7 @@ type FilterStatus =
   | "favorites"
   | "expired";
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 6;
 
 export function AlertsSection({ alerts }: AlertsSectionProps) {
   // State for filters and pagination

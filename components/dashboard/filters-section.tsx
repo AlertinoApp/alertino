@@ -180,7 +180,6 @@ export function FiltersSection({
             {activeFilters.length > 0 && (
               <Button
                 variant="outline"
-                size="sm"
                 onClick={() => setShowStats(!showStats)}
                 className="text-gray-600"
               >
@@ -196,7 +195,7 @@ export function FiltersSection({
                 isAtLimit
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
-              } min-w-[140px]`}
+              }`}
             >
               <Plus className="w-4 h-4 mr-2" />
               {isAtLimit ? "Limit Reached" : "Add Filter"}

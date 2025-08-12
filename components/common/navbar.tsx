@@ -23,6 +23,7 @@ interface NavbarProps {
   subscription?: Subscription;
   variant?: "landing" | "dashboard";
   showNavigation?: boolean;
+  currentPage?: string;
 }
 
 export function Navbar({
@@ -31,6 +32,7 @@ export function Navbar({
   subscription,
   variant = "landing",
   showNavigation = true,
+  currentPage,
 }: NavbarProps) {
   const router = useRouter();
 
@@ -65,6 +67,15 @@ export function Navbar({
               </h1>
             </Link>
           </div>
+
+          {/* Current Page Display - Only show on dashboard variant */}
+          {variant === "dashboard" && currentPage && (
+            <div className="flex-1 flex justify-center">
+              <h2 className="text-lg text-slate-600 dark:text-gray-100">
+                {currentPage}
+              </h2>
+            </div>
+          )}
 
           {/* Navigation - Only show on landing variant */}
           {variant === "landing" && showNavigation && (
