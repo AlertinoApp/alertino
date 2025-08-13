@@ -59,8 +59,8 @@ export function UpgradeBanner({
         message: `Your ${currentPlan === "basic" ? "Basic" : "Pro"} trial ends in ${trialDaysRemaining} ${trialDaysRemaining === 1 ? "day" : "days"}. Convert now to keep automated scraping and premium features.`,
         icon: Timer,
         iconColor: "text-orange-600",
-        bgGradient: "from-orange-50 to-red-50",
-        borderColor: "border-orange-200",
+        bgGradient: "bg-orange-50 dark:bg-orange-900/20",
+        borderColor: "border-orange-200 dark:border-orange-700",
         buttonText: "Convert Trial",
         buttonVariant: "urgent" as const,
         showDismiss: false,
@@ -75,8 +75,8 @@ export function UpgradeBanner({
         message: `Enjoying ${currentPlan === "basic" ? "Basic" : "Pro"} features? Convert anytime to continue automated scraping and premium support.`,
         icon: Gift,
         iconColor: "text-orange-600",
-        bgGradient: "from-orange-50 to-amber-50",
-        borderColor: "border-orange-200",
+        bgGradient: "bg-orange-50 dark:bg-orange-900/20",
+        borderColor: "border-orange-200 dark:border-orange-700",
         buttonText: "Convert Now",
         buttonVariant: "trial" as const,
         showDismiss: true,
@@ -91,8 +91,8 @@ export function UpgradeBanner({
         message: `Your ${currentPlan === "basic" ? "Basic" : currentPlan === "pro" ? "Pro" : "Free"} subscription ends on ${subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "your next billing date"}. Reactivate to continue automated scraping and premium features.`,
         icon: AlertTriangle,
         iconColor: "text-amber-600",
-        bgGradient: "from-amber-50 to-orange-50",
-        borderColor: "border-amber-200",
+        bgGradient: "bg-amber-50 dark:bg-amber-900/20",
+        borderColor: "border-amber-200 dark:border-amber-700",
         buttonText: "Reactivate",
         buttonVariant: "reactivate" as const,
         showDismiss: true,
@@ -115,8 +115,8 @@ export function UpgradeBanner({
         message: `You've used all ${searchLimit} daily searches. Upgrade to Basic for ${getDailySearchLimit("basic")} searches/day or Pro for unlimited searches.`,
         icon: AlertTriangle,
         iconColor: "text-red-600",
-        bgGradient: "from-red-50 to-pink-50",
-        borderColor: "border-red-200",
+        bgGradient: "bg-red-50 dark:bg-red-900/20",
+        borderColor: "border-red-200 dark:border-red-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -131,8 +131,8 @@ export function UpgradeBanner({
         message: `You've reached your limit of ${filterLimit} filters. Upgrade to Basic for ${getFilterLimit("basic")} filters or Pro for unlimited filters with automated scraping.`,
         icon: Crown,
         iconColor: "text-red-600",
-        bgGradient: "from-red-50 to-pink-50",
-        borderColor: "border-red-200",
+        bgGradient: "bg-red-50 dark:bg-red-900/20",
+        borderColor: "border-red-200 dark:border-red-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -147,8 +147,8 @@ export function UpgradeBanner({
         message: `You're using ${filtersCount}/${filterLimit} filters (${Math.round((filtersCount / filterLimit) * 100)}% used). Upgrade for more filters and automated scraping to find apartments faster.`,
         icon: Crown,
         iconColor: "text-blue-600",
-        bgGradient: "from-blue-50 to-indigo-50",
-        borderColor: "border-blue-200",
+        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
+        borderColor: "border-blue-200 dark:border-blue-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -165,8 +165,8 @@ export function UpgradeBanner({
         message: `You've used ${searchesUsedToday}/${searchLimit} searches today (${Math.round((searchesUsedToday / searchLimit) * 100)}% used). Upgrade for more daily searches and automated scraping.`,
         icon: AlertTriangle,
         iconColor: "text-blue-600",
-        bgGradient: "from-blue-50 to-indigo-50",
-        borderColor: "border-blue-200",
+        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
+        borderColor: "border-blue-200 dark:border-blue-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -182,66 +182,10 @@ export function UpgradeBanner({
           "Create your first filter and get a free 14-day trial of Basic plan. Enjoy automated scraping, more filters, and priority support.",
         icon: Crown,
         iconColor: "text-blue-600",
-        bgGradient: "from-blue-50 to-indigo-50",
-        borderColor: "border-blue-200",
+        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
+        borderColor: "border-blue-200 dark:border-blue-700",
         buttonText: "Start Free Trial",
         buttonVariant: "trial_start" as const,
-        showDismiss: true,
-      };
-    }
-
-    // Free user who used trial
-    if (currentPlan === "free" && filtersCount === 0 && hasUsedTrial) {
-      return {
-        type: "upgrade_available",
-        title: "Ready to Upgrade?",
-        message:
-          "Get back to finding apartments with Basic plan: 10 filters, automated scraping every 6 hours, and priority support.",
-        icon: Crown,
-        iconColor: "text-blue-600",
-        bgGradient: "from-blue-50 to-indigo-50",
-        borderColor: "border-blue-200",
-        buttonText: "Upgrade Now",
-        buttonVariant: "upgrade" as const,
-        showDismiss: true,
-      };
-    }
-
-    // Basic plan user approaching Pro limits
-    if (
-      currentPlan === "basic" &&
-      (isNearFilterLimit || searchesUsedToday >= Math.ceil(searchLimit * 0.8))
-    ) {
-      return {
-        type: "upgrade_to_pro",
-        title: "Upgrade to Pro",
-        message: `Get unlimited filters and ${getDailySearchLimit("pro")} searches per day for maximum flexibility. Perfect for power users and real estate professionals.`,
-        icon: Crown,
-        iconColor: "text-purple-600",
-        bgGradient: "from-purple-50 to-indigo-50",
-        borderColor: "border-purple-200",
-        buttonText: "Upgrade to Pro",
-        buttonVariant: "upgrade" as const,
-        showDismiss: true,
-      };
-    }
-
-    // Basic plan user with high usage (not necessarily at limits)
-    if (
-      currentPlan === "basic" &&
-      filtersCount >= 5 &&
-      searchesUsedToday >= Math.ceil(searchLimit * 0.6)
-    ) {
-      return {
-        type: "pro_recommendation",
-        title: "Pro Plan Recommended",
-        message: `You're a power user! Consider Pro for unlimited filters, ${getDailySearchLimit("pro")} searches/day, and priority support to maximize your apartment hunting efficiency.`,
-        icon: Crown,
-        iconColor: "text-purple-600",
-        bgGradient: "from-purple-50 to-indigo-50",
-        borderColor: "border-purple-200",
-        buttonText: "View Pro Plan",
-        buttonVariant: "upgrade" as const,
         showDismiss: true,
       };
     }
@@ -258,16 +202,16 @@ export function UpgradeBanner({
   const getButtonColor = () => {
     switch (bannerContext.buttonVariant) {
       case "urgent":
-        return "bg-orange-600 hover:bg-orange-700";
+        return "bg-orange-600 hover:bg-orange-700 text-white dark:text-white";
       case "trial":
-        return "bg-orange-600 hover:bg-orange-700";
+        return "bg-orange-600 hover:bg-orange-700 text-white dark:text-white";
       case "reactivate":
-        return "bg-amber-600 hover:bg-amber-700";
+        return "bg-amber-600 hover:bg-amber-700 text-white dark:text-white";
       case "trial_start":
-        return "bg-blue-600 hover:bg-blue-700";
+        return "bg-blue-600 hover:bg-blue-700 text-white dark:text-white";
       case "upgrade":
       default:
-        return "bg-blue-600 hover:bg-blue-700";
+        return "bg-blue-600 hover:bg-blue-700 text-white dark:text-white";
     }
   };
 
@@ -290,7 +234,7 @@ export function UpgradeBanner({
 
   return (
     <Card
-      className={`bg-gradient-to-r ${bannerContext.bgGradient} ${bannerContext.borderColor} shadow-sm`}
+      className={`${bannerContext.bgGradient} ${bannerContext.borderColor} shadow-sm`}
     >
       <CardContent className="p-4 sm:p-6 relative">
         {/* Close Button - Upper Right (only if dismissible) */}
@@ -299,7 +243,7 @@ export function UpgradeBanner({
             variant="ghost"
             size="sm"
             onClick={() => setIsDismissed(true)}
-            className={`${bannerContext.iconColor.replace("text-", "text-").replace("600", "700")} hover:bg-white/50 absolute top-2 right-2 z-10 sm:hidden`}
+            className={`${bannerContext.iconColor.replace("text-", "text-").replace("600", "700")} hover:bg-white/50 dark:hover:bg-gray-700/50 absolute top-2 right-2 z-10 sm:hidden`}
             aria-label="Dismiss banner"
           >
             <X className="w-4 h-4" />
@@ -311,27 +255,27 @@ export function UpgradeBanner({
           {/* Main Content */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <div
-              className={`w-12 h-12 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100" : "bg-amber-100"} rounded-full flex items-center justify-center flex-shrink-0`}
+              className={`w-12 h-12 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100 dark:bg-blue-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
             >
               <BannerIcon className={`w-6 h-6 ${bannerContext.iconColor}`} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3
-                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")}`}
+                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-gray-100`}
                 >
                   {bannerContext.title}
                 </h3>
                 {(bannerContext.type === "trial_ending" ||
                   bannerContext.type === "trial_active") &&
                   trialDaysRemaining !== null && (
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs w-fit">
+                    <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 border-orange-300 dark:border-orange-600 text-xs w-fit">
                       {trialDaysRemaining} days remaining
                     </Badge>
                   )}
               </div>
               <p
-                className={`${bannerContext.iconColor.replace("600", "800")} text-sm leading-relaxed`}
+                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-gray-300 text-sm leading-relaxed`}
               >
                 {bannerContext.message}
               </p>
@@ -351,7 +295,7 @@ export function UpgradeBanner({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsDismissed(true)}
-                className={`${bannerContext.iconColor.replace("600", "700")} hover:bg-white/50`}
+                className={`${bannerContext.iconColor.replace("600", "700")} hover:bg-white/50 dark:hover:bg-gray-700/50`}
                 aria-label="Dismiss banner"
               >
                 <X className="w-4 h-4" />
@@ -364,27 +308,27 @@ export function UpgradeBanner({
         <div className={`sm:hidden ${bannerContext.showDismiss ? "pr-8" : ""}`}>
           <div className="flex items-start gap-3 mb-4">
             <div
-              className={`w-10 h-10 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100" : "bg-amber-100"} rounded-full flex items-center justify-center flex-shrink-0`}
+              className={`w-10 h-10 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100 dark:bg-blue-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
             >
               <BannerIcon className={`w-5 h-5 ${bannerContext.iconColor}`} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                 <h3
-                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} text-base`}
+                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-gray-100 text-base`}
                 >
                   {bannerContext.title}
                 </h3>
                 {(bannerContext.type === "trial_ending" ||
                   bannerContext.type === "trial_active") &&
                   trialDaysRemaining !== null && (
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-300 text-xs w-fit">
+                    <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 border-orange-300 dark:border-orange-600 text-xs w-fit">
                       {trialDaysRemaining} days remaining
                     </Badge>
                   )}
               </div>
               <p
-                className={`${bannerContext.iconColor.replace("600", "800")} text-sm leading-relaxed`}
+                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-gray-300 text-sm leading-relaxed`}
               >
                 {bannerContext.message}
               </p>

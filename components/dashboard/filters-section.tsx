@@ -89,20 +89,20 @@ export function FiltersSection({
   const filtersToShow = getFiltersToShow();
 
   return (
-    <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700 ">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                 <FilterIcon className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   Search Filters
                 </h2>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Manage your apartment search criteria
                 </p>
               </div>
@@ -112,7 +112,7 @@ export function FiltersSection({
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <Badge
                 variant="secondary"
-                className="bg-green-50 text-green-700 border-green-200"
+                className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
               >
                 <Eye className="w-3 h-3 mr-1" />
                 {activeFilters.length} Active
@@ -121,7 +121,7 @@ export function FiltersSection({
               {inactiveFilters.length > 0 && (
                 <Badge
                   variant="secondary"
-                  className="bg-gray-100 text-gray-600 border-gray-200"
+                  className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                 >
                   <EyeOff className="w-3 h-3 mr-1" />
                   {inactiveFilters.length} Inactive
@@ -131,7 +131,7 @@ export function FiltersSection({
               {filterStats.uniqueCities > 0 && (
                 <Badge
                   variant="outline"
-                  className="text-blue-600 border-blue-200"
+                  className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-600"
                 >
                   <MapPin className="w-3 h-3 mr-1" />
                   {filterStats.uniqueCities}{" "}
@@ -144,8 +144,8 @@ export function FiltersSection({
                   variant="outline"
                   className={`${
                     isAtLimit
-                      ? "text-red-600 border-red-200 bg-red-50"
-                      : "text-gray-600 border-gray-200"
+                      ? "text-red-600 dark:text-red-400 border-red-200 dark:border-red-600 bg-red-50 dark:bg-red-900/30"
+                      : "text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600"
                   }`}
                 >
                   {filtersCount}/{maxFilters} Used
@@ -155,13 +155,13 @@ export function FiltersSection({
 
             {maxFilters !== -1 && (
               <div className="mt-3">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                   <span>{subscriptionConfig.name} plan</span>
                   <span>
                     {filtersCount}/{maxFilters}
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
                   <div
                     className={`h-1.5 rounded-full transition-all duration-300 ${
                       isAtLimit ? "bg-red-500" : "bg-blue-500"
@@ -181,7 +181,7 @@ export function FiltersSection({
               <Button
                 variant="outline"
                 onClick={() => setShowStats(!showStats)}
-                className="text-gray-600"
+                className="text-gray-600 dark:text-gray-300"
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 {showStats ? "Hide" : "Show"} Stats
@@ -193,8 +193,8 @@ export function FiltersSection({
               disabled={isAtLimit}
               className={`${
                 isAtLimit
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-gray-400 dark:bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
               }`}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -206,38 +206,46 @@ export function FiltersSection({
 
       {/* Filter Statistics */}
       {showStats && activeFilters.length > 0 && (
-        <div className="p-6 bg-blue-50 border-b border-blue-100">
-          <h3 className="text-sm font-medium text-blue-900 mb-3">
+        <div className="p-6 bg-blue-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
             Filter Statistics
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {filterStats.avgPrice.toLocaleString()}
               </div>
-              <div className="text-xs text-blue-700">Avg Max Price (PLN)</div>
+              <div className="text-xs text-blue-700 dark:text-blue-300">
+                Avg Max Price (PLN)
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {filterStats.avgRooms}
               </div>
-              <div className="text-xs text-green-700">Avg Min Rooms</div>
+              <div className="text-xs text-green-700 dark:text-green-300">
+                Avg Min Rooms
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                 {filterStats.uniqueCities}
               </div>
-              <div className="text-xs text-purple-700">Unique Cities</div>
+              <div className="text-xs text-purple-700 dark:text-purple-300">
+                Unique Cities
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                 {filterStats.cheapest === Infinity
                   ? "0"
                   : (
                       filterStats.mostExpensive - filterStats.cheapest
                     ).toLocaleString()}
               </div>
-              <div className="text-xs text-orange-700">Price Range</div>
+              <div className="text-xs text-orange-700 dark:text-orange-300">
+                Price Range
+              </div>
             </div>
           </div>
         </div>
@@ -245,7 +253,7 @@ export function FiltersSection({
 
       {/* View Mode Tabs */}
       {(activeFilters.length > 0 || inactiveFilters.length > 0) && (
-        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-1">
             <Button
               variant={viewMode === "all" ? "default" : "ghost"}
@@ -290,13 +298,13 @@ export function FiltersSection({
         ) : filters.length === 0 ? (
           /* Empty State - No filters at all */
           <div className="text-center py-12">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-6">
+            <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
               <Plus className="w-10 h-10 text-blue-600" />
             </div>
-            <h3 className="text-xl font-medium text-gray-900 mb-3">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-3">
               Create Your First Filter
             </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
               Set up search criteria to automatically find apartments that match
               your preferences. You can filter by city, price range, and number
               of rooms.
@@ -304,28 +312,30 @@ export function FiltersSection({
 
             {/* Feature highlights */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <MapPin className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Choose Cities
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Warsaw, Krakow, Gdansk...
                 </div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <DollarSign className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Set Budget
                 </div>
-                <div className="text-xs text-gray-600">Maximum price range</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
+                  Maximum price range
+                </div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <Home className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Room Count
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Minimum rooms needed
                 </div>
               </div>
@@ -334,7 +344,7 @@ export function FiltersSection({
             <Button
               onClick={() => setIsModalOpen(true)}
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 px-8"
+              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white dark:text-white px-8"
             >
               <Plus className="w-5 h-5 mr-2" />
               Create First Filter
@@ -343,17 +353,17 @@ export function FiltersSection({
         ) : (
           /* Empty State - No filters in current view */
           <div className="text-center py-8">
-            <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
               {viewMode === "active" ? (
                 <Eye className="w-8 h-8 text-gray-400" />
               ) : (
                 <EyeOff className="w-8 h-8 text-gray-400" />
               )}
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
               No {viewMode} filters
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
               {viewMode === "active"
                 ? "All your filters are currently inactive. Activate some filters to start receiving alerts."
                 : "You don't have any inactive filters."}
@@ -361,7 +371,7 @@ export function FiltersSection({
             <Button
               variant="outline"
               onClick={() => setViewMode("all")}
-              className="text-gray-600"
+              className="text-gray-600 dark:text-gray-300"
             >
               View All Filters
             </Button>

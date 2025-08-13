@@ -30,12 +30,6 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [billingSummary, setBillingSummary] = useState<{
-    totalInvoices: number;
-    totalPaid: number;
-    currency: string;
-    lastInvoiceDate?: number;
-  } | null>(null);
 
   const currentPlan = subscription?.plan || "free";
   const isTrialActive = trialInfo?.isActive || false;
@@ -52,7 +46,6 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
         const data = await getBillingDataAction();
         setPaymentMethods(data.paymentMethods);
         setInvoices(data.invoices);
-        setBillingSummary(data.billingSummary);
       } catch (error) {
         console.error("Failed to fetch billing data:", error);
         toast("❌ Failed to load billing data", {
@@ -114,45 +107,45 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
     return (
       <div className="space-y-6">
         {/* Current Subscription Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                   <Crown className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">
                     Current Subscription
                   </CardTitle>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-gray-400">
                     Manage your billing and subscription
                   </p>
                 </div>
               </div>
               <div className="animate-pulse w-full sm:w-auto">
-                <div className="h-9 w-full sm:w-32 bg-gray-200 rounded"></div>
+                <div className="h-9 w-full sm:w-32 bg-gray-200 dark:bg-gray-600 rounded"></div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="animate-pulse">
-              <div className="h-16 bg-gray-200 rounded-lg"></div>
+              <div className="h-16 bg-gray-200 dark:bg-gray-600 rounded-lg"></div>
             </div>
           </CardContent>
         </Card>
 
         {/* Payment Method Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                   <Wallet className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">Payment Method</CardTitle>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-gray-400">
                     Your saved payment methods
                   </p>
                 </div>
@@ -161,22 +154,22 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </CardHeader>
           <CardContent>
             <div className="animate-pulse">
-              <div className="h-20 bg-gray-200 rounded-lg"></div>
+              <div className="h-20 bg-gray-200 dark:bg-gray-600 rounded-lg"></div>
             </div>
           </CardContent>
         </Card>
 
         {/* Billing History Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">Billing History</CardTitle>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-gray-400">
                     Your recent invoices and payments
                   </p>
                 </div>
@@ -185,10 +178,13 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </CardHeader>
           <CardContent>
             <div className="animate-pulse space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-gray-200 rounded-lg"></div>
+                  <div
+                    key={i}
+                    className="h-16 bg-gray-200 dark:bg-gray-600 rounded-lg"
+                  ></div>
                 ))}
               </div>
             </div>
@@ -201,16 +197,16 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
   return (
     <div className="space-y-6">
       {/* Current Subscription */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                 <Crown className="w-5 h-5 text-blue-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Current Subscription</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Manage your billing and subscription
                 </p>
               </div>
@@ -230,7 +226,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-slate-50 rounded-lg gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-slate-50 dark:bg-gray-700 rounded-lg gap-4">
             <div className="flex items-center gap-3">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -245,14 +241,16 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   {getPlanPrice(currentPlan)} per month
                 </p>
               </div>
             </div>
             <div className="text-left sm:text-right">
-              <p className="text-sm text-slate-600">Next billing</p>
-              <p className="font-medium">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
+                Next billing
+              </p>
+              <p className="font-medium dark:text-gray-100">
                 {subscription?.current_period_end
                   ? new Date(
                       subscription.current_period_end
@@ -265,16 +263,16 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
       </Card>
 
       {/* Payment Method */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                 <Wallet className="w-5 h-5 text-green-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Payment Method</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Manage your payment information
                 </p>
               </div>
@@ -293,25 +291,26 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </div>
         </CardHeader>
         <CardContent>
-          {paymentMethods.length > 0 ? (
+          {/* Payment Methods List */}
+          {paymentMethods.length > 0 && (
             <div className="space-y-3">
               {paymentMethods.map((method) => (
                 <div
                   key={method.id}
-                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                       <CreditCard className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium">
+                      <p className="font-medium dark:text-gray-100">
                         {method.card
                           ? `${method.card.brand.toUpperCase()} •••• ${method.card.last4}`
                           : method.type}
                       </p>
                       {method.card && (
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm text-slate-600 dark:text-gray-400">
                           Expires{" "}
                           {method.card.expMonth.toString().padStart(2, "0")}/
                           {method.card.expYear}
@@ -325,15 +324,18 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                 </div>
               ))}
             </div>
-          ) : (
+          )}
+
+          {/* Empty State */}
+          {paymentMethods.length === 0 && (
             <div className="text-center py-8">
-              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-slate-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
                 <CreditCard className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-sm text-slate-500 mb-2">
+              <p className="text-sm text-slate-500 dark:text-gray-400 mb-2">
                 No payment methods found
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 dark:text-gray-500">
                 Add a payment method to manage your subscription
               </p>
             </div>
@@ -342,16 +344,16 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
       </Card>
 
       {/* Billing History */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-orange-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Billing History</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   View and download your invoices
                 </p>
               </div>
@@ -359,25 +361,32 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </div>
         </CardHeader>
         <CardContent>
-          {invoices.length > 0 ? (
-            <div className="rounded-xl border-0 bg-slate-50 p-6 flex flex-col gap-4">
+          {/* Invoices Table */}
+          {invoices.length > 0 && (
+            <div className="rounded-xl border-0 bg-slate-50 dark:bg-gray-700 p-6 flex flex-col gap-4">
               <div className="overflow-x-auto flex flex-col gap-4">
                 <table className="w-full border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 text-left">
-                      <th className="p-2">Date</th>
-                      <th className="p-2">Status</th>
-                      <th className="p-2 text-right">Amount</th>
-                      <th className="p-2 text-right">Invoice</th>
+                    <tr className="border-b border-slate-200 dark:border-gray-600 text-left">
+                      <th className="p-2 dark:text-gray-100">Date</th>
+                      <th className="p-2 dark:text-gray-100">Status</th>
+                      <th className="p-2 text-right dark:text-gray-100">
+                        Amount
+                      </th>
+                      <th className="p-2 text-right dark:text-gray-100">
+                        Invoice
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoices.map((invoice) => (
                       <tr
                         key={invoice.id}
-                        className="border-b border-slate-200 hover:bg-slate-100"
+                        className="border-b border-slate-200 dark:border-gray-600 hover:bg-slate-100 dark:hover:bg-gray-600"
                       >
-                        <td className="p-2">{formatDate(invoice.created)}</td>
+                        <td className="p-2 dark:text-gray-100">
+                          {formatDate(invoice.created)}
+                        </td>
                         <td className="p-2 capitalize">
                           <Badge
                             variant={
@@ -390,7 +399,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                             {invoice.status}
                           </Badge>
                         </td>
-                        <td className="p-2 text-right font-medium">
+                        <td className="p-2 text-right font-medium dark:text-gray-100">
                           {formatCurrency(invoice.amount, invoice.currency)}
                         </td>
                         <td className="p-2 text-right">
@@ -407,7 +416,9 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                               View
                             </Button>
                           ) : (
-                            <span className="text-slate-400 text-xs">N/A</span>
+                            <span className="text-slate-400 dark:text-gray-500 text-xs">
+                              N/A
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -415,31 +426,21 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                   </tbody>
                 </table>
               </div>
-              {billingSummary && (
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-slate-200 gap-2">
-                  <div className="text-sm text-slate-600">
-                    Total paid:{" "}
-                    <span className="font-medium">
-                      {formatCurrency(
-                        billingSummary.totalPaid,
-                        billingSummary.currency
-                      )}
-                    </span>
-                  </div>
-                  <div className="text-sm text-slate-600">
-                    {billingSummary.totalInvoices} invoice
-                    {billingSummary.totalInvoices !== 1 ? "s" : ""}
-                  </div>
-                </div>
-              )}
             </div>
-          ) : (
+          )}
+
+          {/* Empty State */}
+          {invoices.length === 0 && (
             <div className="text-center py-8">
-              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-slate-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Calendar className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-sm text-slate-500 mb-2">No billing history</p>
-              <p className="text-xs text-slate-400">
+              <p className="text-sm text-slate-500 dark:text-gray-400 mb-2">
+                {currentPlan === "free"
+                  ? "No billing history"
+                  : "No billing history found"}
+              </p>
+              <p className="text-xs text-slate-400 dark:text-gray-500">
                 {currentPlan === "free"
                   ? "Upgrade to a paid plan to see billing history"
                   : "No invoices found for your account"}

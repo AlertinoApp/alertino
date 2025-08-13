@@ -130,11 +130,9 @@ export function ContactTab() {
   return (
     <div className="space-y-6">
       {/* Contact Form */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            Send us a message
-          </CardTitle>
+          <CardTitle className="text-lg">Send us a message</CardTitle>
         </CardHeader>
         <CardContent>
           {status === "success" && (
@@ -261,70 +259,66 @@ export function ContactTab() {
       </Card>
 
       {/* Contact Information */}
-      <Card className="border-0 shadow-sm">
+      <Card className="gap-0 border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-gray-900">
-            Get in touch
-          </CardTitle>
+          <CardTitle className="text-lg">Get in touch</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
             We&apos;re here to help! Choose the best way to reach us and
             we&apos;ll get back to you as soon as possible.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {contactMethods.map((method, index) => (
-              <Card
+              <div
                 key={index}
-                className="hover:shadow-md transition-shadow duration-200 border-0 shadow-sm"
+                className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <method.icon className="w-5 h-5 text-blue-600" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                      <method.icon className="w-2 h-2 text-blue-600" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-1">
-                        {method.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {method.description}
-                      </p>
-                      {method.action ? (
-                        <a
-                          href={method.action}
-                          className="text-blue-600 hover:text-blue-700 font-medium text-sm inline-flex items-center gap-1"
-                        >
-                          {method.contact}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      ) : (
-                        <span className="text-gray-900 font-medium text-sm">
-                          {method.contact}
-                        </span>
-                      )}
-                    </div>
+                    <span className="font-medium dark:text-gray-100">
+                      {method.title}
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <p className="text-sm text-slate-600 dark:text-gray-400 mb-2">
+                  {method.description}
+                </p>
+                {method.action ? (
+                  <a
+                    href={method.action}
+                    className="text-blue-600 hover:text-blue-700 font-medium text-sm inline-flex items-center gap-1"
+                  >
+                    {method.contact}
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span className="text-gray-900 dark:text-gray-100 font-medium text-sm">
+                    {method.contact}
+                  </span>
+                )}
+              </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
       {/* Help Center */}
-      <Card className="border-0 shadow-sm bg-blue-50 border-blue-200">
+      <Card className="border-0 shadow-sm bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
               <HelpCircle className="w-5 h-5 text-blue-600" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-blue-900 mb-2">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
                 Need immediate help?
               </h3>
-              <p className="text-blue-800 text-sm mb-4">
+              <p className="text-blue-800 dark:text-blue-200 text-sm mb-4">
                 Check our Help Center for instant answers to common questions
                 about setting up filters, managing alerts, and troubleshooting.
               </p>

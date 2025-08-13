@@ -55,7 +55,7 @@ export function FilterCard({ filter }: FilterCardProps) {
   return (
     <>
       <Card
-        className={`hover:shadow-md transition-all duration-200 ${!isActive ? "opacity-75 bg-gray-50" : ""}`}
+        className={`hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800 ${!isActive ? "opacity-75 bg-gray-50 dark:bg-gray-700" : ""}`}
       >
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -64,8 +64,8 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="secondary"
                 className={
                   isActive
-                    ? "bg-green-50 text-green-700 border-green-200"
-                    : "bg-gray-100 text-gray-600 border-gray-200"
+                    ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                 }
               >
                 {isActive ? "Active" : "Inactive"}
@@ -84,7 +84,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
                 disabled={isToggling}
               >
                 <Edit2 className="h-4 w-4" />
@@ -93,7 +93,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsDeleteDialogOpen(true)}
-                className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+                className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
                 disabled={isToggling}
               >
                 <Trash2 className="h-4 w-4" />
@@ -103,47 +103,47 @@ export function FilterCard({ filter }: FilterCardProps) {
 
           <div className="space-y-3">
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
+              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
             >
               <span className="font-semibold text-lg">{filter.name}</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
+              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
             >
-              <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+              <MapPin className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
               <span className="font-medium capitalize">{filter.city}</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
+              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
             >
-              <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
+              <DollarSign className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
               <span>Max {filter.max_price.toLocaleString()} PLN</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500" : "text-gray-700"}`}
+              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
             >
-              <Home className="w-4 h-4 mr-2 text-gray-400" />
+              <Home className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
               <span>
                 Min {filter.min_rooms} room{filter.min_rooms !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Created {new Date(filter.created_at).toLocaleDateString()}
               </p>
               {!isActive && (
-                <p className="text-xs text-orange-600 font-medium">
+                <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">
                   Not monitoring
                 </p>
               )}
               {isToggling && (
-                <p className="text-xs text-blue-600 font-medium animate-pulse">
+                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">
                   Updating...
                 </p>
               )}

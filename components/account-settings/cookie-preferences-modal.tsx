@@ -195,12 +195,12 @@ export function CookiePreferencesModal({
       <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader className="pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
               <Cookie className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <DialogTitle className="text-xl">Cookie Preferences</DialogTitle>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Manage your cookie settings and privacy preferences
               </p>
             </div>
@@ -262,12 +262,12 @@ export function CookiePreferencesModal({
                   />
                 </div>
 
-                <p className="text-sm text-slate-600 ml-0">
+                <p className="text-sm text-slate-600 dark:text-gray-400 ml-0">
                   {category.description}
                 </p>
 
                 {category.id === "essential" && (
-                  <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded-md">
+                  <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded-md">
                     <Info className="w-3 h-3" />
                     <span>
                       Essential cookies are required for the website to function
@@ -277,7 +277,7 @@ export function CookiePreferencesModal({
                 )}
 
                 {category.id === "analytics" && (
-                  <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 p-2 rounded-md">
+                  <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-md">
                     <Info className="w-3 h-3" />
                     <span>
                       Analytics cookies help us understand how visitors use our
@@ -287,7 +287,7 @@ export function CookiePreferencesModal({
                 )}
 
                 {category.id === "marketing" && (
-                  <div className="flex items-center gap-2 text-xs text-purple-600 bg-purple-50 p-2 rounded-md">
+                  <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 p-2 rounded-md">
                     <Info className="w-3 h-3" />
                     <span>
                       Marketing cookies are used to track visitors across
@@ -297,7 +297,7 @@ export function CookiePreferencesModal({
                 )}
 
                 {category.id === "functional" && (
-                  <div className="flex items-center gap-2 text-xs text-green-600 bg-green-50 p-2 rounded-md">
+                  <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-2 rounded-md">
                     <Info className="w-3 h-3" />
                     <span>
                       Functional cookies remember your preferences and settings
@@ -312,19 +312,21 @@ export function CookiePreferencesModal({
           </div>
 
           {/* Additional Information */}
-          <div className="bg-slate-50 rounded-lg p-4">
-            <h4 className="font-medium text-slate-900 mb-2">About Cookies</h4>
-            <p className="text-sm text-slate-600 mb-3">
+          <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-4">
+            <h4 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
+              About Cookies
+            </h4>
+            <p className="text-sm text-slate-600 dark:text-gray-400 mb-3">
               Cookies are small text files stored on your device that help us
               provide and improve our services. You can change your preferences
               at any time, but some features may not work properly if you
               disable certain cookies.
             </p>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-gray-400">
               For more information about how we use cookies, please see our{" "}
               <a
                 href="/privacy"
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >

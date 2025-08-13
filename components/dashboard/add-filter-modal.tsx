@@ -153,7 +153,7 @@ export function AddFilterModal({
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Leave empty to auto-generate a name
             </p>
           </div>
@@ -219,7 +219,7 @@ export function AddFilterModal({
             <Button
               type="submit"
               disabled={isSubmitting || isAtLimit}
-              className={`bg-blue-600 hover:bg-blue-700 ${isAtLimit ? "bg-gray-400 cursor-not-allowed" : ""}`}
+              className={`bg-blue-600 hover:bg-blue-700 text-white dark:text-white ${isAtLimit ? "bg-gray-400 cursor-not-allowed" : ""}`}
             >
               {isSubmitting
                 ? "Adding..."

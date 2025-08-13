@@ -54,7 +54,7 @@ export default async function AccountSettingsPage({ searchParams }: PageProps) {
   const defaultTab = resolvedSearchParams.tab || "overview";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
       <Navbar
         user={session?.user}
         profile={user}
