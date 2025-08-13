@@ -206,7 +206,7 @@ export function OverviewTab({
       return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Free Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0">
+          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -257,7 +257,7 @@ export function OverviewTab({
           </Card>
 
           {/* Basic Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0">
+          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -302,7 +302,7 @@ export function OverviewTab({
           </Card>
 
           {/* Pro Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0">
+          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -335,7 +335,7 @@ export function OverviewTab({
       return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Basic Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0">
+          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -386,7 +386,7 @@ export function OverviewTab({
           </Card>
 
           {/* Pro Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0">
+          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -424,19 +424,22 @@ export function OverviewTab({
         {/* Plan Cards Grid Skeleton */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="border-0 shadow-sm h-full py-0">
+            <Card
+              key={i}
+              className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800"
+            >
               <CardContent className="p-6 h-full">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 flex flex-col gap-0.5">
                     <div className="animate-pulse">
-                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3 mb-2"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-full mb-1"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-2/3"></div>
                     </div>
                   </div>
                   <div className="pt-4">
                     <div className="animate-pulse">
-                      <div className="h-8 bg-gray-200 rounded w-24"></div>
+                      <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
                     </div>
                   </div>
                 </div>
@@ -446,15 +449,15 @@ export function OverviewTab({
         </div>
 
         {/* Usage Overview Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-blue-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Usage Overview</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Monitor your current usage and limits
                 </p>
               </div>
@@ -463,17 +466,20 @@ export function OverviewTab({
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 bg-slate-50 rounded-lg">
+                <div
+                  key={i}
+                  className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg"
+                >
                   <div className="animate-pulse">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        <div className="w-4 h-4 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16"></div>
                       </div>
-                      <div className="h-5 bg-gray-200 rounded w-12"></div>
+                      <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-12"></div>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
                   </div>
                 </div>
               ))}
@@ -482,15 +488,15 @@ export function OverviewTab({
         </Card>
 
         {/* Usage Statistics Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-green-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Usage Statistics</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Detailed usage analytics
                 </p>
               </div>
@@ -501,15 +507,15 @@ export function OverviewTab({
               {/* This Week Skeleton */}
               <div className="space-y-4">
                 <div className="animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-20 mb-4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-20 mb-4"></div>
                   <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between"
                       >
-                        <div className="h-3 bg-gray-200 rounded w-24"></div>
-                        <div className="h-3 bg-gray-200 rounded w-8"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
                       </div>
                     ))}
                   </div>
@@ -519,15 +525,15 @@ export function OverviewTab({
               {/* Today Skeleton */}
               <div className="space-y-4">
                 <div className="animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-16 mb-4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16 mb-4"></div>
                   <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between"
                       >
-                        <div className="h-3 bg-gray-200 rounded w-24"></div>
-                        <div className="h-3 bg-gray-200 rounded w-8"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
                       </div>
                     ))}
                   </div>
@@ -538,15 +544,15 @@ export function OverviewTab({
         </Card>
 
         {/* Usage History Skeleton */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
                 <Clock className="w-5 h-5 text-purple-600" />
               </div>
               <div>
                 <CardTitle className="text-lg">Usage History</CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Last 7 days search activity
                 </p>
               </div>
@@ -558,10 +564,10 @@ export function OverviewTab({
                 <div key={i} className="animate-pulse">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-3 bg-gray-200 rounded w-16"></div>
-                      <div className="h-5 bg-gray-200 rounded w-12"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-16"></div>
+                      <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-12"></div>
                     </div>
-                    <div className="h-3 bg-gray-200 rounded w-8"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
                   </div>
                 </div>
               ))}
@@ -578,15 +584,15 @@ export function OverviewTab({
       {renderPlanCards()}
 
       {/* Usage Overview */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <CardTitle className="text-lg">Usage Overview</CardTitle>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Monitor your current usage and limits
               </p>
             </div>
@@ -595,53 +601,61 @@ export function OverviewTab({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Filters Usage */}
-            <div className="p-4 bg-slate-50 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-blue-600" />
-                  <span className="font-medium">Filters</span>
+                  <span className="font-medium dark:text-gray-100">
+                    Filters
+                  </span>
                 </div>
                 <Badge variant="secondary">
                   {filtersCount}/{maxFilters}
                 </Badge>
               </div>
               <Progress value={filterUsagePercentage} className="h-2" />
-              <p className="text-sm text-slate-600 mt-2">
+              <p className="text-sm text-slate-600 dark:text-gray-400 mt-2">
                 {maxFilters - filtersCount} filters remaining
               </p>
             </div>
 
             {/* Searches Usage */}
-            <div className="p-4 bg-slate-50 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-purple-600" />
-                  <span className="font-medium">Searches</span>
+                  <span className="font-medium dark:text-gray-100">
+                    Searches
+                  </span>
                 </div>
                 <Badge variant="secondary">
                   {searchesUsed}/{maxSearches}
                 </Badge>
               </div>
               <Progress value={searchUsagePercentage} className="h-2" />
-              <p className="text-sm text-slate-600 mt-2">
+              <p className="text-sm text-slate-600 dark:text-gray-400 mt-2">
                 {maxSearches - searchesUsed} searches remaining today
               </p>
             </div>
 
             {/* Last Run Information */}
-            <div className="p-4 bg-slate-50 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-600" />
-                  <span className="font-medium">Last Run</span>
+                  <span className="font-medium dark:text-gray-100">
+                    Last Run
+                  </span>
                 </div>
               </div>
 
               {lastRunDate ? (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Last scan:</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Last scan:
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {lastRunDate.toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -651,17 +665,23 @@ export function OverviewTab({
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Time ago:</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Time ago:
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {getTimeSinceLastRun(lastRunDate)}
                     </span>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <div className="text-2xl font-bold text-gray-400 mb-1">—</div>
-                  <p className="text-sm text-gray-500">No runs yet</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <div className="text-2xl font-bold text-gray-400 dark:text-gray-500 mb-1">
+                    —
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    No runs yet
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                     Run your first search to get started
                   </p>
                 </div>
@@ -672,15 +692,17 @@ export function OverviewTab({
       </Card>
 
       {/* Usage Statistics */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-green-600" />
             </div>
             <div>
               <CardTitle className="text-lg">Usage Statistics</CardTitle>
-              <p className="text-sm text-slate-600">Detailed usage analytics</p>
+              <p className="text-sm text-slate-600 dark:text-gray-400">
+                Detailed usage analytics
+              </p>
             </div>
           </div>
         </CardHeader>
@@ -688,46 +710,64 @@ export function OverviewTab({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* This Week */}
             <div className="space-y-4">
-              <h3 className="font-medium text-slate-900">This Week</h3>
+              <h3 className="font-medium text-slate-900 dark:text-gray-100">
+                This Week
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Searches performed
                   </span>
-                  <span className="font-medium">{searchStats.weekTotal}</span>
+                  <span className="font-medium dark:text-gray-100">
+                    {searchStats.weekTotal}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">Active filters</span>
-                  <span className="font-medium">{filtersCount}</span>
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                    Active filters
+                  </span>
+                  <span className="font-medium dark:text-gray-100">
+                    {filtersCount}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">Active alerts</span>
-                  <span className="font-medium">{alertsCount}</span>
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                    Active alerts
+                  </span>
+                  <span className="font-medium dark:text-gray-100">
+                    {alertsCount}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Today */}
             <div className="space-y-4">
-              <h3 className="font-medium text-slate-900">Today</h3>
+              <h3 className="font-medium text-slate-900 dark:text-gray-100">
+                Today
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">Searches used</span>
-                  <span className="font-medium">{searchStats.today}</span>
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                    Searches used
+                  </span>
+                  <span className="font-medium dark:text-gray-100">
+                    {searchStats.today}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Searches remaining
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium dark:text-gray-100">
                     {maxSearches - searchesUsed}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Usage percentage
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium dark:text-gray-100">
                     {Math.round(searchUsagePercentage)}%
                   </span>
                 </div>
@@ -738,15 +778,15 @@ export function OverviewTab({
       </Card>
 
       {/* Usage History */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
               <Clock className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <CardTitle className="text-lg">Usage History</CardTitle>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Last 7 days search activity
               </p>
             </div>
@@ -760,18 +800,18 @@ export function OverviewTab({
               return (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div>
-                      <p className="font-medium">
+                      <p className="font-medium dark:text-gray-100">
                         {new Date(day.date).toLocaleDateString("en-US", {
                           weekday: "short",
                           month: "short",
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-slate-600 dark:text-gray-400">
                         {day.count} searches performed
                       </p>
                     </div>
@@ -781,8 +821,8 @@ export function OverviewTab({
                       variant="outline"
                       className={`${
                         alertsFound > 0
-                          ? "bg-green-50 text-green-700 border-green-200"
-                          : "bg-gray-50 text-gray-500 border-gray-200"
+                          ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+                          : "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600"
                       }`}
                     >
                       {alertsFound} alerts
@@ -805,10 +845,10 @@ export function OverviewTab({
           </DialogHeader>
           <div className="space-y-4 sm:space-y-6">
             <div className="space-y-3">
-              <p className="text-sm text-slate-600 sm:text-base leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-gray-400 sm:text-base leading-relaxed">
                 Get immediate access to advanced filters and all Basic features.
               </p>
-              <p className="text-sm text-slate-600 sm:text-base leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-gray-400 sm:text-base leading-relaxed">
                 This will end your trial period, and your payment method on file
                 will be charged.
               </p>

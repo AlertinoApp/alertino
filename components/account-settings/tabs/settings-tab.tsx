@@ -100,15 +100,15 @@ export function SettingsTab({ profile }: SettingsTabProps) {
   return (
     <div className="space-y-6">
       {/* Notification Settings */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
               <Bell className="w-5 h-5 text-green-600" />
             </div>
             <div>
               <CardTitle className="text-lg">Notification Settings</CardTitle>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Manage your notification preferences
               </p>
             </div>
@@ -116,14 +116,14 @@ export function SettingsTab({ profile }: SettingsTabProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex w-8 h-8 bg-blue-100 rounded-full items-center justify-center">
+                <div className="hidden sm:flex w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full items-center justify-center">
                   <Mail className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
                   <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-gray-400">
                     Receive alerts about new apartment listings via email
                   </p>
                 </div>
@@ -135,9 +135,9 @@ export function SettingsTab({ profile }: SettingsTabProps) {
               />
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg opacity-60">
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg opacity-60">
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex w-8 h-8 bg-slate-100 rounded-full items-center justify-center">
+                <div className="hidden sm:flex w-8 h-8 bg-slate-100 dark:bg-gray-700 rounded-full items-center justify-center">
                   <Smartphone className="w-4 h-4 text-slate-400" />
                 </div>
                 <div>
@@ -156,15 +156,15 @@ export function SettingsTab({ profile }: SettingsTabProps) {
       </Card>
 
       {/* Privacy Settings */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
               <Shield className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <CardTitle className="text-lg">Privacy Settings</CardTitle>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Control your data and privacy settings
               </p>
             </div>
@@ -181,7 +181,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Cookie Preferences</p>
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-gray-400">
                   Manage your cookie settings and tracking preferences
                 </p>
               </div>
@@ -243,30 +243,26 @@ export function SettingsTab({ profile }: SettingsTabProps) {
       </Card>
 
       {/* Delete Account */}
-      <Card className="border-0 shadow-sm border-red-200">
+      <Card className="border-0 shadow-sm border-red-200 bg-white dark:bg-gray-800">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
               <AlertCircle className="w-5 h-5 text-red-600" />
             </div>
             <div>
-              <CardTitle className="text-lg text-red-900">
-                Delete Account
-              </CardTitle>
-              <p className="text-sm text-slate-600">
+              <CardTitle className="text-lg">Delete Account</CardTitle>
+              <p className="text-sm text-slate-600 dark:text-gray-400">
                 Irreversible and destructive actions
               </p>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h3 className="font-medium text-red-900 mb-1">
-                  Delete Account
-                </h3>
-                <p className="text-sm text-red-700">
+                <h3 className="font-medium mb-1">Delete Account</h3>
+                <p className="text-sm ">
                   Permanently delete your account and all associated data. This
                   action cannot be undone.
                 </p>

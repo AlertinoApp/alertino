@@ -185,7 +185,7 @@ export function AccountSettingsClient({
                   <div className="flex flex-col min-w-0">
                     <div className="flex items-center gap-2 min-w-0">
                       <div title={displayName} className="min-w-0">
-                        <p className="truncate text-sm font-medium text-slate-900">
+                        <p className="truncate text-sm font-medium text-slate-900 dark:text-gray-100">
                           {displayName}
                         </p>
                       </div>
@@ -195,7 +195,7 @@ export function AccountSettingsClient({
                       >
                         <DialogTrigger asChild>
                           <button
-                            className="text-slate-400 hover:text-slate-600 flex-shrink-0"
+                            className="text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-400 flex-shrink-0"
                             aria-label="Edit name"
                             onClick={handleOpenEditModal}
                           >
@@ -249,11 +249,15 @@ export function AccountSettingsClient({
                       className="flex items-center gap-1 min-w-0"
                       title={`${currentPlan} · ${email}`}
                     >
-                      <p className="text-sm text-slate-500 flex-shrink-0 capitalize">
+                      <p className="text-sm text-slate-500 dark:text-gray-400 flex-shrink-0 capitalize">
                         {isTrialActive ? `${currentPlan} Trial` : currentPlan}
                       </p>
-                      <span className="text-slate-500 flex-shrink-0">·</span>
-                      <p className="text-sm text-slate-500 truncate">{email}</p>
+                      <span className="text-slate-500 dark:text-gray-400 flex-shrink-0">
+                        ·
+                      </span>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 truncate">
+                        {email}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -270,15 +274,15 @@ export function AccountSettingsClient({
                       onClick={() => setActiveTab(tab.id)}
                       className={`group flex h-8 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm transition-colors min-w-0 ${
                         activeTab === tab.id
-                          ? "bg-slate-100 text-slate-900"
-                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                          ? "bg-slate-100 dark:bg-gray-700 text-slate-900 dark:text-gray-100"
+                          : "text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-gray-700 hover:text-slate-900 dark:hover:text-gray-100"
                       }`}
                     >
                       <span
                         className={`flex h-5 w-5 items-center justify-center transition-colors flex-shrink-0 ${
                           activeTab === tab.id
-                            ? "text-slate-900"
-                            : "text-slate-500 group-hover:text-slate-900"
+                            ? "text-slate-900 dark:text-gray-100"
+                            : "text-slate-500 dark:text-gray-400 group-hover:text-slate-900 dark:group-hover:text-gray-100"
                         }`}
                       >
                         {tab.icon}

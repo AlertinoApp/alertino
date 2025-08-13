@@ -103,17 +103,17 @@ export function DeleteFilterDialog({
         </DialogHeader>
 
         {isLoadingCount ? (
-          <div className="py-4 text-center text-sm text-gray-500">
+          <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
             Loading alert count...
           </div>
         ) : alertCount !== null && alertCount > 0 ? (
           <div className="py-4">
-            <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-              <p className="text-sm text-yellow-800 font-medium mb-2">
+            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
                 This filter has {alertCount} alert{alertCount === 1 ? "" : "s"}{" "}
                 associated with it.
               </p>
-              <p className="text-sm text-yellow-700">
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">
                 Deleting this filter will also remove all associated alerts
                 permanently.
               </p>

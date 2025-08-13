@@ -12,7 +12,8 @@ UI:
     ✔ [ ] update pricing page (build simple to Cursor pricing page) @done(25-08-08 09:50)
     ✔ [ ] rebuild profile and billing pages to one account page @done(25-08-08 09:50)
     ✔ [ ] update /billing/success and /billing/cancel @done(25-08-08 09:50)
-    ☐ [ ] implement dark theme
+    ✔ [ ] implement dark theme @done(25-08-13 08:14)
     ✔ [ ] custom multiselect @done(25-08-11 21:38)
     ✔ [ ] justify end alert card @done(25-08-11 21:39)
+    ☐ [ ] improve landing page
     

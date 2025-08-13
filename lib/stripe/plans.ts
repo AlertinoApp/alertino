@@ -11,6 +11,10 @@ export interface SubscriptionConfig {
     text: string;
     border: string;
     accent: string;
+    bgDark?: string;
+    textDark?: string;
+    borderDark?: string;
+    accentDark?: string;
   };
   pricing: {
     monthly: number;
@@ -45,6 +49,10 @@ export const SUBSCRIPTION_CONFIGS: Record<
       text: "text-gray-700",
       border: "border-gray-200",
       accent: "text-gray-600",
+      bgDark: "bg-gray-700",
+      textDark: "text-gray-300",
+      borderDark: "border-gray-600",
+      accentDark: "text-gray-400",
     },
     pricing: {
       monthly: 0,
@@ -78,6 +86,10 @@ export const SUBSCRIPTION_CONFIGS: Record<
       text: "text-blue-700",
       border: "border-blue-200",
       accent: "text-blue-600",
+      bgDark: "bg-blue-900/30",
+      textDark: "text-blue-300",
+      borderDark: "border-blue-600",
+      accentDark: "text-blue-400",
     },
     pricing: {
       monthly: 39,
@@ -113,6 +125,10 @@ export const SUBSCRIPTION_CONFIGS: Record<
       text: "text-purple-700",
       border: "border-purple-200",
       accent: "text-purple-600",
+      bgDark: "bg-purple-900/30",
+      textDark: "text-purple-300",
+      borderDark: "border-purple-600",
+      accentDark: "text-purple-400",
     },
     pricing: {
       monthly: 99,

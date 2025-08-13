@@ -41,7 +41,7 @@ export function SearchStats({
       return (
         <Badge
           variant="destructive"
-          className="bg-red-100 text-red-700 border-red-200"
+          className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600"
         >
           <Target className="w-3 h-3 mr-1" />
           Limit Reached
@@ -52,7 +52,7 @@ export function SearchStats({
       return (
         <Badge
           variant="outline"
-          className="bg-amber-50 text-amber-700 border-amber-200"
+          className="bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-600"
         >
           <Clock className="w-3 h-3 mr-1" />
           Near Limit
@@ -62,7 +62,7 @@ export function SearchStats({
     return (
       <Badge
         variant="outline"
-        className="bg-green-50 text-green-700 border-green-200"
+        className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
       >
         <TrendingUp className="w-3 h-3 mr-1" />
         Available
@@ -71,12 +71,12 @@ export function SearchStats({
   };
 
   return (
-    <Card className="bg-white border-gray-200">
+    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-blue-600" />
-            <CardTitle className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Search Usage
             </CardTitle>
           </div>
@@ -87,13 +87,16 @@ export function SearchStats({
         <div className="space-y-4">
           {/* Usage Progress */}
           <div>
-            <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
               <span>Today&apos;s searches</span>
-              <span className="font-medium">
+              <span className="font-medium dark:text-gray-100">
                 {searchesUsedToday} / {dailyLimit}
               </span>
             </div>
-            <Progress value={usagePercentage} className="h-2 bg-gray-200">
+            <Progress
+              value={usagePercentage}
+              className="h-2 bg-gray-200 dark:bg-gray-600"
+            >
               <div
                 className={`h-full transition-all duration-300 ease-out rounded-full ${getProgressColor()}`}
                 style={{ width: `${usagePercentage}%` }}
@@ -103,17 +106,21 @@ export function SearchStats({
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-gray-900">
+            <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {remainingSearches}
               </div>
-              <div className="text-xs text-gray-600">Remaining</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">
+                Remaining
+              </div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-gray-900">
+            <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {dailyLimit}
               </div>
-              <div className="text-xs text-gray-600">Daily Limit</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">
+                Daily Limit
+              </div>
             </div>
           </div>
         </div>
