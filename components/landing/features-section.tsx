@@ -99,7 +99,7 @@ export function FeaturesSection() {
               <Card className="bg-white/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 shadow-lg group">
                 <CardContent className="p-8">
                   <motion.div
-                    className={`w-16 h-16 bg-gradient-to-br ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border ${feature.borderColor}`}
+                    className={`w-16 h-16 bg-gradient-to-br ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 border ${feature.borderColor}`}
                     whileHover={{ rotate: 5 }}
                   >
                     <feature.icon className="w-8 h-8 text-slate-700" />

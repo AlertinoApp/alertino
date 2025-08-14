@@ -81,7 +81,7 @@ export function CTASection({ user }: CTASectionProps) {
             <Button
               size="lg"
               onClick={() => router.push(user ? "/pricing" : "/login")}
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-lg px-12 py-6 rounded-2xl shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-lg px-12 py-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
             >
               {user ? "View Plans" : "Get Started for Free"}
               <ArrowRight className="ml-3 w-5 h-5" />
