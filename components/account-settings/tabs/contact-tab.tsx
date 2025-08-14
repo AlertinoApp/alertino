@@ -89,7 +89,7 @@ export function ContactTab() {
   return (
     <div className="space-y-6">
       {/* Contact Form */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <CardTitle className="text-lg">Send us a message</CardTitle>
         </CardHeader>
@@ -216,55 +216,6 @@ export function ContactTab() {
           </form>
         </CardContent>
       </Card>
-
-      {/* Contact Information */}
-      {/* <Card className="gap-0 border-0 shadow-sm bg-white dark:bg-gray-800">
-        <CardHeader>
-          <CardTitle className="text-lg">Get in touch</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
-            We&apos;re here to help! Choose the best way to reach us and
-            we&apos;ll get back to you as soon as possible.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {contactMethods.map((method, index) => (
-              <div
-                key={index}
-                className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                      <method.icon className="w-2 h-2 text-blue-600" />
-                    </div>
-                    <span className="font-medium dark:text-gray-100">
-                      {method.title}
-                    </span>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-gray-400 mb-2">
-                  {method.description}
-                </p>
-                {method.action ? (
-                  <a
-                    href={method.action}
-                    className="text-blue-600 hover:text-blue-700 font-medium text-sm inline-flex items-center gap-1"
-                  >
-                    {method.contact}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                ) : (
-                  <span className="text-gray-900 dark:text-gray-100 font-medium text-sm">
-                    {method.contact}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card> */}
 
       {/* Help Center */}
       <Card className="border-0 shadow-sm bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700">

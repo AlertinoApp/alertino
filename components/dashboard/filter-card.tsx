@@ -55,7 +55,7 @@ export function FilterCard({ filter }: FilterCardProps) {
   return (
     <>
       <Card
-        className={`hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800 ${!isActive ? "opacity-75 bg-gray-50 dark:bg-gray-700" : ""}`}
+        className={`hover:shadow-md transition-all duration-200 bg-card ${!isActive ? "opacity-75 bg-muted" : ""}`}
       >
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -64,7 +64,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="secondary"
                 className={
                   isActive
-                    ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+                    ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
                     : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                 }
               >
@@ -77,7 +77,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                   checked={isActive}
                   onCheckedChange={handleToggleStatus}
                   disabled={isToggling}
-                  className="data-[state=checked]:bg-green-600"
+                  className="data-[state=checked]:bg-emerald-600"
                 />
               </div>
               <Button

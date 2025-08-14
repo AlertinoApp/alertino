@@ -75,7 +75,7 @@ export default async function DashboardPage() {
   const searchesUsedToday = await getTodaySearchCount(session.user.id);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <Navbar
         user={session?.user}
         profile={user}

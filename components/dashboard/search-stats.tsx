@@ -33,7 +33,7 @@ export function SearchStats({
   const getProgressColor = () => {
     if (isAtLimit) return "bg-red-500";
     if (isNearLimit) return "bg-amber-500";
-    return "bg-green-500";
+    return "bg-emerald-500";
   };
 
   const getStatusBadge = () => {
@@ -62,7 +62,7 @@ export function SearchStats({
     return (
       <Badge
         variant="outline"
-        className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+        className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
       >
         <TrendingUp className="w-3 h-3 mr-1" />
         Available
@@ -71,12 +71,12 @@ export function SearchStats({
   };
 
   return (
-    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <BarChart3 className="w-5 h-5 text-emerald-600" />
+            <CardTitle className="text-lg font-semibold text-foreground">
               Search Usage
             </CardTitle>
           </div>

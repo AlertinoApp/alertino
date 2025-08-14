@@ -206,7 +206,7 @@ export function OverviewTab({
       return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Free Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-sm h-full py-0 bg-card">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -257,7 +257,7 @@ export function OverviewTab({
           </Card>
 
           {/* Basic Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-sm h-full py-0 bg-card">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -302,7 +302,7 @@ export function OverviewTab({
           </Card>
 
           {/* Pro Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-sm h-full py-0 bg-card">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -335,7 +335,7 @@ export function OverviewTab({
       return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Basic Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-sm h-full py-0 bg-card">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -386,7 +386,7 @@ export function OverviewTab({
           </Card>
 
           {/* Pro Plan Card */}
-          <Card className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-sm h-full py-0 bg-card">
             <CardContent className="p-6 h-full">
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
@@ -424,10 +424,7 @@ export function OverviewTab({
         {/* Plan Cards Grid Skeleton */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Card
-              key={i}
-              className="border-0 shadow-sm h-full py-0 bg-white dark:bg-gray-800"
-            >
+            <Card key={i} className="border-0 shadow-sm h-full py-0 bg-card">
               <CardContent className="p-6 h-full">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 flex flex-col gap-0.5">
@@ -449,7 +446,7 @@ export function OverviewTab({
         </div>
 
         {/* Usage Overview Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -468,7 +465,7 @@ export function OverviewTab({
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg"
+                  className="p-4 bg-slate-50 dark:bg-muted rounded-lg"
                 >
                   <div className="animate-pulse">
                     <div className="flex items-center justify-between mb-2">
@@ -488,7 +485,7 @@ export function OverviewTab({
         </Card>
 
         {/* Usage Statistics Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -544,7 +541,7 @@ export function OverviewTab({
         </Card>
 
         {/* Usage History Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -584,7 +581,7 @@ export function OverviewTab({
       {renderPlanCards()}
 
       {/* Usage Overview */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="bg-card border-0 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -601,7 +598,7 @@ export function OverviewTab({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Filters Usage */}
-            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-blue-600" />
@@ -620,7 +617,7 @@ export function OverviewTab({
             </div>
 
             {/* Searches Usage */}
-            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-purple-600" />
@@ -639,7 +636,7 @@ export function OverviewTab({
             </div>
 
             {/* Last Run Information */}
-            <div className="p-4 bg-slate-50 dark:bg-gray-700 rounded-lg">
+            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-600" />
@@ -692,7 +689,7 @@ export function OverviewTab({
       </Card>
 
       {/* Usage Statistics */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -778,7 +775,7 @@ export function OverviewTab({
       </Card>
 
       {/* Usage History */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -800,7 +797,7 @@ export function OverviewTab({
               return (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-muted rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div>
@@ -822,7 +819,7 @@ export function OverviewTab({
                       className={`${
                         alertsFound > 0
                           ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
-                          : "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600"
+                          : "bg-gray-50 dark:bg-muted text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600"
                       }`}
                     >
                       {alertsFound} alerts

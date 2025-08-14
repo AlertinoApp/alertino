@@ -149,9 +149,9 @@ export function AlertCard({ alert }: AlertCardProps) {
   return (
     <Card
       className={cn(
-        "hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800",
+        "hover:shadow-md transition-all duration-200 bg-card",
         (isCurrentlyNotInterested || isExpired) &&
-          "opacity-60 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+          "opacity-60 bg-muted border-border"
       )}
     >
       <CardContent className="p-4 sm:p-6">
@@ -200,14 +200,14 @@ export function AlertCard({ alert }: AlertCardProps) {
               >
                 <Badge
                   variant="outline"
-                  className="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
+                  className="text-xs bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
                 >
                   {alert.filters.name}
                 </Badge>
               </div>
             )}
             {isNew && !isCurrentlyNotInterested && (
-              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-600">
+              <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-600">
                 NEW
               </Badge>
             )}
@@ -296,7 +296,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                   "flex-1 min-w-0 text-sm",
                   isCurrentlyNotInterested
                     ? "bg-gray-400 hover:bg-gray-500 text-white"
-                    : "bg-blue-600 hover:bg-blue-700 text-white dark:text-white"
+                    : "bg-blue-600 hover:bg-blue-700 text-white dark:border dark:bg-transparent dark:border-blue-600 dark:text-blue-600 dark:hover:bg-blue-600 dark:hover:text-white"
                 )}
                 disabled={isCurrentlyNotInterested}
               >
@@ -342,14 +342,14 @@ export function AlertCard({ alert }: AlertCardProps) {
           )}
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+        <div className="mt-4 pt-4 border-t border-border">
           <div className="flex items-center justify-between">
             <p
               className={cn(
                 "text-xs",
                 isCurrentlyNotInterested
-                  ? "text-gray-400 dark:text-gray-500"
-                  : "text-gray-500 dark:text-gray-400"
+                  ? "text-muted-foreground"
+                  : "text-muted-foreground"
               )}
             >
               Found {new Date(alert.created_at).toLocaleDateString()}

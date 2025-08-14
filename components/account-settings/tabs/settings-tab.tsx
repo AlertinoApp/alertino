@@ -100,7 +100,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
   return (
     <div className="space-y-6">
       {/* Notification Settings */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -116,7 +116,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-muted rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full items-center justify-center">
                   <Mail className="w-4 h-4 text-blue-600" />
@@ -135,9 +135,9 @@ export function SettingsTab({ profile }: SettingsTabProps) {
               />
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg opacity-60">
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-muted rounded-lg opacity-60">
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex w-8 h-8 bg-slate-100 dark:bg-gray-700 rounded-full items-center justify-center">
+                <div className="hidden sm:flex w-8 h-8 bg-slate-100 dark:bg-muted rounded-full items-center justify-center">
                   <Smartphone className="w-4 h-4 text-slate-400" />
                 </div>
                 <div>
@@ -156,7 +156,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
       </Card>
 
       {/* Privacy Settings */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -243,7 +243,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
       </Card>
 
       {/* Delete Account */}
-      <Card className="border-0 shadow-sm border-red-200 bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm border-red-200 bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">

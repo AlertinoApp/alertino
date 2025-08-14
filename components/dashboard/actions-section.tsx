@@ -2,17 +2,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Clock,
   Activity,
-  TrendingUp,
   Settings2,
   BarChart3,
-  Calendar,
   Target,
   Search,
 } from "lucide-react";
@@ -50,8 +48,6 @@ const PROGRESS_STEPS = [
 
 export function ActionsSection({
   activeFiltersCount = 0,
-  totalAlertsCount = 0,
-  newAlertsToday = 0,
   lastRunDate = null,
   currentPlan = "free",
   searchesUsedToday = 0,
@@ -273,21 +269,16 @@ export function ActionsSection({
     }
   };
 
-  // Success rate calculation
-  const successRate = lastResult
-    ? Math.round((lastResult.found / Math.max(lastResult.checked, 1)) * 100)
-    : 0;
-
   return (
     <section className="space-y-6">
       {/* Main Action Card */}
-      <Card className="py-0! bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 overflow-hidden relative">
+      <Card className="py-0! bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700 overflow-hidden relative">
         <CardContent className="p-6 relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                  <Search className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                  <Search className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -385,7 +376,7 @@ export function ActionsSection({
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                       Last result:
                     </div>
-                    <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                    <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
                       {lastResult.found} found
                     </span>
                   </div>
@@ -404,7 +395,7 @@ export function ActionsSection({
                     className="h-2 bg-gray-200 dark:bg-gray-600"
                   >
                     <div
-                      className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-300 ease-out rounded-full"
+                      className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 ease-out rounded-full"
                       style={{ width: `${progress}%` }}
                     />
                   </Progress>
@@ -420,7 +411,7 @@ export function ActionsSection({
                 className={`mb-2 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
                     ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700 hover:scale-102 shadow-lg"
+                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:scale-102 shadow-lg hover:shadow-xl transition-all duration-300"
                 } text-white dark:text-white min-w-[160px]`}
               >
                 {isRunning ? (
@@ -463,180 +454,31 @@ export function ActionsSection({
         </CardContent>
       </Card>
 
-      {/* Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Alerts */}
-        <Card className="bg-white dark:bg-gray-800">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  Total Alerts
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {totalAlertsCount}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* New Today */}
-        <Card className="bg-white dark:bg-gray-800">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  New Today
-                </p>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {newAlertsToday}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-            {newAlertsToday > 0 && (
-              <div className="mt-2">
-                <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600 text-xs">
-                  +{newAlertsToday} today
-                </Badge>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Success Rate */}
-        <Card className="bg-white dark:bg-gray-800">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  Success Rate
-                </p>
-                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  {successRate}%
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-            {lastResult && (
-              <div className="mt-2">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {lastResult.found} of {lastResult.checked} checked
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Active Filters */}
-        <Card className="bg-white dark:bg-gray-800">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  Active Filters
-                </p>
-                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                  {activeFiltersCount}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                <Settings2 className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-            {activeFiltersCount === 0 && (
-              <div className="mt-2">
-                <Badge variant="destructive" className="text-xs">
-                  No active filters
-                </Badge>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Last Run Details */}
-      {lastResult && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Activity className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              Last Search Results
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {lastResult.checked}
-                </div>
-                <div className="text-sm text-blue-700 dark:text-blue-300">
-                  Listings Checked
-                </div>
-              </div>
-              <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {lastResult.found}
-                </div>
-                <div className="text-sm text-green-700 dark:text-green-300">
-                  New Listings Found
-                </div>
-              </div>
-              <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-700">
-                <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                  {lastResult.duplicates}
-                </div>
-                <div className="text-sm text-orange-700 dark:text-orange-300">
-                  Duplicates Skipped
-                </div>
-              </div>
-            </div>
-
-            {lastRun && (
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  Last search completed: {lastRun.toLocaleString()}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
       {/* Tips Card */}
       {activeFiltersCount === 0 && (
-        <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700">
+        <Card className="bg-muted border-border">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Target className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Target className="w-4 h-4 text-emerald-600" />
               </div>
               <div>
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                <h4 className="font-medium text-foreground mb-1">
                   Get Started
                 </h4>
-                <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
+                <p className="text-sm text-muted-foreground mb-3">
                   Create your first filter to start searching for apartment
                   alerts. You can specify your preferred city, price range, and
                   number of rooms.
                 </p>
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600">
+                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
                     Set price limits
                   </Badge>
-                  <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600">
+                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
                     Choose cities
                   </Badge>
-                  <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600">
+                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
                     Filter by rooms
                   </Badge>
                 </div>

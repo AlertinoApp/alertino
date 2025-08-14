@@ -107,7 +107,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
     return (
       <div className="space-y-6">
         {/* Current Subscription Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
         </Card>
 
         {/* Payment Method Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -160,7 +160,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
         </Card>
 
         {/* Billing History Skeleton */}
-        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+        <Card className="border-0 shadow-sm bg-card">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
   return (
     <div className="space-y-6">
       {/* Current Subscription */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -226,7 +226,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-slate-50 dark:bg-gray-700 rounded-lg gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-slate-50 dark:bg-muted rounded-lg gap-4">
             <div className="flex items-center gap-3">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -236,7 +236,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                       : getPlanName(currentPlan)}
                   </h3>
                   {isTrialActive && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="default" className="text-xs">
                       {trialDaysRemaining} days left
                     </Badge>
                   )}
@@ -263,7 +263,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
       </Card>
 
       {/* Payment Method */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -297,7 +297,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               {paymentMethods.map((method) => (
                 <div
                   key={method.id}
-                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-muted rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
@@ -344,7 +344,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
       </Card>
 
       {/* Billing History */}
-      <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+      <Card className="border-0 shadow-sm bg-card">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -363,7 +363,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
         <CardContent>
           {/* Invoices Table */}
           {invoices.length > 0 && (
-            <div className="rounded-xl border-0 bg-slate-50 dark:bg-gray-700 p-6 flex flex-col gap-4">
+            <div className="rounded-xl border-0 bg-slate-50 dark:bg-muted p-6 flex flex-col gap-4">
               <div className="overflow-x-auto flex flex-col gap-4">
                 <table className="w-full border-collapse text-sm">
                   <thead>

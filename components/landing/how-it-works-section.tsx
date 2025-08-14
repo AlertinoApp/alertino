@@ -95,7 +95,6 @@ export function HowItWorksSection() {
                   {/* Icon with gradient background */}
                   <motion.div
                     className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 border border-slate-200/50`}
-                    whileHover={{ rotate: 5 }}
                   >
                     <step.icon className="w-10 h-10 text-slate-700" />
                   </motion.div>

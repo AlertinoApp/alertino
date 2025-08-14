@@ -51,7 +51,7 @@ export function Navbar({
   const displayName = fullName || "User";
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 transition-colors">
+    <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -72,9 +72,7 @@ export function Navbar({
           {/* Current Page Display - Only show on dashboard variant */}
           {variant === "dashboard" && currentPage && (
             <div className="flex-1 flex justify-center">
-              <h2 className="text-lg text-slate-600 dark:text-gray-100">
-                {currentPage}
-              </h2>
+              <h2 className="text-lg">{currentPage}</h2>
             </div>
           )}
 
@@ -83,19 +81,19 @@ export function Navbar({
             <nav className="hidden md:flex items-center space-x-8">
               <Link
                 href="/#features"
-                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Features
               </Link>
               <Link
                 href="/#how-it-works"
-                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 How it Works
               </Link>
               <Link
                 href="/pricing"
-                className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-gray-100 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Pricing
               </Link>
@@ -129,11 +127,11 @@ export function Navbar({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    className="w-64 bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700"
+                    className="w-64 bg-card border-border"
                     align="end"
                   >
                     {/* User Info */}
-                    <div className="mb-1 px-3 py-2 border-b border-slate-100 dark:border-gray-700">
+                    <div className="mb-1 px-3 py-2 border-b border-border">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={avatarUrl || "/placeholder.svg"} />
@@ -142,10 +140,10 @@ export function Navbar({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 dark:text-gray-100 truncate">
+                          <p className="font-medium text-foreground truncate">
                             {displayName}
                           </p>
-                          <p className="text-sm text-slate-500 dark:text-gray-400 truncate">
+                          <p className="text-sm text-muted-foreground truncate">
                             {email}
                           </p>
                           <div className="mt-1">
@@ -162,7 +160,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/dashboard"
-                        className="flex items-center w-full px-3 py-2 gap-0! text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
+                        className="flex items-center w-full px-3 py-2 gap-0! text-foreground hover:bg-muted"
                       >
                         <Home className="mr-3 h-4 w-4" />
                         <span>Dashboard</span>
@@ -172,7 +170,7 @@ export function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href="/account-settings"
-                        className="flex items-center w-full px-3 py-2 gap-0! text-slate-900 dark:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-700"
+                        className="flex items-center w-full px-3 py-2 gap-0! text-foreground hover:bg-muted"
                       >
                         <UserIcon className="mr-3 h-4 w-4" />
                         <span>Account Settings</span>
@@ -183,7 +181,7 @@ export function Navbar({
                       <DropdownMenuItem asChild>
                         <Link
                           href="/pricing"
-                          className="flex items-center w-full px-3 py-2 text-blue-700 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-gray-700"
+                          className="flex items-center w-full px-3 py-2 text-blue-700 dark:text-blue-400 hover:bg-muted"
                         >
                           <Crown className="mr-3 h-4 w-4 text-blue-700 dark:text-blue-400" />
                           <span>Upgrade to Premium</span>
@@ -195,7 +193,7 @@ export function Navbar({
                       <form action={signOut} className="p-0! w-full">
                         <button
                           type="submit"
-                          className="flex items-center w-full px-3 py-2 rounded-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-gray-700"
+                          className="flex items-center w-full px-3 py-2 rounded-sm text-red-600 dark:text-red-400 hover:bg-muted"
                         >
                           <LogOut className="mr-3 h-4 w-4 text-red-600 dark:text-red-400" />
                           <span>Sign out</span>

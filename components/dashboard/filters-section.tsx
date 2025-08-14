@@ -82,27 +82,28 @@ export function FiltersSection({
       case "inactive":
         return inactiveFilters;
       default:
-        return filters;
+        // Sort filters: active first, then inactive
+        return [...activeFilters, ...inactiveFilters];
     }
   };
 
   const filtersToShow = getFiltersToShow();
 
   return (
-    <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <section className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700 ">
+      <div className="p-6 border-b border-border">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                <FilterIcon className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                <FilterIcon className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="text-xl font-semibold text-foreground">
                   Search Filters
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Manage your apartment search criteria
                 </p>
               </div>
@@ -112,7 +113,7 @@ export function FiltersSection({
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <Badge
                 variant="secondary"
-                className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+                className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
               >
                 <Eye className="w-3 h-3 mr-1" />
                 {activeFilters.length} Active
@@ -164,7 +165,7 @@ export function FiltersSection({
                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
                   <div
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      isAtLimit ? "bg-red-500" : "bg-blue-500"
+                      isAtLimit ? "bg-red-500" : "bg-emerald-500"
                     }`}
                     style={{
                       width: `${Math.min((filtersCount / maxFilters) * 100, 100)}%`,
@@ -194,7 +195,7 @@ export function FiltersSection({
               className={`${
                 isAtLimit
                   ? "bg-gray-400 dark:bg-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+                  : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 dark:text-white shadow-lg hover:shadow-xl transition-all duration-300"
               }`}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -206,10 +207,7 @@ export function FiltersSection({
 
       {/* Filter Statistics */}
       {showStats && activeFilters.length > 0 && (
-        <div className="p-6 bg-blue-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
-            Filter Statistics
-          </h3>
+        <div className="p-6 bg-emerald-50 dark:bg-emerald-900/20 border-b border-border">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -251,44 +249,30 @@ export function FiltersSection({
         </div>
       )}
 
-      {/* View Mode Tabs */}
-      {(activeFilters.length > 0 || inactiveFilters.length > 0) && (
-        <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-1">
-            <Button
-              variant={viewMode === "all" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("all")}
-              className="text-xs"
-            >
-              All ({filters.length})
-            </Button>
-            <Button
-              variant={viewMode === "active" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("active")}
-              className="text-xs"
-            >
-              <Eye className="w-3 h-3 mr-1" />
-              Active ({activeFilters.length})
-            </Button>
-            {inactiveFilters.length > 0 && (
-              <Button
-                variant={viewMode === "inactive" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("inactive")}
-                className="text-xs"
-              >
-                <EyeOff className="w-3 h-3 mr-1" />
-                Inactive ({inactiveFilters.length})
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Filters Content */}
       <div className="p-6">
+        {filtersToShow.length > 0 && (
+          <div className="flex justify-end mb-6">
+            <Button
+              variant="outline"
+              onClick={() => setViewMode(viewMode === "all" ? "active" : "all")}
+              className="text-gray-600 dark:text-gray-300"
+            >
+              {viewMode === "all" ? (
+                <>
+                  <EyeOff className="w-4 h-4 mr-2" />
+                  Hide Inactive
+                </>
+              ) : (
+                <>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Show Inactive
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
         {filtersToShow.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtersToShow.map((filter) => (
@@ -344,7 +328,7 @@ export function FiltersSection({
             <Button
               onClick={() => setIsModalOpen(true)}
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white dark:text-white px-8"
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white dark:text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Plus className="w-5 h-5 mr-2" />
               Create First Filter

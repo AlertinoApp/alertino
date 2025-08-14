@@ -100,7 +100,6 @@ export function FeaturesSection() {
                 <CardContent className="p-8">
                   <motion.div
                     className={`w-16 h-16 bg-gradient-to-br ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 border ${feature.borderColor}`}
-                    whileHover={{ rotate: 5 }}
                   >
                     <feature.icon className="w-8 h-8 text-slate-700" />
                   </motion.div>

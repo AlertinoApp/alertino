@@ -146,9 +146,9 @@ export function UpgradeBanner({
         title: "Approaching Filter Limit",
         message: `You're using ${filtersCount}/${filterLimit} filters (${Math.round((filtersCount / filterLimit) * 100)}% used). Upgrade for more filters and automated scraping to find apartments faster.`,
         icon: Crown,
-        iconColor: "text-blue-600",
-        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
-        borderColor: "border-blue-200 dark:border-blue-700",
+        iconColor: "text-emerald-600",
+        bgGradient: "bg-emerald-50 dark:bg-emerald-900/20",
+        borderColor: "border-emerald-200 dark:border-emerald-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -164,9 +164,9 @@ export function UpgradeBanner({
         title: "Approaching Search Limit",
         message: `You've used ${searchesUsedToday}/${searchLimit} searches today (${Math.round((searchesUsedToday / searchLimit) * 100)}% used). Upgrade for more daily searches and automated scraping.`,
         icon: AlertTriangle,
-        iconColor: "text-blue-600",
-        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
-        borderColor: "border-blue-200 dark:border-blue-700",
+        iconColor: "text-emerald-600",
+        bgGradient: "bg-emerald-50 dark:bg-emerald-900/20",
+        borderColor: "border-emerald-200 dark:border-emerald-700",
         buttonText: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
         buttonVariant: "upgrade" as const,
         showDismiss: true,
@@ -181,9 +181,9 @@ export function UpgradeBanner({
         message:
           "Create your first filter and get a free 14-day trial of Basic plan. Enjoy automated scraping, more filters, and priority support.",
         icon: Crown,
-        iconColor: "text-blue-600",
-        bgGradient: "bg-blue-50 dark:bg-blue-900/20",
-        borderColor: "border-blue-200 dark:border-blue-700",
+        iconColor: "text-emerald-600",
+        bgGradient: "bg-emerald-50 dark:bg-emerald-900/20",
+        borderColor: "border-emerald-200 dark:border-emerald-700",
         buttonText: "Start Free Trial",
         buttonVariant: "trial_start" as const,
         showDismiss: true,
@@ -208,10 +208,10 @@ export function UpgradeBanner({
       case "reactivate":
         return "bg-amber-600 hover:bg-amber-700 text-white dark:text-white";
       case "trial_start":
-        return "bg-blue-600 hover:bg-blue-700 text-white dark:text-white";
+        return "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white dark:text-white shadow-lg hover:shadow-xl transition-all duration-300";
       case "upgrade":
       default:
-        return "bg-blue-600 hover:bg-blue-700 text-white dark:text-white";
+        return "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white dark:text-white shadow-lg hover:shadow-xl transition-all duration-300";
     }
   };
 
@@ -255,7 +255,7 @@ export function UpgradeBanner({
           {/* Main Content */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <div
-              className={`w-12 h-12 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100 dark:bg-blue-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
+              className={`w-12 h-12 ${bannerContext.bgGradient.includes("emerald") ? "bg-emerald-100 dark:bg-emerald-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
             >
               <BannerIcon className={`w-6 h-6 ${bannerContext.iconColor}`} />
             </div>
@@ -308,7 +308,7 @@ export function UpgradeBanner({
         <div className={`sm:hidden ${bannerContext.showDismiss ? "pr-8" : ""}`}>
           <div className="flex items-start gap-3 mb-4">
             <div
-              className={`w-10 h-10 ${bannerContext.bgGradient.includes("blue") ? "bg-blue-100 dark:bg-blue-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
+              className={`w-10 h-10 ${bannerContext.bgGradient.includes("emerald") ? "bg-emerald-100 dark:bg-emerald-900/30" : bannerContext.bgGradient.includes("orange") ? "bg-orange-100 dark:bg-orange-900/30" : "bg-amber-100 dark:bg-amber-900/30"} rounded-full flex items-center justify-center flex-shrink-0`}
             >
               <BannerIcon className={`w-5 h-5 ${bannerContext.iconColor}`} />
             </div>

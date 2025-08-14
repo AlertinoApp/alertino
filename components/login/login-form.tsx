@@ -6,7 +6,6 @@ import { useState } from "react";
 import { createClientForBrowser } from "@/app/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -123,15 +122,9 @@ export function LoginForm() {
       <CardContent className="p-8 pt-0">
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <Label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-700"
-            >
-              Email address
-            </Label>
             <Input
               id="email"
-              placeholder="Enter your email"
+              placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`h-12 ${errorMessage ? "border-red-500 focus-visible:ring-red-300" : ""}`}

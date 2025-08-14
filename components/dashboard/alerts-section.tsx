@@ -251,18 +251,18 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   };
 
   return (
-    <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <section className="bg-card rounded-xl shadow-sm border border-border p-6">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-            <Bell className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+            <Bell className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-xl font-semibold text-foreground">
               Apartment Alerts
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Latest listings matching your filters
             </p>
           </div>
@@ -272,13 +272,13 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         <div className="flex items-center gap-2 mb-4">
           <Badge
             variant="secondary"
-            className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
+            className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
           >
             {activeAlerts.length} Active
           </Badge>
           <Badge
             variant="secondary"
-            className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
+            className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
           >
             {newToday.length} New Today
           </Badge>
