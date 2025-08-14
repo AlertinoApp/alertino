@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowRight, Bell, Search } from "lucide-react";
+import { ArrowDown, ArrowRight, Bell, Search, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
+import { motion } from "motion/react";
 
 interface HeroSectionProps {
   user?: User | null;
@@ -14,31 +15,72 @@ export function HeroSection({ user }: HeroSectionProps) {
   const router = useRouter();
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-10 pb-20 sm:pt-16 sm:pb-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
+    <section className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-emerald-200/30 to-teal-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-8"
+          >
+            <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 px-4 py-2 text-sm font-medium">
+              <Sparkles className="w-4 h-4 mr-2" />
+              New: AI-Powered Matching
+            </Badge>
+          </motion.div>
+
           {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 mb-8 leading-tight"
+          >
             Find Your Perfect
-            <span className="text-blue-600 block">Apartment Instantly</span>
-          </h1>
+            <span className="block bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
+              Apartment Instantly
+            </span>
+          </motion.h1>
 
           {/* Subheading */}
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-xl sm:text-2xl text-slate-600 mb-12 max-w-4xl mx-auto leading-relaxed font-light"
+          >
             Set up custom alerts for apartments in Poland and get notified the
             moment new listings match your criteria. Never lose out on the
             perfect place again.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          >
             <Button
               size="lg"
               onClick={() => router.push(user ? "/dashboard" : "/login")}
-              className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4"
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-lg px-10 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               {user ? "Go to Dashboard" : "Start Finding Apartments"}
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight className="ml-3 w-5 h-5" />
             </Button>
             <Button
               size="lg"
@@ -48,77 +90,115 @@ export function HeroSection({ user }: HeroSectionProps) {
                   .getElementById("how-it-works")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="text-lg px-8 py-4"
+              className="text-lg px-10 py-6 rounded-2xl border-2 border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 transform hover:-translate-y-1"
             >
               See How It Works
             </Button>
-          </div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                10,000+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto mb-20"
+          >
+            {[
+              { number: "10,000+", label: "Apartments Tracked" },
+              { number: "500+", label: "Happy Users" },
+              { number: "24/7", label: "Monitoring" },
+            ].map((stat, index) => (
+              <div key={index} className="text-center group">
+                <div className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {stat.number}
+                </div>
+                <div className="text-slate-600 font-medium">{stat.label}</div>
               </div>
-              <div className="text-gray-600">Apartments Tracked</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
-              <div className="text-gray-600">Happy Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">24/7</div>
-              <div className="text-gray-600">Monitoring</div>
-            </div>
-          </div>
-        </div>
+            ))}
+          </motion.div>
+        </motion.div>
 
-        {/* Hero Image/Illustration */}
-        <div className="mt-16 relative">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Mock Filter Card */}
-              <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+        {/* Hero Cards */}
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 max-w-5xl mx-auto border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              {/* Filter Card */}
+              <motion.div
+                className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200/50 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
+                whileHover={{ scale: 1.02 }}
+              >
                 <div className="flex items-center mb-4">
-                  <Search className="w-5 h-5 text-blue-600 mr-2" />
-                  <span className="font-semibold text-blue-900">
+                  <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mr-3">
+                    <Search className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="font-semibold text-emerald-900">
                     Your Filter
                   </span>
                 </div>
-                <div className="space-y-2 text-sm text-blue-800">
-                  <div>📍 Warsaw</div>
-                  <div>💰 Max 3,000 PLN</div>
-                  <div>🏠 Min 2 rooms</div>
+                <div className="space-y-3 text-sm text-emerald-800">
+                  <div className="flex items-center">📍 Warsaw</div>
+                  <div className="flex items-center">💰 Max 3,000 PLN</div>
+                  <div className="flex items-center">🏠 Min 2 rooms</div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Arrow */}
               <div className="flex items-center justify-center">
-                {/* Down arrow for mobile */}
-                <ArrowDown className="w-8 h-8 text-gray-400 md:hidden" />
-                {/* Right arrow for desktop */}
-                <ArrowRight className="w-8 h-8 text-gray-400 hidden md:block" />
+                <motion.div
+                  className="hidden md:block"
+                  animate={{ x: [0, 10, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <ArrowRight className="w-12 h-12 text-slate-400" />
+                </motion.div>
+                <motion.div
+                  className="md:hidden"
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <ArrowDown className="w-12 h-12 text-slate-400" />
+                </motion.div>
               </div>
 
-              {/* Mock Alert Card */}
-              <div className="bg-green-50 rounded-xl p-6 border border-green-200">
+              {/* Alert Card */}
+              <motion.div
+                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200/50 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
+                whileHover={{ scale: 1.02 }}
+              >
                 <div className="flex items-center mb-4">
-                  <Bell className="w-5 h-5 text-green-600 mr-2" />
-                  <span className="font-semibold text-green-900">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mr-3">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="font-semibold text-blue-900">
                     New Alert!
                   </span>
                 </div>
-                <div className="space-y-2 text-sm text-green-800">
-                  <div className="font-medium">Modern 2BR Apartment</div>
+                <div className="space-y-3 text-sm text-blue-800">
+                  <div className="font-medium text-base">
+                    Modern 2BR Apartment
+                  </div>
                   <div>2,800 PLN • Warsaw</div>
-                  <Badge className="bg-green-100 text-green-800 text-xs">
+                  <Badge className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 text-xs">
                     NEW
                   </Badge>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

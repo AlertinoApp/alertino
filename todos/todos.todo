@@ -15,5 +15,7 @@ UI:
     ✔ [ ] implement dark theme @done(25-08-13 08:14)
     ✔ [ ] custom multiselect @done(25-08-11 21:38)
     ✔ [ ] justify end alert card @done(25-08-11 21:39)
-    ☐ [ ] improve landing page
+    ✔ [ ] improve landing page @done(25-08-14 17:50)
+    ☐ [ ] refactor color styling with centralized config
+
     
