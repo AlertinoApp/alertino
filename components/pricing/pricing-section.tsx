@@ -124,7 +124,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
               <div key={index} className="list-none">
                 <div className="relative h-full rounded-2xl md:rounded-3xl">
                   <div
-                    className={`relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border ${plan.popular ? "border-blue-500 shadow-blue-100" : "border-slate-200"} bg-white p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8`}
+                    className={`relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border ${plan.popular ? "border-emerald-500 shadow-emerald-100" : "border-slate-200"} bg-white p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8`}
                   >
                     <div className="relative flex flex-col gap-3.5 md:gap-4">
                       <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                           {plan.name}
                         </h2>
                         {plan.popular && (
-                          <Badge className="bg-blue-600 text-white">
+                          <Badge className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
                             Most Popular
                           </Badge>
                         )}
@@ -170,7 +170,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                               key={featureIndex}
                               className="text-sm md:text-base mb-0 flex items-center gap-2 text-slate-700"
                             >
-                              <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                              <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                               <span>{feature}</span>
                             </li>
                           ))}
@@ -213,7 +213,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                             router.push("/login");
                           }
                         }}
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium p-3 md:px-4 md:py-3.5 text-sm md:text-base"
+                        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium p-3 md:px-4 md:py-3.5 text-sm md:text-base shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         {plan.name === "Free"
                           ? "Get Started"

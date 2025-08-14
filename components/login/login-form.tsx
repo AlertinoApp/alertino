@@ -144,7 +144,7 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700"
+            className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             disabled={status === "loading"}
           >
             {status === "loading" ? (
@@ -224,14 +224,14 @@ export function LoginForm() {
             By signing in, you agree to our{" "}
             <Link
               href="/terms"
-              className="text-blue-600 hover:text-blue-700 underline"
+              className="text-emerald-600 hover:text-emerald-700 underline"
             >
               Terms of Service
             </Link>{" "}
             and{" "}
             <Link
               href="/privacy"
-              className="text-blue-600 hover:text-blue-700 underline"
+              className="text-emerald-600 hover:text-emerald-700 underline"
             >
               Privacy Policy
             </Link>

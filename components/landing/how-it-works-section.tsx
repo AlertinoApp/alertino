@@ -88,13 +88,13 @@ export function HowItWorksSection() {
               <Card className="bg-white/90 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg group h-full">
                 <CardContent className="p-8 text-center relative">
                   {/* Step number with gradient background */}
-                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-6">
                     {step.step}
                   </div>
 
                   {/* Icon with gradient background */}
                   <motion.div
-                    className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-slate-200/50`}
+                    className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 border border-slate-200/50`}
                     whileHover={{ rotate: 5 }}
                   >
                     <step.icon className="w-10 h-10 text-slate-700" />

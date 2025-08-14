@@ -190,7 +190,7 @@ export function ContactForm() {
 
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             disabled={status === "loading"}
           >
             {status === "loading" ? (

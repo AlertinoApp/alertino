@@ -97,8 +97,8 @@ export function HelpCenter() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+        <h1 className="text-4xl font-bold text-slate-900 mb-4">Help Center</h1>
+        <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
           Find answers to common questions about using Alertino to find your
           perfect apartment.
         </p>
@@ -115,10 +115,10 @@ export function HelpCenter() {
         {faqCategories.map((category, categoryIndex) => (
           <div key={categoryIndex}>
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                <category.icon className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mr-4">
+                <category.icon className="w-5 h-5 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-slate-900">
                 {category.title}
               </h2>
               {category.badge && (
@@ -135,10 +135,10 @@ export function HelpCenter() {
                   className="hover:shadow-md transition-shadow duration-200"
                 >
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-3">
                       {faq.question}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-slate-600 leading-relaxed">
                       {faq.answer}
                     </p>
                   </CardContent>
@@ -151,26 +151,26 @@ export function HelpCenter() {
 
       {/* Contact Support */}
       <div className="mt-16 text-center">
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
           <CardContent className="p-8">
-            <Shield className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <Shield className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
               Still need help?
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-600 mb-6">
               Can&apos;t find what you&apos;re looking for? Our support team is
               here to help you get the most out of Alertino.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 Contact Support
               </a>
               <a
                 href="mailto:support@alertino.com"
-                className="inline-flex items-center justify-center px-6 py-3 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 border border-emerald-600 text-emerald-600 font-medium rounded-lg hover:bg-emerald-50 transition-colors"
               >
                 Email Us
               </a>

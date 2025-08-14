@@ -11,7 +11,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex flex-col">
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <LoginForm />

@@ -90,7 +90,7 @@ export function CTASection({ user }: CTASectionProps) {
               size="lg"
               variant="outline"
               onClick={() => router.push(user ? "/dashboard" : "/#features")}
-              className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 text-lg px-12 py-6 rounded-2xl bg-white/5 backdrop-blur-sm transition-all duration-300 transform hover:-translate-y-1"
+              className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 hover:text-white text-lg px-12 py-6 rounded-2xl bg-white/5 backdrop-blur-sm transition-all duration-300 transform hover:-translate-y-1"
             >
               {user ? "Go to Dashboard" : "Learn More"}
             </Button>

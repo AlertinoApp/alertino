@@ -60,10 +60,10 @@ export function Navbar({
               href={variant === "dashboard" ? "/dashboard" : "/"}
               className="flex items-center gap-2"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
-              <h1 className="text-xl font-bold text-slate-900 dark:text-gray-100">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                 Alertino
               </h1>
             </Link>
@@ -122,7 +122,7 @@ export function Navbar({
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={avatarUrl || "/placeholder.svg"} />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold">
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white font-semibold">
                           {userInitials}
                         </AvatarFallback>
                       </Avatar>
@@ -137,7 +137,7 @@ export function Navbar({
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={avatarUrl || "/placeholder.svg"} />
-                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold">
+                          <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white font-semibold">
                             {userInitials}
                           </AvatarFallback>
                         </Avatar>
@@ -216,7 +216,7 @@ export function Navbar({
                 </Button>
                 <Button
                   onClick={() => router.push("/login")}
-                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
                   Get Started
                 </Button>
