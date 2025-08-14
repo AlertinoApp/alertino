@@ -1,5 +1,4 @@
 import { ContactForm } from "@/components/contact/contact-form";
-import { ContactInfo } from "@/components/contact/contact-info";
 import { LandingFooter } from "@/components/landing/landing-footer";
 
 export default function ContactPage() {
@@ -17,10 +16,10 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="mx-auto max-w-3xl">
             <ContactForm />
-            <ContactInfo />
           </div>
+          {/* <ContactInfo /> */}
         </div>
       </div>
 

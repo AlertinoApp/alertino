@@ -82,9 +82,7 @@ export function ContactInfo() {
 
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="p-6">
-          <h3 className="font-semibold text-blue-900 mb-2">
-            Need immediate help?
-          </h3>
+          <h3 className="font-semibold text-blue-900">Need immediate help?</h3>
           <p className="text-blue-800 text-sm mb-4">
             Check our Help Center for instant answers to common questions about
             setting up filters, managing alerts, and troubleshooting.

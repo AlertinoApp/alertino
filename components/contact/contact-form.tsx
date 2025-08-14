@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { contactFormSchema, type ContactFormData } from "@/schemas/contact";
@@ -87,11 +87,6 @@ export function ContactForm() {
 
   return (
     <Card className="shadow-lg border-0">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-900">
-          Send us a message
-        </CardTitle>
-      </CardHeader>
       <CardContent>
         {status === "success" && (
           <Alert className="mb-6 border-green-200 bg-green-50">

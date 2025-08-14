@@ -7,50 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Mail,
-  MapPin,
-  Clock,
-  MessageCircle,
-  Send,
-  CheckCircle,
-  HelpCircle,
-  ExternalLink,
-  AlertCircle,
-} from "lucide-react";
+import { Send, CheckCircle, HelpCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { contactFormSchema, type ContactFormData } from "@/schemas/contact";
-
-const contactMethods = [
-  {
-    icon: Mail,
-    title: "Email Support",
-    description: "Get help via email",
-    contact: "support@alertino.com",
-    action: "mailto:support@alertino.com",
-  },
-  {
-    icon: MessageCircle,
-    title: "Live Chat",
-    description: "Chat with our team",
-    contact: "Available 9 AM - 6 PM CET",
-    action: "#",
-  },
-  {
-    icon: MapPin,
-    title: "Office",
-    description: "Visit our office",
-    contact: "Warsaw, Poland",
-    action: "#",
-  },
-  {
-    icon: Clock,
-    title: "Response Time",
-    description: "We typically respond",
-    contact: "Within 24 hours",
-    action: null,
-  },
-];
 
 export function ContactTab() {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -259,7 +218,7 @@ export function ContactTab() {
       </Card>
 
       {/* Contact Information */}
-      <Card className="gap-0 border-0 shadow-sm bg-white dark:bg-gray-800">
+      {/* <Card className="gap-0 border-0 shadow-sm bg-white dark:bg-gray-800">
         <CardHeader>
           <CardTitle className="text-lg">Get in touch</CardTitle>
         </CardHeader>
@@ -305,7 +264,7 @@ export function ContactTab() {
             ))}
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Help Center */}
       <Card className="border-0 shadow-sm bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700">
@@ -315,7 +274,7 @@ export function ContactTab() {
               <HelpCircle className="w-5 h-5 text-blue-600" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100">
                 Need immediate help?
               </h3>
               <p className="text-blue-800 dark:text-blue-200 text-sm mb-4">
