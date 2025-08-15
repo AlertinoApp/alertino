@@ -52,8 +52,8 @@ export default async function BillingSuccessPage() {
         title: `${planConfig.name} Trial Started!`,
         description: `Enjoy full access to ${planConfig.name} features for 14 days. No charges until your trial ends.`,
         icon: Gift,
-        iconColor: "text-orange-600",
-        bgColor: "bg-orange-100",
+        iconColor: "text-orange-600 dark:text-orange-400",
+        bgColor: "bg-orange-100 dark:bg-orange-900/30",
       };
     }
 
@@ -74,18 +74,18 @@ export default async function BillingSuccessPage() {
         switch (currentPlan) {
           case "basic":
             return {
-              iconColor: "text-blue-600",
-              bgColor: "bg-blue-100",
+              iconColor: "text-emerald-600 dark:text-emerald-400",
+              bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
             };
           case "pro":
             return {
-              iconColor: "text-purple-600",
-              bgColor: "bg-purple-100",
+              iconColor: "text-purple-600 dark:text-purple-400",
+              bgColor: "bg-purple-100 dark:bg-purple-900/30",
             };
           default:
             return {
-              iconColor: "text-slate-600",
-              bgColor: "bg-slate-100",
+              iconColor: "text-foreground",
+              bgColor: "bg-muted",
             };
         }
       };
@@ -116,7 +116,7 @@ export default async function BillingSuccessPage() {
       label: isTrialActive ? "Start Exploring" : "Go to Dashboard",
       icon: ArrowRight,
       className:
-        "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
+        "w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium h-12 rounded-lg shadow-sm",
     },
   ];
 
@@ -127,7 +127,7 @@ export default async function BillingSuccessPage() {
       label: "View Billing",
       icon: Settings,
       variant: "outline",
-      className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
+      className: "bg-card border-border hover:bg-muted font-medium",
     },
     isTrialActive
       ? {
@@ -135,13 +135,13 @@ export default async function BillingSuccessPage() {
           label: "View Plans",
           icon: Crown,
           variant: "outline",
-          className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
+          className: "bg-card border-border hover:bg-muted font-medium",
         }
       : {
           href: "/contact",
           label: "Get Support",
           variant: "outline",
-          className: "bg-white border-slate-200 hover:bg-slate-50 font-medium",
+          className: "bg-card border-border hover:bg-muted font-medium",
         },
   ];
 

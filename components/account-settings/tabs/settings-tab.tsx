@@ -261,8 +261,10 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h3 className="font-medium mb-1">Delete Account</h3>
-                <p className="text-sm ">
+                <h3 className="font-medium mb-1 text-red-800 dark:text-red-200">
+                  Delete Account
+                </h3>
+                <p className="text-sm text-red-800 dark:text-red-200">
                   Permanently delete your account and all associated data. This
                   action cannot be undone.
                 </p>
@@ -283,24 +285,27 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle className="text-red-900">
+                    <DialogTitle className="text-foreground">
                       Delete Account
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div className="p-3 bg-red-100 rounded-lg border border-red-200">
-                      <p className="text-sm text-red-800 font-medium mb-2">
+                    <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-600">
+                      <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
                         This will permanently delete your account and all data
                         including:
                       </p>
-                      <ul className="text-sm text-red-700 list-disc list-inside space-y-1">
+                      <ul className="text-sm text-red-800 dark:text-red-200 list-disc list-inside space-y-1">
                         <li>All saved filters and alerts</li>
                         <li>Personal information and preferences</li>
                         <li>Account history and activity</li>
                       </ul>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="confirmation" className="text-red-900">
+                      <Label
+                        htmlFor="confirmation"
+                        className="text-red-800 dark:text-red-200"
+                      >
                         Type &quot;DELETE&quot; to confirm:
                       </Label>
                       <Input
@@ -308,7 +313,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                         value={confirmationText}
                         onChange={(e) => setConfirmationText(e.target.value)}
                         placeholder="DELETE"
-                        className="border-red-300 focus:border-red-500"
+                        className="border-red-300 dark:border-red-600"
                       />
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -318,7 +323,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                           setShowDeleteConfirmation(false);
                           setConfirmationText("");
                         }}
-                        className="border-gray-300 w-full sm:w-auto"
+                        className="border-gray-300 dark:border-gray-600 w-full sm:w-auto"
                       >
                         Cancel
                       </Button>

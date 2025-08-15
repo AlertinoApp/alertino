@@ -53,8 +53,8 @@ export default async function BillingCancelPage() {
         title: "Trial Conversion Cancelled",
         description: `Good news! Your ${planConfig.name} trial is still active.`,
         icon: CheckCircle,
-        iconColor: "text-orange-600",
-        bgColor: "bg-orange-100",
+        iconColor: "text-orange-600 dark:text-orange-400",
+        bgColor: "bg-orange-100 dark:bg-orange-900/30",
       };
     }
 
@@ -65,8 +65,8 @@ export default async function BillingCancelPage() {
         title: "Plan Change Cancelled",
         description: `Your current ${planConfig.name} subscription remains unchanged.`,
         icon: CheckCircle,
-        iconColor: "text-green-600",
-        bgColor: "bg-green-100",
+        iconColor: "text-green-600 dark:text-green-400",
+        bgColor: "bg-green-100 dark:bg-green-900/30",
       };
     }
 
@@ -79,8 +79,8 @@ export default async function BillingCancelPage() {
           description:
             "You can upgrade to a premium plan anytime you're ready.",
           icon: XCircle,
-          iconColor: "text-gray-600",
-          bgColor: "bg-gray-100",
+          iconColor: "text-gray-600 dark:text-gray-400",
+          bgColor: "bg-gray-100 dark:bg-gray-900/30",
         };
       } else {
         return {
@@ -88,8 +88,8 @@ export default async function BillingCancelPage() {
           title: "Trial Start Cancelled",
           description: "You're still eligible for a free trial!",
           icon: Gift,
-          iconColor: "text-blue-600",
-          bgColor: "bg-blue-100",
+          iconColor: "text-emerald-600 dark:text-emerald-400",
+          bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
         };
       }
     }
@@ -108,7 +108,7 @@ export default async function BillingCancelPage() {
           label: "Convert Trial",
           icon: Crown,
           className:
-            "flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium h-12 rounded-lg shadow-sm",
+            "flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium h-12 rounded-lg shadow-sm",
         },
         {
           href: "/dashboard",
@@ -116,7 +116,7 @@ export default async function BillingCancelPage() {
           icon: ArrowLeft,
           variant: "outline",
           className:
-            "flex-1 bg-white border-slate-200 hover:bg-slate-50 font-medium h-12 rounded-lg",
+            "flex-1 bg-card border-border hover:bg-muted font-medium h-12 rounded-lg",
         },
       ]
     : [
@@ -125,7 +125,7 @@ export default async function BillingCancelPage() {
           label: hasUsedTrial ? "Upgrade Now" : "Try Basic Free",
           icon: Crown,
           className:
-            "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg shadow-sm",
+            "flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium h-12 rounded-lg shadow-sm",
         },
         {
           href: "/account-settings?tab=billing",
@@ -133,7 +133,7 @@ export default async function BillingCancelPage() {
           icon: ArrowLeft,
           variant: "outline",
           className:
-            "flex-1 bg-white border-slate-200 hover:bg-slate-50 font-medium h-12 rounded-lg",
+            "flex-1 bg-card border-border hover:bg-muted font-medium h-12 rounded-lg",
         },
       ];
 
@@ -148,7 +148,7 @@ export default async function BillingCancelPage() {
     label: "Contact Support",
     icon: HelpCircle,
     variant: "ghost",
-    className: "text-blue-600 hover:text-blue-700 font-medium",
+    className: "text-emerald-600 hover:text-emerald-700 font-medium",
   };
 
   return (
@@ -158,7 +158,6 @@ export default async function BillingCancelPage() {
       icon={context.icon}
       iconColor={context.iconColor}
       iconBgColor={context.bgColor}
-      backgroundGradient="from-gray-50 via-white to-gray-50"
       contentClassName="p-8 text-center max-w-2xl mx-auto"
       primaryActions={primaryActions}
       supportText={supportText}

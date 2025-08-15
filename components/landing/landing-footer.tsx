@@ -51,7 +51,7 @@ const socialLinks = [
 
 export function LandingFooter() {
   return (
-    <footer className="bg-slate-900 text-white relative overflow-hidden">
+    <footer className="bg-black text-white relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
