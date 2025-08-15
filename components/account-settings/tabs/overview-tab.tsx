@@ -182,6 +182,25 @@ export function OverviewTab({
     }
   };
 
+  const handleStartBasicTrial = async () => {
+    setLoadingPlan("basic");
+    const loadingToast = toast.loading("Starting trial...", {
+      description: "Redirecting to checkout.",
+    });
+
+    try {
+      await subscribeToAction("basic", "month");
+      toast.dismiss(loadingToast);
+    } catch (error) {
+      console.error("Failed to start trial:", error);
+      toast.dismiss(loadingToast);
+      toast("❌ Failed to start trial", {
+        description: "Please try again shortly.",
+      });
+      setLoadingPlan(null);
+    }
+  };
+
   const handleUpgradeToPro = async () => {
     setLoadingPlan("pro");
     const loadingToast = toast.loading("Upgrading to Pro...", {
@@ -222,11 +241,11 @@ export function OverviewTab({
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="text-sm text-foreground">
                       {getPlanDescription(currentPlan)}
                     </div>
                     {isTrialActive && (
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                      <div className="text-sm text-foreground">
                         Your subscription will start on{" "}
                         {subscription?.trial_end
                           ? new Date(
@@ -263,7 +282,7 @@ export function OverviewTab({
                 {/* Content section - takes available space */}
                 <div className="flex-1 flex flex-col gap-0.5">
                   <div className="text-base font-medium">Basic</div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                  <div className="text-sm text-foreground">
                     {getPlanDescription("basic")}
                   </div>
                 </div>
@@ -273,23 +292,7 @@ export function OverviewTab({
                   <Button
                     variant="default"
                     className="w-fit rounded-md !px-2 disabled:opacity-50 mt-4"
-                    onClick={async () => {
-                      setLoadingPlan("basic");
-                      const loadingToast = toast.loading("Starting trial...", {
-                        description: "Redirecting to checkout.",
-                      });
-                      try {
-                        await subscribeToAction("basic", "month");
-                        toast.dismiss(loadingToast);
-                      } catch (error) {
-                        console.error("Failed to start trial:", error);
-                        toast.dismiss(loadingToast);
-                        toast("❌ Failed to start trial", {
-                          description: "Please try again shortly.",
-                        });
-                        setLoadingPlan(null);
-                      }
-                    }}
+                    onClick={handleStartBasicTrial}
                     disabled={loadingPlan === "basic"}
                   >
                     {loadingPlan === "basic"
@@ -310,7 +313,7 @@ export function OverviewTab({
                   <div className="text-base font-medium dark:text-gray-100">
                     Pro
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                  <div className="text-sm text-foreground">
                     {getPlanDescription("pro")}
                   </div>
                 </div>
@@ -351,11 +354,11 @@ export function OverviewTab({
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="text-sm text-foreground">
                       {getPlanDescription(currentPlan)}
                     </div>
                     {isTrialActive && (
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                      <div className="text-sm text-foreground">
                         Your subscription will start on{" "}
                         {subscription?.trial_end
                           ? new Date(
@@ -394,7 +397,7 @@ export function OverviewTab({
                   <div className="text-base font-medium dark:text-gray-100">
                     Pro
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                  <div className="text-sm text-foreground">
                     {getPlanDescription("pro")}
                   </div>
                 </div>

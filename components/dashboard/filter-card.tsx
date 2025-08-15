@@ -137,16 +137,15 @@ export function FilterCard({ filter }: FilterCardProps) {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Created {new Date(filter.created_at).toLocaleDateString()}
               </p>
-              {!isActive && (
-                <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">
-                  Not monitoring
-                </p>
-              )}
-              {isToggling && (
+              {isToggling ? (
                 <p className="text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">
                   Updating...
                 </p>
-              )}
+              ) : !isActive ? (
+                <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                  Not monitoring
+                </p>
+              ) : null}
             </div>
           </div>
         </CardContent>

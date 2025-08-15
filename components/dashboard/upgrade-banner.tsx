@@ -235,12 +235,20 @@ export function UpgradeBanner({
   };
 
   const handleStartFreeTrial = async () => {
+    const loadingToast = toast.loading("Starting trial...", {
+      description: "Redirecting to checkout.",
+    });
+
     try {
       const priceId = getPriceId("basic", "month");
       await createCheckoutSessionAction(priceId);
+      toast.dismiss(loadingToast);
     } catch (error) {
       console.error("Failed to start free trial:", error);
-      toast.error("Failed to start free trial. Please try again.");
+      toast.dismiss(loadingToast);
+      toast("❌ Failed to start free trial", {
+        description: "Please try again shortly.",
+      });
     }
   };
 
