@@ -8,6 +8,9 @@ import { Crown, X, Zap, Timer, Gift, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import type { Subscription, TrialInfo } from "@/types/subscription";
 import { getFilterLimit, getDailySearchLimit } from "@/lib/stripe/plans";
+import { createCheckoutSessionAction } from "@/lib/actions/subscription-actions";
+import { getPriceId } from "@/lib/stripe/utils";
+import { toast } from "sonner";
 
 interface UpgradeBannerProps {
   filtersCount: number;
@@ -223,12 +226,21 @@ export function UpgradeBanner({
         return "/account-settings?tab=billing";
       case "approaching_limit":
       case "approaching_search_limit":
-      case "new_user":
       case "upgrade_available":
       case "upgrade_to_pro":
       case "pro_recommendation":
       default:
         return "/pricing";
+    }
+  };
+
+  const handleStartFreeTrial = async () => {
+    try {
+      const priceId = getPriceId("basic", "month");
+      await createCheckoutSessionAction(priceId);
+    } catch (error) {
+      console.error("Failed to start free trial:", error);
+      toast.error("Failed to start free trial. Please try again.");
     }
   };
 
@@ -284,12 +296,22 @@ export function UpgradeBanner({
 
           {/* Action Buttons for desktop */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Button asChild className={getButtonColor()}>
-              <Link href={getHref()}>
+            {bannerContext.type === "new_user" ? (
+              <Button
+                onClick={handleStartFreeTrial}
+                className={getButtonColor()}
+              >
                 <Zap className="w-4 h-4 mr-2" />
                 {bannerContext.buttonText}
-              </Link>
-            </Button>
+              </Button>
+            ) : (
+              <Button asChild className={getButtonColor()}>
+                <Link href={getHref()}>
+                  <Zap className="w-4 h-4 mr-2" />
+                  {bannerContext.buttonText}
+                </Link>
+              </Button>
+            )}
             {bannerContext.showDismiss && (
               <Button
                 variant="ghost"
@@ -337,12 +359,25 @@ export function UpgradeBanner({
 
           {/* Action Button for mobile */}
           <div className="flex justify-start">
-            <Button asChild className={`${getButtonColor()} w-full sm:w-auto`}>
-              <Link href={getHref()}>
+            {bannerContext.type === "new_user" ? (
+              <Button
+                onClick={handleStartFreeTrial}
+                className={`${getButtonColor()} w-full sm:w-auto`}
+              >
                 <Zap className="w-4 h-4 mr-2" />
                 {bannerContext.buttonText}
-              </Link>
-            </Button>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                className={`${getButtonColor()} w-full sm:w-auto`}
+              >
+                <Link href={getHref()}>
+                  <Zap className="w-4 h-4 mr-2" />
+                  {bannerContext.buttonText}
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

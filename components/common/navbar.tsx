@@ -54,7 +54,7 @@ export function Navbar({
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Logo/Current Page */}
           <div className="flex items-center">
             <Link
               href={variant === "dashboard" ? "/dashboard" : "/"}
@@ -64,17 +64,12 @@ export function Navbar({
                 <span className="text-white font-bold text-sm">A</span>
               </div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                Alertino
+                {variant === "dashboard" && currentPage
+                  ? currentPage
+                  : "Alertino"}
               </h1>
             </Link>
           </div>
-
-          {/* Current Page Display - Only show on dashboard variant */}
-          {variant === "dashboard" && currentPage && (
-            <div className="flex-1 flex justify-center">
-              <h2 className="text-lg">{currentPage}</h2>
-            </div>
-          )}
 
           {/* Navigation - Only show on landing variant */}
           {variant === "landing" && showNavigation && (
@@ -206,7 +201,7 @@ export function Navbar({
             ) : (
               <>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => router.push("/login")}
                   className="dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-700"
                 >

@@ -453,40 +453,6 @@ export function ActionsSection({
           </div>
         </CardContent>
       </Card>
-
-      {/* Tips Card */}
-      {activeFiltersCount === 0 && (
-        <Card className="bg-muted border-border">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Target className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div>
-                <h4 className="font-medium text-foreground mb-1">
-                  Get Started
-                </h4>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Create your first filter to start searching for apartment
-                  alerts. You can specify your preferred city, price range, and
-                  number of rooms.
-                </p>
-                <div className="flex flex-wrap gap-2 text-xs">
-                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
-                    Set price limits
-                  </Badge>
-                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
-                    Choose cities
-                  </Badge>
-                  <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-600">
-                    Filter by rooms
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </section>
   );
 }

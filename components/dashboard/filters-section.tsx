@@ -283,7 +283,7 @@ export function FiltersSection({
           /* Empty State - No filters at all */
           <div className="text-center py-12">
             <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
-              <Plus className="w-10 h-10 text-blue-600" />
+              <Plus className="w-10 h-10 text-emerald-600" />
             </div>
             <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-3">
               Create Your First Filter
@@ -296,8 +296,8 @@ export function FiltersSection({
 
             {/* Feature highlights */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <MapPin className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+              <div className="text-center p-4 bg-muted rounded-lg">
+                <MapPin className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
                 <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Choose Cities
                 </div>
@@ -305,7 +305,7 @@ export function FiltersSection({
                   Warsaw, Krakow, Gdansk...
                 </div>
               </div>
-              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-center p-4 bg-muted rounded-lg">
                 <DollarSign className="w-6 h-6 text-green-600 mx-auto mb-2" />
                 <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Set Budget
@@ -314,7 +314,7 @@ export function FiltersSection({
                   Maximum price range
                 </div>
               </div>
-              <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-center p-4 bg-muted rounded-lg">
                 <Home className="w-6 h-6 text-purple-600 mx-auto mb-2" />
                 <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Room Count

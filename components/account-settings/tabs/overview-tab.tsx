@@ -271,8 +271,8 @@ export function OverviewTab({
                 {/* Button section - always at bottom */}
                 <div className="pt-4">
                   <Button
-                    variant="outline"
-                    className="w-fit !py-1 rounded-md !px-2 !text-sm !text-white !bg-gray-900 hover:!bg-gray-800 disabled:opacity-50 mt-4"
+                    variant="default"
+                    className="w-fit rounded-md !px-2 disabled:opacity-50 mt-4"
                     onClick={async () => {
                       setLoadingPlan("basic");
                       const loadingToast = toast.loading("Starting trial...", {
