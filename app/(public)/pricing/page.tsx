@@ -9,10 +9,10 @@ export default async function PricingPage() {
   const trialInfo = session ? await getTrialInfoAction() : null;
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <PricingSection user={session?.user} trialInfo={trialInfo} />
       <PricingFAQ />
       <LandingFooter />
-    </div>
+    </>
   );
 }

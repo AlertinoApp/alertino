@@ -49,7 +49,7 @@ export function PricingFAQ() {
     <section className="py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge className="mb-4 bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="mb-4 bg-emerald-100 text-emerald-800 border-emerald-200">
             Frequently Asked Questions
           </Badge>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -81,7 +81,7 @@ export function PricingFAQ() {
           <p className="text-gray-600 mb-4">Still have questions?</p>
           <a
             href="/contact"
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+            className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
           >
             Contact our support team →
           </a>

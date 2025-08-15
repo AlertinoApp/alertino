@@ -9,7 +9,7 @@ export default async function PublicLayout({
   const { session, user, subscription } = await getUserAndSubscription();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-white">
       <Navbar user={session?.user} profile={user} subscription={subscription} />
       <div>{children}</div>
     </div>

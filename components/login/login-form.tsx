@@ -109,8 +109,8 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="shadow-xl border-0">
-      <CardHeader className="text-center pb-6">
+    <Card className="gap-4 shadow-xl border-0">
+      <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-gray-900">
           Welcome back
         </CardTitle>

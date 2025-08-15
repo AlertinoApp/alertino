@@ -130,22 +130,6 @@ export function HowItWorksSection() {
             </motion.div>
           ))}
         </div>
-
-        {/* Progress bar for mobile */}
-        <motion.div
-          className="lg:hidden mt-12"
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.5 }}
-        >
-          <div className="w-full bg-slate-200 rounded-full h-2">
-            <div
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-1000 ease-out"
-              style={{ width: "100%" }}
-            ></div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
