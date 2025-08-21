@@ -176,10 +176,10 @@ export function Navbar({
                       <DropdownMenuItem asChild>
                         <Link
                           href="/pricing"
-                          className="flex items-center w-full px-3 py-2 text-blue-700 dark:text-blue-400 hover:bg-muted"
+                          className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-400 hover:bg-muted"
                         >
-                          <Crown className="mr-3 h-4 w-4 text-blue-700 dark:text-blue-400" />
-                          <span>Upgrade to Premium</span>
+                          <Crown className="mr-3 h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Upgrade to Pro</span>
                         </Link>
                       </DropdownMenuItem>
                     )}
