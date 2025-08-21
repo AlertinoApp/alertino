@@ -1,9 +1,9 @@
 import { SubscriptionPlan } from "@/types/subscription";
-import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 // Helper function to check if SMS notifications are available (but not fully implemented yet)
 export function isSmsNotificationsAvailable(plan: SubscriptionPlan): boolean {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.notificationTypes.includes("sms");
 }
 
@@ -13,7 +13,7 @@ export function getSmsNotificationStatus(plan: SubscriptionPlan): {
   status: "available" | "coming-soon" | "not-available";
   message: string;
 } {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   const hasSms = config.limits.notificationTypes.includes("sms");
 
   if (!hasSms) {
@@ -37,7 +37,7 @@ export function canAddMoreFilters(
   currentPlan: SubscriptionPlan,
   currentFiltersCount: number
 ): boolean {
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
   const limit = config.limits.filtersLimit;
 
   if (limit === -1) return true; // Unlimited
@@ -49,7 +49,7 @@ export function getRemainingFiltersCount(
   currentPlan: SubscriptionPlan,
   currentFiltersCount: number
 ): number {
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
   const limit = config.limits.filtersLimit;
 
   if (limit === -1) return -1; // Unlimited
@@ -61,7 +61,7 @@ export function canPerformSearch(
   currentPlan: SubscriptionPlan,
   searchesUsedToday: number
 ): boolean {
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
   const limit = config.limits.searchesPerDay;
 
   return searchesUsedToday < limit;
@@ -69,7 +69,7 @@ export function canPerformSearch(
 
 // Helper function to get user's daily search limit
 export function getDailySearchLimit(plan: SubscriptionPlan): number {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.searchesPerDay;
 }
 
@@ -78,7 +78,7 @@ export function getRemainingSearchesCount(
   currentPlan: SubscriptionPlan,
   searchesUsedToday: number
 ): number {
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
   const limit = config.limits.searchesPerDay;
 
   return Math.max(0, limit - searchesUsedToday);
@@ -86,7 +86,7 @@ export function getRemainingSearchesCount(
 
 // Helper function to get scraping interval in human-readable format
 export function getScrapingIntervalDisplay(plan: SubscriptionPlan): string {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   const interval = config.limits.scrapingInterval;
 
   if (interval === 0) return "Manual only";
@@ -107,7 +107,7 @@ export function getUpgradeRecommendation(
   reason: string;
   suggestedPlan: SubscriptionPlan | null;
 } {
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
 
   // Check if user is approaching or at limits
   const isAtFilterLimit =

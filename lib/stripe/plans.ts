@@ -1,129 +1,9 @@
-import { SubscriptionPlan, EnhancedPlanConfig } from "@/types/subscription";
+import { SubscriptionPlan, PlanConfig } from "@/types/subscription";
 import { Crown, Zap, Building2 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
-export interface SubscriptionConfig {
-  name: string;
-  description: string;
-  icon: LucideIcon;
-  pricing: {
-    monthly: number;
-    yearly: number;
-  };
-  stripePriceIds: {
-    monthly: string;
-    yearly: string;
-  };
-  features: string[];
-  limits: {
-    maxFilters: number;
-    cities: string;
-    notifications: string;
-    support: string;
-  };
-  trialDays: number;
-}
 
 const TRIAL_DAYS = 14;
 
-export const SUBSCRIPTION_CONFIGS: Record<
-  SubscriptionPlan,
-  SubscriptionConfig
-> = {
-  free: {
-    name: "Free",
-    description: "Perfect for getting started with apartment hunting",
-    icon: Zap,
-    pricing: {
-      monthly: 0,
-      yearly: 0,
-    },
-    stripePriceIds: {
-      monthly: "",
-      yearly: "",
-    },
-    features: [
-      "3 active filters",
-      "10 searches per day (manual only)",
-      "Email notifications (weekly summary)",
-      "Basic filters only",
-      "Community support",
-    ],
-    limits: {
-      maxFilters: 3,
-      cities: "Warsaw & Krakow",
-      notifications: "Weekly summary",
-      support: "Community",
-    },
-    trialDays: 0,
-  },
-  basic: {
-    name: "Basic",
-    description: "For serious apartment hunters who need more flexibility",
-    icon: Crown,
-    pricing: {
-      monthly: 39,
-      yearly: 390,
-    },
-    stripePriceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_BASIC_MONTHLY_PRICE_ID!,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_BASIC_YEARLY_PRICE_ID!,
-    },
-    features: [
-      "10 active filters",
-      "50 searches per day",
-      "Scraping every 4 hours",
-      "Email + SMS notifications",
-      "Access to advanced filters",
-      "Priority support",
-      "Export alerts to CSV",
-    ],
-    limits: {
-      maxFilters: 10,
-      cities: "All Polish cities",
-      notifications: "Email + SMS",
-      support: "Priority",
-    },
-    trialDays: TRIAL_DAYS,
-  },
-  pro: {
-    name: "Pro",
-    description: "For real estate professionals and power users",
-    icon: Building2,
-    pricing: {
-      monthly: 99,
-      yearly: 990,
-    },
-    stripePriceIds: {
-      monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!,
-      yearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID!,
-    },
-    features: [
-      "Unlimited filters",
-      "200 searches per day",
-      "Scraping every 1 hour",
-      "Email + SMS notifications",
-      "Access to advanced filters",
-      "Priority support",
-      "Export alerts to CSV",
-      "Custom notification schedules",
-      "Advanced analytics",
-    ],
-    limits: {
-      maxFilters: -1,
-      cities: "All Polish cities",
-      notifications: "Email + SMS",
-      support: "Priority",
-    },
-    trialDays: TRIAL_DAYS,
-  },
-};
-
-// Enhanced subscription configuration with new limit fields
-export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
-  SubscriptionPlan,
-  EnhancedPlanConfig
-> = {
+export const SUBSCRIPTION_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
   free: {
     name: "Free",
     description: "Perfect for getting started with apartment hunting",
@@ -208,7 +88,7 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
       "Advanced analytics",
     ],
     limits: {
-      filtersLimit: -1, // Unlimited
+      filtersLimit: 50,
       searchesPerDay: 200,
       scrapingInterval: 1, // 1 hour
       notificationTypes: ["email", "sms"],
@@ -219,20 +99,8 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
   },
 };
 
-export function getSubscriptionConfig(
-  plan: SubscriptionPlan
-): SubscriptionConfig {
+export function getSubscriptionConfig(plan: SubscriptionPlan): PlanConfig {
   const config = SUBSCRIPTION_CONFIGS[plan];
-  if (!config) {
-    throw new Error(`Invalid subscription plan: ${plan}`);
-  }
-  return config;
-}
-
-export function getEnhancedSubscriptionConfig(
-  plan: SubscriptionPlan
-): EnhancedPlanConfig {
-  const config = ENHANCED_SUBSCRIPTION_CONFIGS[plan];
   if (!config) {
     throw new Error(`Invalid subscription plan: ${plan}`);
   }
@@ -254,30 +122,30 @@ export function getUpgradeMessage(currentPlan: SubscriptionPlan): string {
 
 // Helper function to check if user can access advanced filters
 export function canAccessAdvancedFilters(plan: SubscriptionPlan): boolean {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.filtersType === "advanced";
 }
 
 // Helper function to get user's filter limit
 export function getFilterLimit(plan: SubscriptionPlan): number {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.filtersLimit;
 }
 
 // Helper function to get user's daily search limit
 export function getDailySearchLimit(plan: SubscriptionPlan): number {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.searchesPerDay;
 }
 
 // Helper function to get user's scraping interval
 export function getScrapingInterval(plan: SubscriptionPlan): number {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.scrapingInterval;
 }
 
 // Helper function to check if user has SMS notifications
 export function hasSmsNotifications(plan: SubscriptionPlan): boolean {
-  const config = getEnhancedSubscriptionConfig(plan);
+  const config = getSubscriptionConfig(plan);
   return config.limits.notificationTypes.includes("sms");
 }

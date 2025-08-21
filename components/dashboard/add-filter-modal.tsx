@@ -13,7 +13,7 @@ import {
 import { addFilterAction } from "@/lib/actions/filter-actions";
 import { filterSchema } from "@/schemas/filters";
 import { toast } from "sonner";
-import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 import { Badge } from "@/components/ui/badge";
 
 interface AddFilterModalProps {
@@ -46,7 +46,7 @@ export function AddFilterModal({
   }>({});
 
   // Get subscription limits
-  const subscriptionConfig = getEnhancedSubscriptionConfig(currentPlan);
+  const subscriptionConfig = getSubscriptionConfig(currentPlan);
   const maxFilters = subscriptionConfig.limits.filtersLimit;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
@@ -148,10 +148,10 @@ export function AddFilterModal({
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               placeholder={`e.g. ${filtersCount + 1 > 1 ? `Warsaw ${filtersCount + 1}` : "Warsaw Apartments"}`}
-              className={`w-full ${errors.name ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.name ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
             {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name}</p>
+              <p className="text-destructive text-sm">{errors.name}</p>
             )}
             <p className="text-xs text-muted-foreground">
               Leave empty to auto-generate a name
@@ -168,10 +168,10 @@ export function AddFilterModal({
                 setFormData((prev) => ({ ...prev, city: e.target.value }))
               }
               placeholder="e.g. Warszawa"
-              className={`w-full ${errors.city ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.city ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
             {errors.city && (
-              <p className="text-red-500 text-sm">{errors.city}</p>
+              <p className="text-destructive text-sm">{errors.city}</p>
             )}
           </div>
 
@@ -186,10 +186,10 @@ export function AddFilterModal({
                 setFormData((prev) => ({ ...prev, max_price: e.target.value }))
               }
               placeholder="e.g. 3000"
-              className={`w-full ${errors.max_price ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.max_price ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
             {errors.max_price && (
-              <p className="text-red-500 text-sm">{errors.max_price}</p>
+              <p className="text-destructive text-sm">{errors.max_price}</p>
             )}
           </div>
 
@@ -205,10 +205,10 @@ export function AddFilterModal({
               }
               placeholder="e.g. 2"
               min="1"
-              className={`w-full ${errors.min_rooms ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.min_rooms ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
             {errors.min_rooms && (
-              <p className="text-red-500 text-sm">{errors.min_rooms}</p>
+              <p className="text-destructive text-sm">{errors.min_rooms}</p>
             )}
           </div>
 

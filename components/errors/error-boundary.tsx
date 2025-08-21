@@ -80,10 +80,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     description:
       "We're experiencing technical difficulties. Our team has been notified.",
     icon: Server,
-    iconColor: "text-red-600",
-    bgColor: "bg-red-100",
-    backgroundGradient: "from-red-50 via-white to-pink-50",
-    buttonColor: "bg-red-600 hover:bg-red-700",
+    iconColor: "text-destructive",
+    bgColor: "bg-destructive/10",
+    backgroundGradient: "from-destructive/5 via-background to-destructive/5",
+    buttonColor: "bg-destructive hover:bg-destructive/90",
     showRetry: true,
   },
   timeout: {
@@ -123,10 +123,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     description:
       "An unexpected error occurred. Please try refreshing the page.",
     icon: AlertTriangle,
-    iconColor: "text-red-600",
-    bgColor: "bg-red-100",
-    backgroundGradient: "from-red-50 via-white to-orange-50",
-    buttonColor: "bg-red-600 hover:bg-red-700",
+    iconColor: "text-destructive",
+    bgColor: "bg-destructive/10",
+    backgroundGradient: "from-destructive/5 via-background to-destructive/5",
+    buttonColor: "bg-destructive hover:bg-destructive/90",
     showRetry: true,
   },
 };

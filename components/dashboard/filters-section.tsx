@@ -16,7 +16,7 @@ import { FilterCard } from "./filter-card";
 import { AddFilterModal } from "./add-filter-modal";
 import type { Filter } from "@/types/filters";
 import type { SubscriptionPlan } from "@/types/subscription";
-import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 
 interface FiltersSectionProps {
   filters: Filter[];
@@ -41,7 +41,7 @@ export function FiltersSection({
     (filter) => filter.is_active === false
   );
 
-  const subscriptionConfig = getEnhancedSubscriptionConfig(currentPlan);
+  const subscriptionConfig = getSubscriptionConfig(currentPlan);
   const maxFilters = subscriptionConfig.limits.filtersLimit;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
 
@@ -111,7 +111,7 @@ export function FiltersSection({
                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
                   <div
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      isAtLimit ? "bg-red-500" : "bg-emerald-500"
+                      isAtLimit ? "bg-destructive" : "bg-emerald-500"
                     }`}
                     style={{
                       width: `${Math.min((filtersCount / maxFilters) * 100, 100)}%`,

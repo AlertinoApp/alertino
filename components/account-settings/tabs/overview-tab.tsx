@@ -20,7 +20,7 @@ import {
   getSearchStats,
   getLastRunDate,
 } from "@/lib/actions/search-tracking-actions";
-import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 import { toast } from "sonner";
 import { createClientForBrowser } from "@/app/utils/supabase/client";
 
@@ -56,7 +56,7 @@ export function OverviewTab({
   const currentPlan = subscription?.plan || "free";
   const isTrialActive = trialInfo?.isActive || false;
   const trialDaysRemaining = trialInfo?.daysRemaining || 0;
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
 
   const maxFilters = config.limits.filtersLimit;
   const maxSearches = config.limits.searchesPerDay;

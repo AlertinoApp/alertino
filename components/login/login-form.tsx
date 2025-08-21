@@ -127,11 +127,11 @@ export function LoginForm() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`h-12 ${errorMessage ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`h-12 ${errorMessage ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
               disabled={status === "loading"}
             />
             {errorMessage && (
-              <p className="text-red-500 text-sm">{errorMessage}</p>
+              <p className="text-destructive text-sm">{errorMessage}</p>
             )}
           </div>
 

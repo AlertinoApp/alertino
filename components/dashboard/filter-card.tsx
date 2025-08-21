@@ -93,7 +93,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsDeleteDialogOpen(true)}
-                className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
+                className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
                 disabled={isToggling}
               >
                 <Trash2 className="h-4 w-4" />

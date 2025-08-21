@@ -24,8 +24,8 @@ export default function AuthCodeErrorPage() {
       title="Authentication Error"
       description="There was an error processing your authentication. This could be due to an expired or invalid link."
       icon={AlertCircle}
-      iconColor="text-red-600"
-      iconBgColor="bg-red-100"
+      iconColor="text-destructive"
+      iconBgColor="bg-destructive/10"
       primaryActions={primaryActions}
       cardClassName="shadow-xl border-0"
       contentClassName="text-center space-y-6"

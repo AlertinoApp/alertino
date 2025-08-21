@@ -385,7 +385,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                         </SelectItem>
                         <SelectItem value="expired">
                           <div className="flex items-center">
-                            <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                            <div className="w-2 h-2 bg-destructive rounded-full mr-2"></div>
                             Expired Only
                           </div>
                         </SelectItem>

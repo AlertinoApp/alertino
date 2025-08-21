@@ -246,8 +246,8 @@ export function SettingsTab({ profile }: SettingsTabProps) {
       <Card className="border-0 shadow-sm border-red-200 bg-card">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-              <AlertCircle className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 text-destructive" />
             </div>
             <div>
               <CardTitle className="text-lg">Delete Account</CardTitle>
@@ -258,13 +258,13 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
+          <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h3 className="font-medium mb-1 text-red-800 dark:text-red-200">
+                <h3 className="font-medium mb-1 text-destructive">
                   Delete Account
                 </h3>
-                <p className="text-sm text-red-800 dark:text-red-200">
+                <p className="text-sm text-destructive">
                   Permanently delete your account and all associated data. This
                   action cannot be undone.
                 </p>
@@ -290,12 +290,12 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-600">
-                      <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
+                    <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                      <p className="text-sm text-destructive font-medium mb-2">
                         This will permanently delete your account and all data
                         including:
                       </p>
-                      <ul className="text-sm text-red-800 dark:text-red-200 list-disc list-inside space-y-1">
+                      <ul className="text-sm text-destructive list-disc list-inside space-y-1">
                         <li>All saved filters and alerts</li>
                         <li>Personal information and preferences</li>
                         <li>Account history and activity</li>
@@ -304,7 +304,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                     <div className="space-y-2">
                       <Label
                         htmlFor="confirmation"
-                        className="text-red-800 dark:text-red-200"
+                        className="text-destructive"
                       >
                         Type &quot;DELETE&quot; to confirm:
                       </Label>
@@ -313,7 +313,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                         value={confirmationText}
                         onChange={(e) => setConfirmationText(e.target.value)}
                         placeholder="DELETE"
-                        className="border-red-300 dark:border-red-600"
+                        className="border-destructive/30"
                       />
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -331,7 +331,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                         variant="destructive"
                         onClick={handleDeleteAccount}
                         disabled={confirmationText !== "DELETE" || isDeleting}
-                        className="bg-red-600 hover:bg-red-700 w-full sm:w-auto"
+                        className="w-full sm:w-auto"
                       >
                         <AlertCircle className="w-4 h-4 mr-2" />
                         {isDeleting ? "Deleting..." : "Delete Account"}

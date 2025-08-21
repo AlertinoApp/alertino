@@ -109,11 +109,13 @@ export function ContactForm() {
                 onChange={handleChange}
                 placeholder="Your name"
                 className={
-                  errors.name ? "border-red-500 focus-visible:ring-red-300" : ""
+                  errors.name
+                    ? "border-destructive focus-visible:ring-destructive/20"
+                    : ""
                 }
               />
               {errors.name && (
-                <div className="flex items-center gap-1 text-red-600 text-sm">
+                <div className="flex items-center gap-1 text-destructive text-sm">
                   <AlertCircle className="w-3 h-3" />
                   {errors.name}
                 </div>
@@ -130,12 +132,12 @@ export function ContactForm() {
                 placeholder="your@email.com"
                 className={
                   errors.email
-                    ? "border-red-500 focus-visible:ring-red-300"
+                    ? "border-destructive focus-visible:ring-destructive/20"
                     : ""
                 }
               />
               {errors.email && (
-                <div className="flex items-center gap-1 text-red-600 text-sm">
+                <div className="flex items-center gap-1 text-destructive text-sm">
                   <AlertCircle className="w-3 h-3" />
                   {errors.email}
                 </div>
@@ -153,12 +155,12 @@ export function ContactForm() {
               placeholder="What's this about?"
               className={
                 errors.subject
-                  ? "border-red-500 focus-visible:ring-red-300"
+                  ? "border-destructive focus-visible:ring-destructive/20"
                   : ""
               }
             />
             {errors.subject && (
-              <div className="flex items-center gap-1 text-red-600 text-sm">
+              <div className="flex items-center gap-1 text-destructive text-sm">
                 <AlertCircle className="w-3 h-3" />
                 {errors.subject}
               </div>
@@ -176,12 +178,12 @@ export function ContactForm() {
               rows={6}
               className={
                 errors.message
-                  ? "border-red-500 focus-visible:ring-red-300"
+                  ? "border-destructive focus-visible:ring-destructive/20"
                   : ""
               }
             />
             {errors.message && (
-              <div className="flex items-center gap-1 text-red-600 text-sm">
+              <div className="flex items-center gap-1 text-destructive text-sm">
                 <AlertCircle className="w-3 h-3" />
                 {errors.message}
               </div>

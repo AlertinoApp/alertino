@@ -33,23 +33,6 @@ export interface Subscription {
 export interface PlanConfig {
   name: string;
   description: string;
-  price: {
-    monthly: number;
-    yearly: number;
-  };
-  stripePriceIds: {
-    monthly: string;
-    yearly: string;
-  };
-  features: string[];
-  maxFilters: number;
-  trialDays: number;
-}
-
-// New enhanced plan configuration interface
-export interface EnhancedPlanConfig {
-  name: string;
-  description: string;
   icon: LucideIcon;
   pricing: {
     monthly: number;

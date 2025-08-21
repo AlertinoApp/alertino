@@ -127,10 +127,10 @@ export function EditFilterModal({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className={`w-full ${errors.name ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.name ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
             {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name}</p>
+              <p className="text-destructive text-sm">{errors.name}</p>
             )}
           </div>
 
@@ -143,11 +143,11 @@ export function EditFilterModal({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, city: e.target.value }))
               }
-              className={`w-full ${errors.city ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.city ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
 
             {errors.city && (
-              <p className="text-red-500 text-sm">{errors.city}</p>
+              <p className="text-destructive text-sm">{errors.city}</p>
             )}
           </div>
 
@@ -161,11 +161,11 @@ export function EditFilterModal({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, max_price: e.target.value }))
               }
-              className={`w-full ${errors.max_price ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.max_price ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
 
             {errors.max_price && (
-              <p className="text-red-500 text-sm">{errors.max_price}</p>
+              <p className="text-destructive text-sm">{errors.max_price}</p>
             )}
           </div>
 
@@ -180,11 +180,11 @@ export function EditFilterModal({
                 setFormData((prev) => ({ ...prev, min_rooms: e.target.value }))
               }
               min="1"
-              className={`w-full ${errors.min_rooms ? "border-red-500 focus-visible:ring-red-300" : ""}`}
+              className={`w-full ${errors.min_rooms ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
             />
 
             {errors.min_rooms && (
-              <p className="text-red-500 text-sm">{errors.min_rooms}</p>
+              <p className="text-destructive text-sm">{errors.min_rooms}</p>
             )}
           </div>
 

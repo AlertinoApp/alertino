@@ -24,8 +24,8 @@ export async function createCheckoutSession({
   const planType = PLAN_MAPPING[priceId];
 
   // Get the plan configuration to check trial days
-  const { getEnhancedSubscriptionConfig } = await import("./plans");
-  const planConfig = planType ? getEnhancedSubscriptionConfig(planType) : null;
+  const { getSubscriptionConfig } = await import("./plans");
+  const planConfig = planType ? getSubscriptionConfig(planType) : null;
 
   // Only add trial if plan supports it and user is eligible
   const trialDays =

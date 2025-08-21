@@ -188,9 +188,9 @@ export function Navbar({
                       <form action={signOut} className="p-0! w-full">
                         <button
                           type="submit"
-                          className="flex items-center w-full px-3 py-2 rounded-sm text-red-600 dark:text-red-400 hover:bg-muted"
+                          className="flex items-center w-full px-3 py-2 rounded-sm text-destructive hover:bg-muted"
                         >
-                          <LogOut className="mr-3 h-4 w-4 text-red-600 dark:text-red-400" />
+                          <LogOut className="mr-3 h-4 w-4 text-destructive" />
                           <span>Sign out</span>
                         </button>
                       </form>

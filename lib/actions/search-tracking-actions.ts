@@ -1,7 +1,7 @@
 "use server";
 
 import { createClientForServer } from "@/app/utils/supabase/server";
-import { getEnhancedSubscriptionConfig } from "@/lib/stripe/plans";
+import { getSubscriptionConfig } from "@/lib/stripe/plans";
 import { revalidatePath } from "next/cache";
 
 export interface SearchLimitResult {
@@ -52,7 +52,7 @@ export async function checkSearchLimit(
 
   const currentPlan =
     (subscription?.plan as "free" | "basic" | "pro") || "free";
-  const config = getEnhancedSubscriptionConfig(currentPlan);
+  const config = getSubscriptionConfig(currentPlan);
   const searchesLimit = config.limits.searchesPerDay;
 
   // Get today's search count

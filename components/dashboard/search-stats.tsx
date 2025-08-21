@@ -31,7 +31,7 @@ export function SearchStats({
   const isNearLimit = remainingSearches <= Math.ceil(dailyLimit * 0.2); // Within 20% of limit
 
   const getProgressColor = () => {
-    if (isAtLimit) return "bg-red-500";
+    if (isAtLimit) return "bg-destructive";
     if (isNearLimit) return "bg-amber-500";
     return "bg-emerald-500";
   };
@@ -41,7 +41,7 @@ export function SearchStats({
       return (
         <Badge
           variant="destructive"
-          className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600"
+          className="bg-destructive/10 text-destructive border-destructive/20"
         >
           <Target className="w-3 h-3 mr-1" />
           Limit Reached

@@ -137,7 +137,7 @@ export function LandingFooter() {
               © 2024 Alertino. All rights reserved.
             </p>
             <p className="text-slate-400 text-sm flex items-center">
-              Made with <Heart className="w-4 h-4 text-red-400 mx-1" /> in
+              Made with <Heart className="w-4 h-4 text-destructive mx-1" /> in
               Poland
             </p>
           </div>

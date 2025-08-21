@@ -225,7 +225,7 @@ export function AlertCard({ alert }: AlertCardProps) {
               </Badge>
             )}
             {isExpired && (
-              <Badge className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-600">
+              <Badge className="bg-destructive/10 text-destructive border-destructive/20">
                 ⚠️ Expired
               </Badge>
             )}
@@ -279,7 +279,7 @@ export function AlertCard({ alert }: AlertCardProps) {
             <Button
               onClick={handleCheckExpired}
               disabled={isCheckingExpired}
-              className="flex-1 min-w-0 text-sm bg-muted text-muted-foreground hover:bg-muted/80"
+              className="flex-1 min-w-0 text-sm bg-muted text-muted-foreground hover:bg-muted/80 border"
               title="Check if this offer is still available"
             >
               {isCheckingExpired ? (
@@ -295,7 +295,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                 className={cn(
                   "flex-1 min-w-0 text-sm",
                   isCurrentlyNotInterested
-                    ? "bg-muted text-muted-foreground hover:bg-muted/80"
+                    ? "bg-muted text-muted-foreground hover:bg-muted/80 border"
                     : "bg-blue-600 hover:bg-blue-700 text-white dark:border dark:bg-transparent dark:border-blue-600 dark:text-blue-600 dark:hover:bg-blue-600 dark:hover:text-white"
                 )}
                 disabled={isCurrentlyNotInterested}
@@ -320,7 +320,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                   "sm:px-3 sm:min-w-0 sm:w-auto w-full text-sm",
                   isCurrentlyNotInterested
                     ? "bg-green-600 hover:bg-green-700 text-white dark:text-white"
-                    : "hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
+                    : "hover:bg-destructive/10 hover:text-destructive hover:border-destructive dark:hover:bg-destructive/10 dark:hover:text-destructive dark:hover:border-destructive"
                 )}
               >
                 {isUpdating ? (

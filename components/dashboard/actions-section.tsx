@@ -288,11 +288,6 @@ export function ActionsSection({
                     {getButtonDescription()}
                   </p>
                 </div>
-                {isRunning && (
-                  <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-600 animate-pulse ml-auto">
-                    Searching
-                  </Badge>
-                )}
               </div>
 
               {/* Status Indicators */}
@@ -328,7 +323,7 @@ export function ActionsSection({
                         currentPlan,
                         searchesUsedToday
                       ) === 0
-                        ? "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600"
+                        ? "bg-destructive/10 text-destructive border-destructive/20"
                         : ""
                     }`}
                   >
@@ -405,13 +400,13 @@ export function ActionsSection({
                 size="lg"
                 className={`mb-2 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
-                    ? "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed"
-                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:scale-102 shadow-lg hover:shadow-xl transition-all duration-300"
-                } text-white dark:text-white min-w-[160px]`}
+                    ? "bg-muted text-muted-foreground hover:bg-muted border cursor-not-allowed"
+                    : "bg-gradient-to-r dark:text-white from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:scale-102 shadow-lg hover:shadow-xl transition-all duration-300"
+                }  min-w-[160px]`}
               >
                 {isRunning ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"></div>
                     Searching...
                   </>
                 ) : (
