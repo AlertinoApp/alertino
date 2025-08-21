@@ -97,15 +97,15 @@ export function HelpCenter() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">Help Center</h1>
-        <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+        <h1 className="text-4xl font-bold text-foreground mb-4">Help Center</h1>
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
           Find answers to common questions about using Alertino to find your
           perfect apartment.
         </p>
 
         {/* Search Bar */}
         <div className="max-w-md mx-auto relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input placeholder="Search for help..." className="pl-10 h-12" />
         </div>
       </div>
@@ -118,7 +118,7 @@ export function HelpCenter() {
               <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mr-4">
                 <category.icon className="w-5 h-5 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">
+              <h2 className="text-2xl font-bold text-foreground">
                 {category.title}
               </h2>
               {category.badge && (
@@ -135,10 +135,10 @@ export function HelpCenter() {
                   className="hover:shadow-md transition-shadow duration-200"
                 >
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                    <h3 className="text-lg font-semibold text-foreground mb-3">
                       {faq.question}
                     </h3>
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                       {faq.answer}
                     </p>
                   </CardContent>
@@ -154,10 +154,10 @@ export function HelpCenter() {
         <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
           <CardContent className="p-8">
             <Shield className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
+            <h3 className="text-xl font-bold text-foreground mb-2">
               Still need help?
             </h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Can&apos;t find what you&apos;re looking for? Our support team is
               here to help you get the most out of Alertino.
             </p>

@@ -108,7 +108,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
             </div>
             <div>
               <CardTitle className="text-lg">Notification Settings</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Manage your notification preferences
               </p>
             </div>
@@ -123,7 +123,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                 </div>
                 <div>
                   <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-slate-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Receive alerts about new apartment listings via email
                   </p>
                 </div>
@@ -141,10 +141,10 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                   <Smartphone className="w-4 h-4 text-slate-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-500">
+                  <p className="font-medium text-muted-foreground">
                     SMS Notifications
                   </p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-muted-foreground">
                     Receive alerts via SMS (Coming soon)
                   </p>
                 </div>
@@ -164,7 +164,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
             </div>
             <div>
               <CardTitle className="text-lg">Privacy Settings</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Control your data and privacy settings
               </p>
             </div>
@@ -175,13 +175,13 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex">
-                <Cookie className="w-4 h-4 text-slate-500" />
+                <Cookie className="w-4 h-4 text-muted-foreground" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Cookie Preferences</p>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Manage your cookie settings and tracking preferences
                 </p>
               </div>
@@ -200,13 +200,13 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex">
-                <Database className="w-4 h-4 text-slate-500" />
+                <Database className="w-4 h-4 text-muted-foreground" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Data Collection</p>
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-muted-foreground">
                   Control what data we collect and how we use it
                 </p>
               </div>
@@ -223,13 +223,13 @@ export function SettingsTab({ profile }: SettingsTabProps) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex">
-                <Lock className="w-4 h-4 text-slate-500" />
+                <Lock className="w-4 h-4 text-muted-foreground" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-medium">Data Retention</p>
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-muted-foreground">
                   Inactive data is automatically deleted after 12 months
                 </p>
               </div>
@@ -251,7 +251,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
             </div>
             <div>
               <CardTitle className="text-lg">Delete Account</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Irreversible and destructive actions
               </p>
             </div>

@@ -153,7 +153,7 @@ export function ErrorTester() {
       <Card>
         <CardHeader>
           <CardTitle>Error Boundary Testing Suite</CardTitle>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Click any button below to trigger different types of errors and test
             your error boundary.
           </p>
@@ -171,7 +171,7 @@ export function ErrorTester() {
           <div className="space-y-6">
             {categories.map((category) => (
               <div key={category}>
-                <h3 className="text-lg font-semibold mb-3 text-gray-800 border-b pb-1">
+                <h3 className="text-lg font-semibold mb-3 text-foreground border-b pb-1">
                   {category} Errors
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -185,7 +185,7 @@ export function ErrorTester() {
                           <h4 className="font-medium text-sm mb-2">
                             {test.name}
                           </h4>
-                          <p className="text-xs text-gray-600 mb-3">
+                          <p className="text-xs text-muted-foreground mb-3">
                             {test.description}
                           </p>
                           <Button
@@ -215,7 +215,7 @@ export function ErrorTester() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold mb-2">Public Routes</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
+              <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• Test on /help, /contact, /pricing, /about</li>
                 <li>• Should show appropriate custom messages</li>
                 <li>• Should have Back and Home buttons</li>
@@ -223,7 +223,7 @@ export function ErrorTester() {
             </div>
             <div>
               <h4 className="font-semibold mb-2">Protected Routes</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
+              <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• Test on /dashboard, /profile, /billing, /admin</li>
                 <li>• Dashboard should show auth actions</li>
                 <li>• Should have Back button, no Home button</li>
@@ -231,7 +231,7 @@ export function ErrorTester() {
             </div>
             <div>
               <h4 className="font-semibold mb-2">Auth Routes</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
+              <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• Test on /signin, /signup, /forgot-password</li>
                 <li>• Should show validation-specific messages</li>
                 <li>• Should have &quot;Start Over&quot; action</li>
@@ -239,7 +239,7 @@ export function ErrorTester() {
             </div>
             <div>
               <h4 className="font-semibold mb-2">API Routes</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
+              <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• Test on /api/* endpoints</li>
                 <li>• Should show API-specific messages</li>
                 <li>• Should not show Home/Back buttons</li>

@@ -36,8 +36,10 @@ export function ContactInfo() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Get in touch</h2>
-        <p className="text-gray-600 mb-8">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
+          Get in touch
+        </h2>
+        <p className="text-muted-foreground mb-8">
           We&apos;re here to help! Choose the best way to reach us and
           we&apos;ll get back to you as soon as possible.
         </p>
@@ -55,10 +57,10 @@ export function ContactInfo() {
                   <method.icon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
+                  <h3 className="font-semibold text-foreground mb-1">
                     {method.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     {method.description}
                   </p>
                   {method.action ? (
@@ -69,7 +71,7 @@ export function ContactInfo() {
                       {method.contact}
                     </a>
                   ) : (
-                    <span className="text-gray-900 font-medium text-sm">
+                    <span className="text-foreground font-medium text-sm">
                       {method.contact}
                     </span>
                   )}

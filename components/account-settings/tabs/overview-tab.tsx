@@ -264,7 +264,7 @@ export function OverviewTab({
                 {isTrialActive && trialInfo?.isActive && (
                   <div className="pt-4">
                     <Button
-                      className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                      className="w-fit py-1 rounded-md px-2 text-sm text-white bg-foreground hover:bg-foreground/80 disabled:opacity-50 dark:bg-foreground dark:text-background dark:hover:bg-foreground/80"
                       onClick={() => setIsUpgradeModalOpen(true)}
                     >
                       Start Basic Now
@@ -310,7 +310,7 @@ export function OverviewTab({
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
                 <div className="flex-1 flex flex-col gap-1">
-                  <div className="text-base font-medium dark:text-gray-100">
+                  <div className="text-base font-medium dark:text-foreground">
                     Pro
                   </div>
                   <div className="text-sm text-foreground">
@@ -320,7 +320,7 @@ export function OverviewTab({
 
                 <div className="pt-4">
                   <Button
-                    className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                    className="w-fit py-1 rounded-md px-2 text-sm text-white bg-foreground hover:bg-foreground/80 disabled:opacity-50 dark:bg-foreground dark:text-background dark:hover:bg-foreground/80"
                     onClick={handleUpgradeToPro}
                     disabled={loadingPlan === "pro"}
                   >
@@ -377,7 +377,7 @@ export function OverviewTab({
                 {isTrialActive && currentPlan === "basic" && (
                   <div className="pt-4">
                     <Button
-                      className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                      className="w-fit py-1 rounded-md px-2 text-sm text-white bg-foreground hover:bg-foreground/80 disabled:opacity-50 dark:bg-foreground dark:text-background dark:hover:bg-foreground/80"
                       onClick={() => setIsUpgradeModalOpen(true)}
                     >
                       Start Basic Now
@@ -394,7 +394,7 @@ export function OverviewTab({
               <div className="flex flex-col h-full">
                 {/* Content section - takes available space */}
                 <div className="flex-1 flex flex-col gap-1">
-                  <div className="text-base font-medium dark:text-gray-100">
+                  <div className="text-base font-medium dark:text-foreground">
                     Pro
                   </div>
                   <div className="text-sm text-foreground">
@@ -404,7 +404,7 @@ export function OverviewTab({
 
                 <div className="pt-4">
                   <Button
-                    className="w-fit py-1 rounded-md px-2 text-sm text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                    className="w-fit py-1 rounded-md px-2 text-sm text-white bg-foreground hover:bg-foreground/80 disabled:opacity-50 dark:bg-foreground dark:text-background dark:hover:bg-foreground/80"
                     onClick={handleUpgradeToPro}
                     disabled={loadingPlan === "pro"}
                   >
@@ -429,19 +429,9 @@ export function OverviewTab({
           {[1, 2, 3].map((i) => (
             <Card key={i} className="border-0 shadow-sm h-full py-0 bg-card">
               <CardContent className="p-6 h-full">
-                <div className="flex flex-col h-full">
-                  <div className="flex-1 flex flex-col gap-0.5">
-                    <div className="animate-pulse">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3 mb-2"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-full mb-1"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-2/3"></div>
-                    </div>
-                  </div>
-                  <div className="pt-4">
-                    <div className="animate-pulse">
-                      <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
-                    </div>
-                  </div>
+                <div className="animate-pulse">
+                  <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
+                  <div className="h-8 bg-muted rounded"></div>
                 </div>
               </CardContent>
             </Card>
@@ -457,33 +447,14 @@ export function OverviewTab({
               </div>
               <div>
                 <CardTitle className="text-lg">Usage Overview</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Monitor your current usage and limits
                 </p>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="p-4 bg-slate-50 dark:bg-muted rounded-lg"
-                >
-                  <div className="animate-pulse">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                        <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16"></div>
-                      </div>
-                      <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-12"></div>
-                    </div>
-                    <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="animate-pulse h-16 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
 
@@ -496,50 +467,15 @@ export function OverviewTab({
               </div>
               <div>
                 <CardTitle className="text-lg">Usage Statistics</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Detailed usage analytics
                 </p>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* This Week Skeleton */}
-              <div className="space-y-4">
-                <div className="animate-pulse">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-20 mb-4"></div>
-                  <div className="space-y-3">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
-                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Today Skeleton */}
-              <div className="space-y-4">
-                <div className="animate-pulse">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16 mb-4"></div>
-                  <div className="space-y-3">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
-                        <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* This Week Skeleton */}
+            <div className="animate-pulse h-16 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
 
@@ -552,26 +488,14 @@ export function OverviewTab({
               </div>
               <div>
                 <CardTitle className="text-lg">Usage History</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Last 7 days search activity
                 </p>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-16"></div>
-                      <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-12"></div>
-                    </div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-8"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className=" animate-pulse h-16 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
       </div>
@@ -592,7 +516,7 @@ export function OverviewTab({
             </div>
             <div>
               <CardTitle className="text-lg">Usage Overview</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Monitor your current usage and limits
               </p>
             </div>
@@ -601,11 +525,11 @@ export function OverviewTab({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Filters Usage */}
-            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-blue-600" />
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     Filters
                   </span>
                 </div>
@@ -614,17 +538,17 @@ export function OverviewTab({
                 </Badge>
               </div>
               <Progress value={filterUsagePercentage} className="h-2" />
-              <p className="text-sm text-slate-600 dark:text-gray-400 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 {maxFilters - filtersCount} filters remaining
               </p>
             </div>
 
             {/* Searches Usage */}
-            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Search className="w-4 h-4 text-purple-600" />
-                  <span className="font-medium dark:text-gray-100">
+                  <Search className="w-4 h-4 text-green-600" />
+                  <span className="font-medium dark:text-foreground">
                     Searches
                   </span>
                 </div>
@@ -633,17 +557,17 @@ export function OverviewTab({
                 </Badge>
               </div>
               <Progress value={searchUsagePercentage} className="h-2" />
-              <p className="text-sm text-slate-600 dark:text-gray-400 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 {maxSearches - searchesUsed} searches remaining today
               </p>
             </div>
 
             {/* Last Run Information */}
-            <div className="p-4 bg-slate-50 dark:bg-muted rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-600" />
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     Last Run
                   </span>
                 </div>
@@ -652,10 +576,10 @@ export function OverviewTab({
               {lastRunDate ? (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       Last scan:
                     </span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span className="text-sm font-medium text-foreground">
                       {lastRunDate.toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -665,23 +589,21 @@ export function OverviewTab({
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       Time ago:
                     </span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span className="text-sm font-medium text-foreground">
                       {getTimeSinceLastRun(lastRunDate)}
                     </span>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <div className="text-2xl font-bold text-gray-400 dark:text-gray-500 mb-1">
+                  <div className="text-2xl font-bold text-muted-foreground mb-1">
                     —
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    No runs yet
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground">No runs yet</p>
+                  <p className="text-xs text-muted-foreground mt-1">
                     Run your first search to get started
                   </p>
                 </div>
@@ -700,7 +622,7 @@ export function OverviewTab({
             </div>
             <div>
               <CardTitle className="text-lg">Usage Statistics</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Detailed usage analytics
               </p>
             </div>
@@ -710,31 +632,29 @@ export function OverviewTab({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* This Week */}
             <div className="space-y-4">
-              <h3 className="font-medium text-slate-900 dark:text-gray-100">
-                This Week
-              </h3>
+              <h3 className="font-medium text-foreground">This Week</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Searches performed
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {searchStats.weekTotal}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Active filters
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {filtersCount}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Active alerts
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {alertsCount}
                   </span>
                 </div>
@@ -743,31 +663,29 @@ export function OverviewTab({
 
             {/* Today */}
             <div className="space-y-4">
-              <h3 className="font-medium text-slate-900 dark:text-gray-100">
-                Today
-              </h3>
+              <h3 className="font-medium text-foreground">Today</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Searches used
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {searchStats.today}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Searches remaining
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {maxSearches - searchesUsed}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600 dark:text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     Usage percentage
                   </span>
-                  <span className="font-medium dark:text-gray-100">
+                  <span className="font-medium dark:text-foreground">
                     {Math.round(searchUsagePercentage)}%
                   </span>
                 </div>
@@ -786,7 +704,7 @@ export function OverviewTab({
             </div>
             <div>
               <CardTitle className="text-lg">Usage History</CardTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Last 7 days search activity
               </p>
             </div>
@@ -800,18 +718,18 @@ export function OverviewTab({
               return (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-muted rounded-lg"
+                  className="flex items-center justify-between p-3 bg-muted rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div>
-                      <p className="font-medium dark:text-gray-100">
+                      <p className="font-medium dark:text-foreground">
                         {new Date(day.date).toLocaleDateString("en-US", {
                           weekday: "short",
                           month: "short",
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-sm text-slate-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {day.count} searches performed
                       </p>
                     </div>
@@ -822,7 +740,7 @@ export function OverviewTab({
                       className={`${
                         alertsFound > 0
                           ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600"
-                          : "bg-gray-50 dark:bg-muted text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600"
+                          : "bg-muted text-muted-foreground border-border"
                       }`}
                     >
                       {alertsFound} alerts
@@ -845,10 +763,10 @@ export function OverviewTab({
           </DialogHeader>
           <div className="space-y-4 sm:space-y-6">
             <div className="space-y-3">
-              <p className="text-sm text-slate-600 dark:text-gray-400 sm:text-base leading-relaxed">
+              <p className="text-sm text-muted-foreground sm:text-base leading-relaxed">
                 Get immediate access to advanced filters and all Basic features.
               </p>
-              <p className="text-sm text-slate-600 dark:text-gray-400 sm:text-base leading-relaxed">
+              <p className="text-sm text-muted-foreground sm:text-base leading-relaxed">
                 This will end your trial period, and your payment method on file
                 will be charged.
               </p>
@@ -862,7 +780,7 @@ export function OverviewTab({
                 Cancel
               </Button>
               <Button
-                className="w-full sm:flex-1 h-11 sm:h-10 !text-white !bg-gray-900 hover:!bg-gray-800 border-gray-900 hover:border-gray-800"
+                className="w-full sm:flex-1 h-11 sm:h-10 !text-white !bg-foreground hover:!bg-foreground/80 border-foreground hover:border-foreground/80"
                 onClick={handleStartBasicNow}
                 disabled={loadingPlan === "basic"}
               >

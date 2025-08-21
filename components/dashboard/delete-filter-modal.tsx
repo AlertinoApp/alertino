@@ -103,7 +103,7 @@ export function DeleteFilterDialog({
         </DialogHeader>
 
         {isLoadingCount ? (
-          <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="py-4 text-center text-sm text-muted-foreground">
             Loading alert count...
           </div>
         ) : alertCount !== null && alertCount > 0 ? (

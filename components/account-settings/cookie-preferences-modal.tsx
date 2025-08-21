@@ -200,7 +200,7 @@ export function CookiePreferencesModal({
             </div>
             <div>
               <DialogTitle className="text-xl">Cookie Preferences</DialogTitle>
-              <p className="text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Manage your cookie settings and privacy preferences
               </p>
             </div>
@@ -262,7 +262,7 @@ export function CookiePreferencesModal({
                   />
                 </div>
 
-                <p className="text-sm text-slate-600 dark:text-gray-400 ml-0">
+                <p className="text-sm text-muted-foreground ml-0">
                   {category.description}
                 </p>
 
@@ -313,16 +313,14 @@ export function CookiePreferencesModal({
 
           {/* Additional Information */}
           <div className="bg-card rounded-lg p-4">
-            <h4 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
-              About Cookies
-            </h4>
+            <h4 className="font-medium text-foreground mb-2">About Cookies</h4>
             <p className="text-sm mb-3">
               Cookies are small text files stored on your device that help us
               provide and improve our services. You can change your preferences
               at any time, but some features may not work properly if you
               disable certain cookies.
             </p>
-            <p className="text-sm text-slate-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               For more information about how we use cookies, please see our{" "}
               <a
                 href="/privacy"

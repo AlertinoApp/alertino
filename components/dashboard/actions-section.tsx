@@ -281,10 +281,10 @@ export function ActionsSection({
                   <Search className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  <h3 className="text-xl font-semibold text-foreground">
                     Search for New Apartments
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {getButtonDescription()}
                   </p>
                 </div>
@@ -299,28 +299,26 @@ export function ActionsSection({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 {/* Subscription Limits */}
                 <div className="flex items-center gap-2">
-                  <Settings2 className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Plan:
-                  </span>
+                  <Settings2 className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Plan:</span>
                   <Badge variant="outline" className="text-xs">
                     {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}
                   </Badge>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <Activity className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     Auto-scraping:
                   </span>
-                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <span className="text-sm font-medium text-foreground">
                     {getScrapingIntervalDisplay(currentPlan)}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <BarChart3 className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     Searches left:
                   </span>
                   <Badge
@@ -342,8 +340,8 @@ export function ActionsSection({
               {/* Action Status Indicators */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center gap-2">
-                  <Target className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <Target className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     Active filters:
                   </span>
                   <Badge
@@ -360,11 +358,11 @@ export function ActionsSection({
 
                 {lastRun && (
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
                       Last run:
                     </span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span className="text-sm font-medium text-foreground">
                       {getTimeSinceLastRun()}
                     </span>
                   </div>
@@ -372,8 +370,8 @@ export function ActionsSection({
 
                 {lastResult && (
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <Activity className="w-4 h-4 text-muted-foreground" />
+                    <div className="text-sm text-muted-foreground">
                       Last result:
                     </div>
                     <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
@@ -386,14 +384,11 @@ export function ActionsSection({
               {/* Progress indicator when running */}
               {isRunning && (
                 <div className="mb-4">
-                  <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <div className="flex justify-between text-sm text-muted-foreground mb-2">
                     <span>{currentStep}</span>
                     <span>{Math.round(progress)}%</span>
                   </div>
-                  <Progress
-                    value={progress}
-                    className="h-2 bg-gray-200 dark:bg-gray-600"
-                  >
+                  <Progress value={progress} className="h-2 bg-muted">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 ease-out rounded-full"
                       style={{ width: `${progress}%` }}
@@ -410,7 +405,7 @@ export function ActionsSection({
                 size="lg"
                 className={`mb-2 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
-                    ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
+                    ? "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed"
                     : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:scale-102 shadow-lg hover:shadow-xl transition-all duration-300"
                 } text-white dark:text-white min-w-[160px]`}
               >

@@ -92,7 +92,7 @@ export function FiltersSection({
               {inactiveFilters.length > 0 && (
                 <Badge
                   variant="secondary"
-                  className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                  className="bg-muted text-muted-foreground border-border"
                 >
                   <EyeOff className="w-3 h-3 mr-1" />
                   {inactiveFilters.length} Inactive

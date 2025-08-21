@@ -101,10 +101,10 @@ const ERROR_SCENARIOS: Record<ErrorType, ErrorScenario> = {
     description:
       "The resource you're looking for doesn't exist or has been moved.",
     icon: FileX,
-    iconColor: "text-gray-600",
-    bgColor: "bg-gray-100",
-    backgroundGradient: "from-gray-50 via-white to-slate-50",
-    buttonColor: "bg-gray-600 hover:bg-gray-700",
+    iconColor: "text-muted-foreground",
+    bgColor: "bg-muted",
+    backgroundGradient: "from-muted via-background to-muted",
+    buttonColor: "bg-muted text-muted-foreground hover:bg-muted/80",
     showRetry: false,
   },
   validation: {
@@ -238,8 +238,8 @@ export function ErrorBoundary({
           </div>
 
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
-            <p className="text-gray-600 mb-4">{description}</p>
+            <h1 className="text-2xl font-bold text-foreground mb-2">{title}</h1>
+            <p className="text-muted-foreground mb-4">{description}</p>
 
             {/* Custom children content */}
             {children}
@@ -247,11 +247,11 @@ export function ErrorBoundary({
             {/* Development-only error details */}
             {isDev && (
               <details className="mt-4 text-left">
-                <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
                   <Bug className="w-4 h-4 inline mr-1" />
                   Error Details (Dev Only)
                 </summary>
-                <div className="mt-2 p-3 bg-gray-100 rounded text-xs text-gray-700 overflow-auto max-h-32">
+                <div className="mt-2 p-3 bg-muted rounded text-xs text-foreground overflow-auto max-h-32">
                   <p>
                     <strong>Type:</strong> {detectedType}
                   </p>

@@ -111,7 +111,7 @@ export function Navbar({
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-gray-700"
+                      className="relative h-10 w-10 rounded-full hover:bg-muted"
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={avatarUrl || "/placeholder.svg"} />
@@ -203,7 +203,7 @@ export function Navbar({
                 <Button
                   variant="outline"
                   onClick={() => router.push("/login")}
-                  className="dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-700"
+                  className="dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-muted"
                 >
                   Sign In
                 </Button>

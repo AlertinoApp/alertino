@@ -65,7 +65,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 className={
                   isActive
                     ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                    : "bg-muted text-muted-foreground border-border"
                 }
               >
                 {isActive ? "Active" : "Inactive"}
@@ -84,7 +84,7 @@ export function FilterCard({ filter }: FilterCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
-                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="h-8 w-8 p-0"
                 disabled={isToggling}
               >
                 <Edit2 className="h-4 w-4" />
@@ -103,38 +103,38 @@ export function FilterCard({ filter }: FilterCardProps) {
 
           <div className="space-y-3">
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
+              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
             >
               <span className="font-semibold text-lg">{filter.name}</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
+              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
             >
-              <MapPin className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+              <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
               <span className="font-medium capitalize">{filter.city}</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
+              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
             >
-              <DollarSign className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+              <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
               <span>Max {filter.max_price.toLocaleString()} PLN</span>
             </div>
 
             <div
-              className={`flex items-center ${!isActive ? "text-gray-500 dark:text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
+              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
             >
-              <Home className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+              <Home className="w-4 h-4 mr-2 text-muted-foreground" />
               <span>
                 Min {filter.min_rooms} room{filter.min_rooms !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="mt-4 pt-4 border-t border-border">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 Created {new Date(filter.created_at).toLocaleDateString()}
               </p>
               {isToggling ? (

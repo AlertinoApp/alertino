@@ -81,13 +81,13 @@ export function LoginForm() {
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Check your email
               </h2>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 We&apos;ve sent a magic link to <strong>{email}</strong>
               </p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Click the link in the email to sign in to your account.
               </p>
             </div>
@@ -111,10 +111,10 @@ export function LoginForm() {
   return (
     <Card className="gap-4 shadow-xl border-0">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-gray-900">
+        <CardTitle className="text-2xl font-bold text-foreground">
           Welcome back
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Sign in to your Alertino account to manage your apartment alerts
         </CardDescription>
       </CardHeader>
@@ -155,10 +155,10 @@ export function LoginForm() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-300" />
+              <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">
+              <span className="px-2 bg-background text-muted-foreground">
                 Or continue with
               </span>
             </div>
@@ -212,7 +212,7 @@ export function LoginForm() {
           </div>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center text-sm text-muted-foreground">
           <p>
             By signing in, you agree to our{" "}
             <Link

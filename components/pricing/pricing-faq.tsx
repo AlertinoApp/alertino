@@ -52,10 +52,10 @@ export function PricingFAQ() {
           <Badge className="mb-4 bg-emerald-100 text-emerald-800 border-emerald-200">
             Frequently Asked Questions
           </Badge>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Everything you need to know about pricing
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-muted-foreground">
             Can&apos;t find the answer you&apos;re looking for? Feel free to
             contact our support team.
           </p>
@@ -68,17 +68,19 @@ export function PricingFAQ() {
               className="hover:shadow-md transition-shadow duration-200"
             >
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-foreground mb-3">
                   {faq.question}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </p>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-4">Still have questions?</p>
+          <p className="text-muted-foreground mb-4">Still have questions?</p>
           <a
             href="/contact"
             className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium"

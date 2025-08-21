@@ -118,20 +118,15 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                   <CardTitle className="text-lg">
                     Current Subscription
                   </CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Manage your billing and subscription
                   </p>
                 </div>
               </div>
-              <div className="animate-pulse w-full sm:w-auto">
-                <div className="h-9 w-full sm:w-32 bg-gray-200 dark:bg-gray-600 rounded"></div>
-              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="animate-pulse">
-              <div className="h-16 bg-gray-200 dark:bg-gray-600 rounded-lg"></div>
-            </div>
+            <div className="animate-pulse h-20 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
 
@@ -145,17 +140,15 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Payment Method</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-gray-400">
-                    Your saved payment methods
+                  <p className="text-sm text-muted-foreground">
+                    Manage your payment information
                   </p>
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="animate-pulse">
-              <div className="h-20 bg-gray-200 dark:bg-gray-600 rounded-lg"></div>
-            </div>
+            <div className="animate-pulse h-20 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
 
@@ -169,25 +162,15 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Billing History</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-gray-400">
-                    Your recent invoices and payments
+                  <p className="text-sm text-muted-foreground">
+                    View and download your invoices
                   </p>
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="animate-pulse space-y-4">
-              <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-16 bg-gray-200 dark:bg-gray-600 rounded-lg"
-                  ></div>
-                ))}
-              </div>
-            </div>
+            <div className="animate-pulse h-20 bg-muted rounded-lg"></div>
           </CardContent>
         </Card>
       </div>
@@ -206,7 +189,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               </div>
               <div>
                 <CardTitle className="text-lg">Current Subscription</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Manage your billing and subscription
                 </p>
               </div>
@@ -241,15 +224,13 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {getPlanPrice(currentPlan)} per month
                 </p>
               </div>
             </div>
             <div className="text-left sm:text-right">
-              <p className="text-sm text-slate-600 dark:text-gray-400">
-                Next billing
-              </p>
+              <p className="text-sm text-muted-foreground">Next billing</p>
               <p className="font-medium dark:text-gray-100">
                 {subscription?.current_period_end
                   ? new Date(
@@ -272,7 +253,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               </div>
               <div>
                 <CardTitle className="text-lg">Payment Method</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Manage your payment information
                 </p>
               </div>
@@ -310,7 +291,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                           : method.type}
                       </p>
                       {method.card && (
-                        <p className="text-sm text-slate-600 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground">
                           Expires{" "}
                           {method.card.expMonth.toString().padStart(2, "0")}/
                           {method.card.expYear}
@@ -332,10 +313,10 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
                 <CreditCard className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-sm text-slate-500 dark:text-gray-400 mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 No payment methods found
               </p>
-              <p className="text-xs text-slate-400 dark:text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Add a payment method to manage your subscription
               </p>
             </div>
@@ -353,7 +334,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               </div>
               <div>
                 <CardTitle className="text-lg">Billing History</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   View and download your invoices
                 </p>
               </div>
@@ -367,7 +348,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               <div className="overflow-x-auto flex flex-col gap-4">
                 <table className="w-full border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-gray-600 text-left">
+                    <tr className="border-b border-border text-left">
                       <th className="p-2 dark:text-gray-100">Date</th>
                       <th className="p-2 dark:text-gray-100">Status</th>
                       <th className="p-2 text-right dark:text-gray-100">
@@ -382,7 +363,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                     {invoices.map((invoice) => (
                       <tr
                         key={invoice.id}
-                        className="border-b border-slate-200 dark:border-gray-600 hover:bg-slate-100 dark:hover:bg-gray-600"
+                        className="border-b border-border hover:bg-muted"
                       >
                         <td className="p-2 dark:text-gray-100">
                           {formatDate(invoice.created)}
@@ -435,12 +416,12 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
                 <Calendar className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-sm text-slate-500 dark:text-gray-400 mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 {currentPlan === "free"
                   ? "No billing history"
                   : "No billing history found"}
               </p>
-              <p className="text-xs text-slate-400 dark:text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {currentPlan === "free"
                   ? "Upgrade to a paid plan to see billing history"
                   : "No invoices found for your account"}

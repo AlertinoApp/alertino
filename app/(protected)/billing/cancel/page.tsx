@@ -79,8 +79,8 @@ export default async function BillingCancelPage() {
           description:
             "You can upgrade to a premium plan anytime you're ready.",
           icon: XCircle,
-          iconColor: "text-gray-600 dark:text-gray-400",
-          bgColor: "bg-gray-100 dark:bg-gray-900/30",
+          iconColor: "text-muted-foreground",
+          bgColor: "bg-muted",
         };
       } else {
         return {

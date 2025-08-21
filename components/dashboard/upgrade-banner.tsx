@@ -263,7 +263,7 @@ export function UpgradeBanner({
             variant="ghost"
             size="sm"
             onClick={() => setIsDismissed(true)}
-            className={`${bannerContext.iconColor.replace("text-", "text-").replace("600", "700")} hover:bg-white/50 dark:hover:bg-gray-700/50 absolute top-2 right-2 z-10 sm:hidden`}
+            className={`${bannerContext.iconColor.replace("text-", "text-").replace("600", "700")} hover:bg-white/50 dark:hover:bg-muted/50 absolute top-2 right-2 z-10 sm:hidden`}
             aria-label="Dismiss banner"
           >
             <X className="w-4 h-4" />
@@ -282,7 +282,7 @@ export function UpgradeBanner({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3
-                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-gray-100`}
+                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-foreground`}
                 >
                   {bannerContext.title}
                 </h3>
@@ -295,7 +295,7 @@ export function UpgradeBanner({
                   )}
               </div>
               <p
-                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-gray-300 text-sm leading-relaxed`}
+                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-muted-foreground text-sm leading-relaxed`}
               >
                 {bannerContext.message}
               </p>
@@ -325,7 +325,7 @@ export function UpgradeBanner({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsDismissed(true)}
-                className={`${bannerContext.iconColor.replace("600", "700")} hover:bg-white/50 dark:hover:bg-gray-700/50`}
+                className={`${bannerContext.iconColor.replace("600", "700")} hover:bg-white/50 dark:hover:bg-muted/50`}
                 aria-label="Dismiss banner"
               >
                 <X className="w-4 h-4" />
@@ -345,7 +345,7 @@ export function UpgradeBanner({
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                 <h3
-                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-gray-100 text-base`}
+                  className={`font-semibold ${bannerContext.iconColor.replace("600", "900")} dark:text-foreground text-base`}
                 >
                   {bannerContext.title}
                 </h3>
@@ -358,7 +358,7 @@ export function UpgradeBanner({
                   )}
               </div>
               <p
-                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-gray-300 text-sm leading-relaxed`}
+                className={`${bannerContext.iconColor.replace("600", "800")} dark:text-muted-foreground text-sm leading-relaxed`}
               >
                 {bannerContext.message}
               </p>

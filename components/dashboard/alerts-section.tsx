@@ -287,7 +287,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
           {archivedAlerts.length > 0 && (
             <Badge
               variant="secondary"
-              className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+              className="bg-muted text-muted-foreground border-border"
             >
               {archivedAlerts.length} Archived
             </Badge>

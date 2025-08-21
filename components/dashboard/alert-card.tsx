@@ -161,8 +161,8 @@ export function AlertCard({ alert }: AlertCardProps) {
               className={cn(
                 "font-medium text-sm sm:text-base leading-tight flex-1",
                 isCurrentlyNotInterested || isExpired
-                  ? "text-gray-500 dark:text-gray-400"
-                  : "text-gray-900 dark:text-gray-100",
+                  ? "text-muted-foreground"
+                  : "text-foreground",
                 isExpired && "line-through"
               )}
             >
@@ -194,8 +194,8 @@ export function AlertCard({ alert }: AlertCardProps) {
                 className={cn(
                   "flex items-center text-sm",
                   isCurrentlyNotInterested
-                    ? "text-gray-500 dark:text-gray-400"
-                    : "text-gray-700 dark:text-gray-300"
+                    ? "text-muted-foreground"
+                    : "text-foreground"
                 )}
               >
                 <Badge
@@ -214,7 +214,7 @@ export function AlertCard({ alert }: AlertCardProps) {
             {isCurrentlyNotInterested && (
               <Badge
                 variant="secondary"
-                className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                className="bg-muted text-muted-foreground border-border"
               >
                 Not Interested
               </Badge>
@@ -237,11 +237,11 @@ export function AlertCard({ alert }: AlertCardProps) {
             className={cn(
               "flex items-center text-sm",
               isCurrentlyNotInterested
-                ? "text-gray-500 dark:text-gray-400"
-                : "text-gray-700 dark:text-gray-300"
+                ? "text-muted-foreground"
+                : "text-foreground"
             )}
           >
-            <DollarSign className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+            <DollarSign className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
             <span className="font-semibold">
               {alert.price.toLocaleString()} PLN
             </span>
@@ -251,11 +251,11 @@ export function AlertCard({ alert }: AlertCardProps) {
             className={cn(
               "flex items-center text-sm",
               isCurrentlyNotInterested
-                ? "text-gray-500 dark:text-gray-400"
-                : "text-gray-700 dark:text-gray-300"
+                ? "text-muted-foreground"
+                : "text-foreground"
             )}
           >
-            <Home className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+            <Home className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
             <span>
               {alert.rooms} room{alert.rooms !== 1 ? "s" : ""}
             </span>
@@ -265,11 +265,11 @@ export function AlertCard({ alert }: AlertCardProps) {
             className={cn(
               "flex items-center text-sm",
               isCurrentlyNotInterested
-                ? "text-gray-500 dark:text-gray-400"
-                : "text-gray-700 dark:text-gray-300"
+                ? "text-muted-foreground"
+                : "text-foreground"
             )}
           >
-            <MapPin className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+            <MapPin className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
             <span className="capitalize">{alert.city}</span>
           </div>
         </div>
@@ -279,7 +279,7 @@ export function AlertCard({ alert }: AlertCardProps) {
             <Button
               onClick={handleCheckExpired}
               disabled={isCheckingExpired}
-              className="flex-1 min-w-0 text-sm bg-gray-400 hover:bg-gray-500 text-white"
+              className="flex-1 min-w-0 text-sm bg-muted text-muted-foreground hover:bg-muted/80"
               title="Check if this offer is still available"
             >
               {isCheckingExpired ? (
@@ -295,7 +295,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                 className={cn(
                   "flex-1 min-w-0 text-sm",
                   isCurrentlyNotInterested
-                    ? "bg-gray-400 hover:bg-gray-500 text-white"
+                    ? "bg-muted text-muted-foreground hover:bg-muted/80"
                     : "bg-blue-600 hover:bg-blue-700 text-white dark:border dark:bg-transparent dark:border-blue-600 dark:text-blue-600 dark:hover:bg-blue-600 dark:hover:text-white"
                 )}
                 disabled={isCurrentlyNotInterested}
@@ -320,7 +320,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                   "sm:px-3 sm:min-w-0 sm:w-auto w-full text-sm",
                   isCurrentlyNotInterested
                     ? "bg-green-600 hover:bg-green-700 text-white dark:text-white"
-                    : "hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-600"
+                    : "hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
                 )}
               >
                 {isUpdating ? (
