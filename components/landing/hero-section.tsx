@@ -15,11 +15,17 @@ export function HeroSection({ user }: HeroSectionProps) {
   const router = useRouter();
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-muted via-background to-emerald-50 dark:from-muted dark:via-background dark:to-emerald-950/20 flex items-center">
-      {/* Background decorative elements */}
+    <section className="relative min-h-screen bg-gradient-to-br from-background via-muted/20 to-emerald-50/30 dark:from-background dark:via-muted/10 dark:to-emerald-950/5 flex items-center">
+      {/* Modern geometric background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-emerald-200/30 to-teal-200/30 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl"></div>
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-emerald-500/8 dark:bg-emerald-400/12 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-32 w-24 h-24 bg-emerald-400/6 dark:bg-emerald-300/10 rounded-full blur-lg animate-pulse delay-1000"></div>
+        <div className="absolute bottom-32 left-1/3 w-20 h-20 bg-emerald-300/5 dark:bg-emerald-200/8 rounded-full blur-md animate-pulse delay-2000"></div>
+
+        {/* Subtle gradient overlays */}
+        <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-50/15 to-transparent dark:from-emerald-950/8 dark:to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-emerald-50/15 to-transparent dark:from-emerald-950/8 dark:to-transparent"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

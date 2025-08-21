@@ -71,9 +71,17 @@ export function FeaturesSection() {
   return (
     <section
       id="features"
-      className="py-24 bg-gradient-to-br from-muted via-background to-emerald-50 dark:from-muted dark:via-background dark:to-emerald-950/20"
+      className="py-24 bg-gradient-to-br from-background via-muted/10 to-emerald-50/20 dark:from-background dark:via-muted/5 dark:to-emerald-950/10"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Modern background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Floating geometric shapes */}
+        <div className="absolute top-20 right-20 w-16 h-16 bg-emerald-500/10 dark:bg-emerald-400/15 rounded-lg rotate-12 blur-sm"></div>
+        <div className="absolute bottom-20 left-20 w-12 h-12 bg-emerald-400/8 dark:bg-emerald-300/12 rounded-full blur-sm"></div>
+        <div className="absolute top-1/2 left-10 w-8 h-8 bg-emerald-300/6 dark:bg-emerald-200/10 rounded-md blur-sm"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-20"
           initial={{ opacity: 0, y: 20 }}

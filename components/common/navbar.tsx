@@ -176,7 +176,7 @@ export function Navbar({
                           href="/pricing"
                           className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-500 hover:bg-muted"
                         >
-                          <Crown className="mr-3 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+                          <Crown className="mr-1 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
                           <span>Upgrade to Pro</span>
                         </Link>
                       </DropdownMenuItem>

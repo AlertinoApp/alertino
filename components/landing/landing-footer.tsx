@@ -51,11 +51,16 @@ const socialLinks = [
 
 export function LandingFooter() {
   return (
-    <footer className="bg-black text-white relative overflow-hidden">
-      {/* Background decorative elements */}
+    <footer className="bg-gradient-to-br from-slate-950 via-black to-slate-900 text-white relative overflow-hidden">
+      {/* Modern background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-full blur-3xl"></div>
+        {/* Floating orbs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-emerald-500/8 to-teal-500/6 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tr from-emerald-600/6 to-emerald-700/4 rounded-full blur-3xl"></div>
+
+        {/* Subtle accent lines */}
+        <div className="absolute top-1/4 right-1/4 w-px h-32 bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-px h-32 bg-gradient-to-t from-transparent via-emerald-500/20 to-transparent"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -76,7 +81,7 @@ export function LandingFooter() {
                 Alertino
               </span>
             </div>
-            <p className="text-muted-foreground mb-6 max-w-md leading-relaxed">
+            <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
               Find your perfect apartment in Poland with intelligent alerts and
               real-time monitoring. Never miss the perfect place again.
             </p>
@@ -86,7 +91,7 @@ export function LandingFooter() {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-lg flex items-center justify-center text-muted-foreground hover:text-emerald-400 transition-all duration-300 transform hover:-translate-y-1"
+                  className="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-emerald-400 transition-all duration-300 transform hover:-translate-y-1"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -113,7 +118,7 @@ export function LandingFooter() {
                   <li key={linkIndex}>
                     <a
                       href={link.href}
-                      className="text-muted-foreground hover:text-emerald-400 transition-colors duration-300 hover:translate-x-1 transform inline-block"
+                      className="text-gray-400 hover:text-emerald-400 transition-colors duration-300 hover:translate-x-1 transform inline-block"
                     >
                       {link.name}
                     </a>
@@ -126,18 +131,18 @@ export function LandingFooter() {
 
         {/* Bottom section */}
         <motion.div
-          className="pt-8 border-t border-border text-center"
+          className="pt-8 border-t border-gray-700 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <div className="flex flex-col sm:flex-row items-center justify-between">
-            <p className="text-muted-foreground text-sm mb-4 sm:mb-0">
+            <p className="text-gray-400 text-sm mb-4 sm:mb-0">
               © 2024 Alertino. All rights reserved.
             </p>
-            <p className="text-muted-foreground text-sm flex items-center">
-              Made with <Heart className="w-4 h-4 text-destructive mx-1" /> in
+            <p className="text-gray-400 text-sm flex items-center">
+              Made with <Heart className="w-4 h-4 text-red-400 mx-1" /> in
               Poland
             </p>
           </div>

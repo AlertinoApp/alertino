@@ -50,12 +50,20 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-background dark:bg-background relative overflow-hidden"
+      className="py-24 bg-gradient-to-br from-background via-muted/5 to-background dark:from-background dark:via-muted/3 dark:to-background relative overflow-hidden"
     >
-      {/* Background decorative elements */}
+      {/* Modern background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-100/40 to-teal-100/40 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-gradient-to-tr from-blue-100/40 to-indigo-100/40 rounded-full blur-3xl"></div>
+        {/* Subtle line pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(0,0,0,0.03)_50%,transparent_60%)] dark:bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.03)_50%,transparent_60%)]"></div>
+
+        {/* Minimal floating elements */}
+        <div className="absolute top-1/4 right-0 w-64 h-64 bg-emerald-500/6 dark:bg-emerald-400/8 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-emerald-400/5 dark:bg-emerald-300/6 rounded-full blur-2xl"></div>
+
+        {/* Subtle accent lines */}
+        <div className="absolute top-0 left-1/4 w-px h-32 bg-gradient-to-b from-transparent via-emerald-200/20 to-transparent dark:from-transparent dark:via-emerald-700/20 dark:to-transparent"></div>
+        <div className="absolute bottom-0 right-1/4 w-px h-32 bg-gradient-to-t from-transparent via-emerald-200/20 to-transparent dark:from-transparent dark:via-emerald-700/20 dark:to-transparent"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,11 +99,6 @@ export function HowItWorksSection() {
             >
               <Card className="bg-card/90 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg group h-full">
                 <CardContent className="p-8 text-center relative">
-                  {/* Step number with gradient background */}
-                  <div className="w-12 h-12 text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-6">
-                    {step.step}
-                  </div>
-
                   {/* Icon with gradient background */}
                   <motion.div
                     className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50`}

@@ -14,12 +14,20 @@ export function CTASection({ user }: CTASectionProps) {
   const router = useRouter();
 
   return (
-    <section className="py-24 bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-200 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900 relative overflow-hidden">
-      {/* Background decorative elements */}
+    <section className="py-24 bg-gradient-to-br from-emerald-50/80 via-emerald-100/60 to-emerald-200/40 dark:from-slate-900/90 dark:via-slate-800/80 dark:to-emerald-900/70 relative overflow-hidden">
+      {/* Modern background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/20 to-emerald-600/20 dark:from-emerald-500/20 dark:to-teal-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-emerald-600/20 to-emerald-700/20 dark:from-blue-500/20 dark:to-indigo-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-emerald-400/10 to-emerald-500/10 dark:from-emerald-400/10 dark:to-teal-400/10 rounded-full blur-2xl"></div>
+        {/* Geometric pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(30deg,transparent_40%,rgba(0,0,0,0.02)_50%,transparent_60%)] dark:bg-[linear-gradient(30deg,transparent_40%,rgba(255,255,255,0.02)_50%,transparent_60%)]"></div>
+
+        {/* Floating geometric shapes */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-emerald-500/15 to-emerald-600/10 dark:from-emerald-500/20 dark:to-teal-500/15 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-emerald-600/12 to-emerald-700/8 dark:from-blue-500/18 dark:to-indigo-500/12 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-emerald-400/8 to-emerald-500/6 dark:from-emerald-400/12 dark:to-teal-400/8 rounded-full blur-2xl"></div>
+
+        {/* Subtle accent lines */}
+        <div className="absolute top-20 left-20 w-32 h-px bg-gradient-to-r from-transparent via-emerald-300/30 to-transparent dark:from-transparent dark:via-emerald-600/30 dark:to-transparent"></div>
+        <div className="absolute bottom-20 right-20 w-32 h-px bg-gradient-to-l from-transparent via-emerald-300/30 to-transparent dark:from-transparent dark:via-emerald-600/30 dark:to-transparent"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
