@@ -276,12 +276,14 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
           >
             {activeAlerts.length} Active
           </Badge>
-          <Badge
-            variant="secondary"
-            className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
-          >
-            {newToday.length} New Today
-          </Badge>
+          {newToday.length > 0 && (
+            <Badge
+              variant="secondary"
+              className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
+            >
+              {newToday.length} New Today
+            </Badge>
+          )}
           {archivedAlerts.length > 0 && (
             <Badge
               variant="secondary"
@@ -659,7 +661,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-6">
+            <div className="flex items-center justify-between pt-6">
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Page {currentPage} of {totalPages}
               </div>
