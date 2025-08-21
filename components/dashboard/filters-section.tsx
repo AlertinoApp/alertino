@@ -8,7 +8,6 @@ import {
   FilterIcon,
   Eye,
   EyeOff,
-  TrendingUp,
   MapPin,
   DollarSign,
   Home,
@@ -36,7 +35,6 @@ export function FiltersSection({
 }: FiltersSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("all");
-  const [showStats, setShowStats] = useState(false);
 
   const activeFilters = filters.filter((filter) => filter.is_active !== false);
   const inactiveFilters = filters.filter(
@@ -46,34 +44,6 @@ export function FiltersSection({
   const subscriptionConfig = getEnhancedSubscriptionConfig(currentPlan);
   const maxFilters = subscriptionConfig.limits.filtersLimit;
   const isAtLimit = maxFilters !== -1 && filtersCount >= maxFilters;
-
-  // Calculate filter statistics
-  const filterStats = {
-    avgPrice:
-      activeFilters.length > 0
-        ? Math.round(
-            activeFilters.reduce((sum, f) => sum + f.max_price, 0) /
-              activeFilters.length
-          )
-        : 0,
-    avgRooms:
-      activeFilters.length > 0
-        ? Math.round(
-            (activeFilters.reduce((sum, f) => sum + f.min_rooms, 0) /
-              activeFilters.length) *
-              10
-          ) / 10
-        : 0,
-    uniqueCities: [...new Set(activeFilters.map((f) => f.city))].length,
-    mostExpensive: activeFilters.reduce(
-      (max, f) => (f.max_price > max ? f.max_price : max),
-      0
-    ),
-    cheapest: activeFilters.reduce(
-      (min, f) => (f.max_price < min && f.max_price > 0 ? f.max_price : min),
-      Infinity
-    ),
-  };
 
   const getFiltersToShow = () => {
     switch (viewMode) {
@@ -128,30 +98,6 @@ export function FiltersSection({
                   {inactiveFilters.length} Inactive
                 </Badge>
               )}
-
-              {filterStats.uniqueCities > 0 && (
-                <Badge
-                  variant="outline"
-                  className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-600"
-                >
-                  <MapPin className="w-3 h-3 mr-1" />
-                  {filterStats.uniqueCities}{" "}
-                  {filterStats.uniqueCities === 1 ? "City" : "Cities"}
-                </Badge>
-              )}
-
-              {maxFilters !== -1 && (
-                <Badge
-                  variant="outline"
-                  className={`${
-                    isAtLimit
-                      ? "text-red-600 dark:text-red-400 border-red-200 dark:border-red-600 bg-red-50 dark:bg-red-900/30"
-                      : "text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600"
-                  }`}
-                >
-                  {filtersCount}/{maxFilters} Used
-                </Badge>
-              )}
             </div>
 
             {maxFilters !== -1 && (
@@ -178,14 +124,25 @@ export function FiltersSection({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            {activeFilters.length > 0 && (
+            {filters.length > 0 && (
               <Button
                 variant="outline"
-                onClick={() => setShowStats(!showStats)}
+                onClick={() =>
+                  setViewMode(viewMode === "all" ? "active" : "all")
+                }
                 className="text-gray-600 dark:text-gray-300"
               >
-                <TrendingUp className="w-4 h-4 mr-2" />
-                {showStats ? "Hide" : "Show"} Stats
+                {viewMode === "all" ? (
+                  <>
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    Hide Inactive
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Show Inactive
+                  </>
+                )}
               </Button>
             )}
 
@@ -205,74 +162,8 @@ export function FiltersSection({
         </div>
       </div>
 
-      {/* Filter Statistics */}
-      {showStats && activeFilters.length > 0 && (
-        <div className="p-6 bg-emerald-50 dark:bg-emerald-900/20 border-b border-border">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {filterStats.avgPrice.toLocaleString()}
-              </div>
-              <div className="text-xs text-blue-700 dark:text-blue-300">
-                Avg Max Price (PLN)
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                {filterStats.avgRooms}
-              </div>
-              <div className="text-xs text-green-700 dark:text-green-300">
-                Avg Min Rooms
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                {filterStats.uniqueCities}
-              </div>
-              <div className="text-xs text-purple-700 dark:text-purple-300">
-                Unique Cities
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                {filterStats.cheapest === Infinity
-                  ? "0"
-                  : (
-                      filterStats.mostExpensive - filterStats.cheapest
-                    ).toLocaleString()}
-              </div>
-              <div className="text-xs text-orange-700 dark:text-orange-300">
-                Price Range
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Filters Content */}
       <div className="p-6">
-        {filtersToShow.length > 0 && (
-          <div className="flex justify-end mb-6">
-            <Button
-              variant="outline"
-              onClick={() => setViewMode(viewMode === "all" ? "active" : "all")}
-              className="text-gray-600 dark:text-gray-300"
-            >
-              {viewMode === "all" ? (
-                <>
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  Hide Inactive
-                </>
-              ) : (
-                <>
-                  <Eye className="w-4 h-4 mr-2" />
-                  Show Inactive
-                </>
-              )}
-            </Button>
-          </div>
-        )}
-
         {filtersToShow.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtersToShow.map((filter) => (
