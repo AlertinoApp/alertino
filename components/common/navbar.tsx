@@ -51,7 +51,7 @@ export function Navbar({
   const displayName = fullName || "User";
 
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm transition-colors">
+    <header className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Current Page */}
