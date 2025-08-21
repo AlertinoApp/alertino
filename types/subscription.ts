@@ -51,12 +51,6 @@ export interface EnhancedPlanConfig {
   name: string;
   description: string;
   icon: LucideIcon;
-  color: {
-    bg: string;
-    text: string;
-    border: string;
-    accent: string;
-  };
   pricing: {
     monthly: number;
     yearly: number;

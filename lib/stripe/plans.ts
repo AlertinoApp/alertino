@@ -6,16 +6,6 @@ export interface SubscriptionConfig {
   name: string;
   description: string;
   icon: LucideIcon;
-  color: {
-    bg: string;
-    text: string;
-    border: string;
-    accent: string;
-    bgDark?: string;
-    textDark?: string;
-    borderDark?: string;
-    accentDark?: string;
-  };
   pricing: {
     monthly: number;
     yearly: number;
@@ -44,16 +34,6 @@ export const SUBSCRIPTION_CONFIGS: Record<
     name: "Free",
     description: "Perfect for getting started with apartment hunting",
     icon: Zap,
-    color: {
-      bg: "bg-muted",
-      text: "text-foreground",
-      border: "border-border",
-      accent: "text-muted-foreground",
-      bgDark: "bg-muted",
-      textDark: "text-foreground",
-      borderDark: "border-border",
-      accentDark: "text-muted-foreground",
-    },
     pricing: {
       monthly: 0,
       yearly: 0,
@@ -81,16 +61,6 @@ export const SUBSCRIPTION_CONFIGS: Record<
     name: "Basic",
     description: "For serious apartment hunters who need more flexibility",
     icon: Crown,
-    color: {
-      bg: "bg-blue-50",
-      text: "text-blue-700",
-      border: "border-blue-200",
-      accent: "text-blue-600",
-      bgDark: "bg-blue-900/30",
-      textDark: "text-blue-300",
-      borderDark: "border-blue-600",
-      accentDark: "text-blue-400",
-    },
     pricing: {
       monthly: 39,
       yearly: 390,
@@ -120,16 +90,6 @@ export const SUBSCRIPTION_CONFIGS: Record<
     name: "Pro",
     description: "For real estate professionals and power users",
     icon: Building2,
-    color: {
-      bg: "bg-purple-50",
-      text: "text-purple-700",
-      border: "border-purple-200",
-      accent: "text-purple-600",
-      bgDark: "bg-purple-900/30",
-      textDark: "text-purple-300",
-      borderDark: "border-purple-600",
-      accentDark: "text-purple-400",
-    },
     pricing: {
       monthly: 99,
       yearly: 990,
@@ -168,12 +128,6 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
     name: "Free",
     description: "Perfect for getting started with apartment hunting",
     icon: Zap,
-    color: {
-      bg: "bg-muted",
-      text: "text-foreground",
-      border: "border-border",
-      accent: "text-muted-foreground",
-    },
     pricing: {
       monthly: 0,
       yearly: 0,
@@ -203,12 +157,6 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
     name: "Basic",
     description: "For serious apartment hunters who need more flexibility",
     icon: Crown,
-    color: {
-      bg: "bg-blue-50",
-      text: "text-blue-700",
-      border: "border-blue-200",
-      accent: "text-blue-600",
-    },
     pricing: {
       monthly: 39,
       yearly: 390,
@@ -240,12 +188,6 @@ export const ENHANCED_SUBSCRIPTION_CONFIGS: Record<
     name: "Pro",
     description: "For real estate professionals and power users",
     icon: Building2,
-    color: {
-      bg: "bg-purple-50",
-      text: "text-purple-700",
-      border: "border-purple-200",
-      accent: "text-purple-600",
-    },
     pricing: {
       monthly: 99,
       yearly: 990,

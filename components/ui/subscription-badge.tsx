@@ -34,17 +34,9 @@ export function SubscriptionBadge({
   return (
     <Badge
       className={cn(
-        config.color.bg,
-        config.color.text,
-        config.color.border,
-        "font-medium capitalize border",
+        "bg-muted text-muted-foreground border-border font-medium capitalize border",
         sizeClasses[size],
-        className,
-        // Dark mode colors
-        config.color.bgDark && `dark:${config.color.bgDark}`,
-        config.color.textDark && `dark:${config.color.textDark}`,
-        config.color.borderDark && `dark:${config.color.borderDark}`,
-        config.color.accentDark && `dark:${config.color.accentDark}`
+        className
       )}
     >
       {showIcon && <Icon className={cn(iconSizes[size], "mr-1")} />}
