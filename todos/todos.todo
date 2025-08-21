@@ -9,7 +9,7 @@ Todos:
     ☐ extend filtering (min 5 filters)
     ☐ updating filter removes all alerts from that filter
     ☐ AI integration
-    ☐ simplify subscription config
+    ✔ simplify subscription config @done(25-08-21 15:25)
     ✔ handle expired offers @done(25-08-06 09:58)
 
 
@@ -22,11 +22,11 @@ UI:
     ✔ justify end alert card @done(25-08-11 21:39)
     ✔ improve landing page @done(25-08-14 17:50)
     ✔ refactor color styling with default theme @done(25-08-15 00:50)
-    ☐ too much badges in Search Filters Section (Dashboard Page)
-    ☐ remove '0 New Today' badge if zero
+    ✔ too much badges in Search Filters Section (Dashboard Page) @done(25-08-21 15:25)
+    ✔ remove '0 New Today' badge if zero @done(25-08-21 15:25)
     ☐ photos alert card
-    ☐ update upgrade banner
-    ☐ use theme colors instead of hardcoded colors
+    ✔ update upgrade banner colors @done(25-08-21 15:25)
+    ✔ use theme colors instead of hardcoded colors @done(25-08-21 15:25)
 
 
     
