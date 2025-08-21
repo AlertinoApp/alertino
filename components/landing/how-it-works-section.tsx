@@ -11,7 +11,8 @@ const steps = [
     title: "Sign Up",
     description: "Create your free Alertino account in less than 2 minutes.",
     color: "from-emerald-500 to-teal-500",
-    bgColor: "from-emerald-50 to-teal-50",
+    bgColor:
+      "from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 text-emerald-900 dark:text-emerald-100",
   },
   {
     step: 2,
@@ -20,7 +21,8 @@ const steps = [
     description:
       "Define your perfect apartment criteria: city, price range, rooms, and more.",
     color: "from-blue-500 to-indigo-500",
-    bgColor: "from-blue-50 to-indigo-50",
+    bgColor:
+      "from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 text-blue-900 dark:text-blue-100",
   },
   {
     step: 3,
@@ -29,7 +31,8 @@ const steps = [
     description:
       "Receive instant alerts when new apartments match your requirements.",
     color: "from-purple-500 to-pink-500",
-    bgColor: "from-purple-50 to-pink-50",
+    bgColor:
+      "from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 text-purple-900 dark:text-purple-100",
   },
   {
     step: 4,
@@ -38,7 +41,8 @@ const steps = [
     description:
       "Browse matching listings and contact landlords before others do.",
     color: "from-orange-500 to-red-500",
-    bgColor: "from-orange-50 to-red-50",
+    bgColor:
+      "from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 text-orange-900 dark:text-orange-100",
   },
 ];
 
@@ -46,7 +50,7 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-white relative overflow-hidden"
+      className="py-24 bg-background dark:bg-background relative overflow-hidden"
     >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -62,14 +66,14 @@ export function HowItWorksSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             How{" "}
             <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Alertino
             </span>{" "}
             Works
           </h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Getting started with Alertino is simple. Follow these four easy
             steps to never miss your perfect apartment again.
           </p>
@@ -85,24 +89,24 @@ export function HowItWorksSection() {
               transition={{ duration: 0.8, delay: index * 0.1 }}
               className="relative"
             >
-              <Card className="bg-white/90 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg group h-full">
+              <Card className="bg-card/90 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg group h-full">
                 <CardContent className="p-8 text-center relative">
                   {/* Step number with gradient background */}
-                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-6">
+                  <div className="w-12 h-12 text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-6">
                     {step.step}
                   </div>
 
                   {/* Icon with gradient background */}
                   <motion.div
-                    className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 border border-slate-200/50`}
+                    className={`w-20 h-20 bg-gradient-to-br ${step.bgColor} rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50`}
                   >
-                    <step.icon className="w-10 h-10 text-slate-700" />
+                    <step.icon className="w-10 h-10" />
                   </motion.div>
 
-                  <h3 className="text-xl font-semibold text-slate-900 mb-4 group-hover:text-emerald-700 transition-colors duration-300">
+                  <h3 className="text-xl font-semibold text-foreground mb-4 group-hover:text-emerald-700 transition-colors duration-300">
                     {step.title}
                   </h3>
-                  <p className="text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors duration-300">
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-muted-foreground/80 transition-colors duration-300">
                     {step.description}
                   </p>
                 </CardContent>

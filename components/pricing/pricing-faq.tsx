@@ -46,7 +46,7 @@ const pricingFAQs = [
 
 export function PricingFAQ() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <Badge className="mb-4 bg-emerald-100 text-emerald-800 border-emerald-200">

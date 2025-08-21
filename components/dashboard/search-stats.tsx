@@ -87,16 +87,13 @@ export function SearchStats({
         <div className="space-y-4">
           {/* Usage Progress */}
           <div>
-            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
               <span>Today&apos;s searches</span>
-              <span className="font-medium dark:text-gray-100">
+              <span className="font-medium text-foreground">
                 {searchesUsedToday} / {dailyLimit}
               </span>
             </div>
-            <Progress
-              value={usagePercentage}
-              className="h-2 bg-gray-200 dark:bg-gray-600"
-            >
+            <Progress value={usagePercentage} className="h-2 bg-muted">
               <div
                 className={`h-full transition-all duration-300 ease-out rounded-full ${getProgressColor()}`}
                 style={{ width: `${usagePercentage}%` }}
@@ -106,21 +103,17 @@ export function SearchStats({
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <div className="text-center p-3 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-foreground">
                 {remainingSearches}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Remaining
-              </div>
+              <div className="text-xs text-muted-foreground">Remaining</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <div className="text-center p-3 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-foreground">
                 {dailyLimit}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Daily Limit
-              </div>
+              <div className="text-xs text-muted-foreground">Daily Limit</div>
             </div>
           </div>
         </div>

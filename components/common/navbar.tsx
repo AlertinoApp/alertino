@@ -60,10 +60,10 @@ export function Navbar({
               href={variant === "dashboard" ? "/dashboard" : "/"}
               className="flex items-center gap-2"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
                 {variant === "dashboard" && currentPage
                   ? currentPage
                   : "Alertino"}
@@ -97,15 +97,13 @@ export function Navbar({
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle - Show on all pages for all users */}
+            <div className="flex items-center">
+              <ThemeToggle />
+            </div>
+
             {user ? (
               <>
-                {/* Theme Toggle - Only show on dashboard */}
-                {variant === "dashboard" && (
-                  <div className="flex items-center">
-                    <ThemeToggle />
-                  </div>
-                )}
-
                 {/* User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -115,7 +113,7 @@ export function Navbar({
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={avatarUrl || "/placeholder.svg"} />
-                        <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white font-semibold">
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold">
                           {userInitials}
                         </AvatarFallback>
                       </Avatar>
@@ -130,7 +128,7 @@ export function Navbar({
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={avatarUrl || "/placeholder.svg"} />
-                          <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white font-semibold">
+                          <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold">
                             {userInitials}
                           </AvatarFallback>
                         </Avatar>
@@ -176,9 +174,9 @@ export function Navbar({
                       <DropdownMenuItem asChild>
                         <Link
                           href="/pricing"
-                          className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-400 hover:bg-muted"
+                          className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-500 hover:bg-muted"
                         >
-                          <Crown className="mr-3 h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                          <Crown className="mr-3 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
                           <span>Upgrade to Pro</span>
                         </Link>
                       </DropdownMenuItem>
@@ -209,7 +207,7 @@ export function Navbar({
                 </Button>
                 <Button
                   onClick={() => router.push("/login")}
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
                   Get Started
                 </Button>

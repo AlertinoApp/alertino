@@ -69,14 +69,14 @@ export function LandingFooter() {
             className="lg:col-span-2"
           >
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mr-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-xl">A</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
                 Alertino
               </span>
             </div>
-            <p className="text-slate-400 mb-6 max-w-md leading-relaxed">
+            <p className="text-muted-foreground mb-6 max-w-md leading-relaxed">
               Find your perfect apartment in Poland with intelligent alerts and
               real-time monitoring. Never miss the perfect place again.
             </p>
@@ -86,7 +86,7 @@ export function LandingFooter() {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-400 transition-all duration-300 transform hover:-translate-y-1"
+                  className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-lg flex items-center justify-center text-muted-foreground hover:text-emerald-400 transition-all duration-300 transform hover:-translate-y-1"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -113,7 +113,7 @@ export function LandingFooter() {
                   <li key={linkIndex}>
                     <a
                       href={link.href}
-                      className="text-slate-400 hover:text-emerald-400 transition-colors duration-300 hover:translate-x-1 transform inline-block"
+                      className="text-muted-foreground hover:text-emerald-400 transition-colors duration-300 hover:translate-x-1 transform inline-block"
                     >
                       {link.name}
                     </a>
@@ -126,17 +126,17 @@ export function LandingFooter() {
 
         {/* Bottom section */}
         <motion.div
-          className="pt-8 border-t border-slate-800 text-center"
+          className="pt-8 border-t border-border text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <div className="flex flex-col sm:flex-row items-center justify-between">
-            <p className="text-slate-400 text-sm mb-4 sm:mb-0">
+            <p className="text-muted-foreground text-sm mb-4 sm:mb-0">
               © 2024 Alertino. All rights reserved.
             </p>
-            <p className="text-slate-400 text-sm flex items-center">
+            <p className="text-muted-foreground text-sm flex items-center">
               Made with <Heart className="w-4 h-4 text-destructive mx-1" /> in
               Poland
             </p>

@@ -10,7 +10,7 @@ export default async function Home() {
   const { session, user, subscription } = await getUserAndSubscription();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background transition-colors">
       <Navbar
         user={session?.user}
         profile={user}

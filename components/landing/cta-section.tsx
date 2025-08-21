@@ -14,12 +14,12 @@ export function CTASection({ user }: CTASectionProps) {
   const router = useRouter();
 
   return (
-    <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-200 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/20 to-indigo-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-emerald-400/10 to-teal-400/10 rounded-full blur-2xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/20 to-emerald-600/20 dark:from-emerald-500/20 dark:to-teal-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-emerald-600/20 to-emerald-700/20 dark:from-blue-500/20 dark:to-indigo-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-emerald-400/10 to-emerald-500/10 dark:from-emerald-400/10 dark:to-teal-400/10 rounded-full blur-2xl"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -38,8 +38,8 @@ export function CTASection({ user }: CTASectionProps) {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mb-8"
           >
-            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-6 py-3 text-emerald-200 font-medium">
-              <Sparkles className="w-5 h-5 mr-2 text-emerald-300" />
+            <div className="inline-flex items-center bg-emerald-600/10 dark:bg-white/10 backdrop-blur-sm border border-emerald-600/20 dark:border-white/20 rounded-full px-6 py-3 text-emerald-700 dark:text-emerald-200 font-medium">
+              <Sparkles className="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-300" />
               Ready to get started?
             </div>
           </motion.div>
@@ -50,7 +50,7 @@ export function CTASection({ user }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-900 dark:text-white mb-8 leading-tight"
           >
             {user
               ? "Ready to Find More Apartments?"
@@ -63,7 +63,7 @@ export function CTASection({ user }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-xl sm:text-2xl text-slate-300 mb-12 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl sm:text-2xl text-emerald-800 dark:text-muted-foreground mb-12 leading-relaxed max-w-3xl mx-auto"
           >
             {user
               ? "Upgrade to Basic or Pro for more filters and automated scraping."
@@ -90,7 +90,7 @@ export function CTASection({ user }: CTASectionProps) {
               size="lg"
               variant="outline"
               onClick={() => router.push(user ? "/dashboard" : "/#features")}
-              className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 hover:text-white text-lg px-12 py-6 rounded-2xl bg-white/5 backdrop-blur-sm transition-all duration-300 transform hover:-translate-y-1"
+              className="border-2 border-emerald-600/30 dark:border-white/30 text-emerald-700 dark:text-white hover:bg-emerald-600/10 dark:hover:bg-white/10 hover:border-emerald-600/50 dark:hover:border-white/50 hover:text-emerald-800 dark:hover:text-white text-lg px-12 py-6 rounded-2xl bg-emerald-600/5 dark:bg-white/5 backdrop-blur-sm transition-all duration-300 transform hover:-translate-y-1"
             >
               {user ? "Go to Dashboard" : "Learn More"}
             </Button>
@@ -102,7 +102,7 @@ export function CTASection({ user }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-slate-400 text-sm"
+            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-emerald-700 dark:text-muted-foreground text-sm"
           >
             <div className="flex items-center">
               <Star className="w-4 h-4 text-emerald-400 mr-2" />

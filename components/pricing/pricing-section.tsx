@@ -80,10 +80,10 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
             Choose the perfect plan for your apartment hunting needs. Start free
             and upgrade as you grow.
           </p>
@@ -97,16 +97,16 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
               }
               className="w-fit"
             >
-              <TabsList className="grid w-full grid-cols-2 bg-slate-100 border border-slate-200 shadow-sm">
+              <TabsList className="grid w-full grid-cols-2 bg-muted border border-border shadow-sm">
                 <TabsTrigger
                   value="month"
-                  className="text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+                  className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Monthly
                 </TabsTrigger>
                 <TabsTrigger
                   value="year"
-                  className="text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+                  className="text-sm font-medium data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Yearly (save 20%)
                 </TabsTrigger>
@@ -124,7 +124,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
               <div key={index} className="list-none">
                 <div className="relative h-full rounded-2xl md:rounded-3xl">
                   <div
-                    className={`relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border ${plan.popular ? "border-emerald-500 shadow-emerald-100" : "border-slate-200"} bg-white p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8`}
+                    className={`relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl border ${plan.popular ? "border-emerald-500 shadow-emerald-100" : "border-border"} bg-card p-6 md:rounded-3xl md:p-8 lg:p-6 xl:p-8`}
                   >
                     <div className="relative flex flex-col gap-3.5 md:gap-4">
                       <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                         )}
                       </div>
 
-                      <p className="text-sm md:text-base text-slate-600">
+                      <p className="text-sm md:text-base text-muted-foreground">
                         {plan.description}
                       </p>
 
@@ -148,17 +148,17 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                         ) : (
                           <>
                             $<NumberTicker value={Math.round(price)} />
-                            <span className="text-sm md:text-base font-normal text-slate-400">
+                            <span className="text-sm md:text-base font-normal text-muted-foreground">
                               /mo
                             </span>
                           </>
                         )}
                       </p>
 
-                      <hr className="border-slate-200" />
+                      <hr className="border-border" />
 
                       <div className="flex flex-col gap-4 mt-2 mb-3">
-                        <p className="text-sm md:text-base mb-0 flex items-center gap-2 font-semibold text-slate-600">
+                        <p className="text-sm md:text-base mb-0 flex items-center gap-2 font-semibold text-muted-foreground">
                           {index === 0
                             ? "Includes"
                             : `Everything in ${plans[index - 1].name}, plus`}
@@ -168,7 +168,7 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                           {plan.features.map((feature, featureIndex) => (
                             <li
                               key={featureIndex}
-                              className="text-sm md:text-base mb-0 flex items-center gap-2 text-slate-700"
+                              className="text-sm md:text-base mb-0 flex items-center gap-2 text-muted-foreground"
                             >
                               <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                               <span>{feature}</span>
