@@ -31,10 +31,19 @@ export function SubscriptionBadge({
     lg: "w-3.5 h-3.5",
   };
 
+  // Hardcoded colors for each plan
+  const planColors = {
+    free: "bg-muted text-muted-foreground border-border",
+    basic:
+      "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-200 border-blue-200 dark:border-blue-500",
+    pro: "bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-200 border-purple-200 dark:border-purple-500",
+  };
+
   return (
     <Badge
       className={cn(
-        "bg-muted text-muted-foreground border-border font-medium capitalize border",
+        planColors[plan],
+        "font-medium capitalize border",
         sizeClasses[size],
         className
       )}
