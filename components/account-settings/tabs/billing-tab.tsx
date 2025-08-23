@@ -231,7 +231,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
             </div>
             <div className="text-left sm:text-right">
               <p className="text-sm text-muted-foreground">Next billing</p>
-              <p className="font-medium dark:text-gray-100">
+              <p className="font-medium">
                 {subscription?.current_period_end
                   ? new Date(
                       subscription.current_period_end
@@ -285,7 +285,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                       <CreditCard className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium dark:text-gray-100">
+                      <p className="font-medium">
                         {method.card
                           ? `${method.card.brand.toUpperCase()} •••• ${method.card.last4}`
                           : method.type}
@@ -349,14 +349,10 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                 <table className="w-full border-collapse text-sm">
                   <thead>
                     <tr className="border-b border-border text-left">
-                      <th className="p-2 dark:text-gray-100">Date</th>
-                      <th className="p-2 dark:text-gray-100">Status</th>
-                      <th className="p-2 text-right dark:text-gray-100">
-                        Amount
-                      </th>
-                      <th className="p-2 text-right dark:text-gray-100">
-                        Invoice
-                      </th>
+                      <th className="p-2">Date</th>
+                      <th className="p-2">Status</th>
+                      <th className="p-2 text-right">Amount</th>
+                      <th className="p-2 text-right">Invoice</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -365,9 +361,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                         key={invoice.id}
                         className="border-b border-border hover:bg-muted"
                       >
-                        <td className="p-2 dark:text-gray-100">
-                          {formatDate(invoice.created)}
-                        </td>
+                        <td className="p-2">{formatDate(invoice.created)}</td>
                         <td className="p-2 capitalize">
                           <Badge
                             variant={
@@ -380,7 +374,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                             {invoice.status}
                           </Badge>
                         </td>
-                        <td className="p-2 text-right font-medium dark:text-gray-100">
+                        <td className="p-2 text-right font-medium">
                           {formatCurrency(invoice.amount, invoice.currency)}
                         </td>
                         <td className="p-2 text-right">
@@ -397,9 +391,7 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
                               View
                             </Button>
                           ) : (
-                            <span className="text-slate-400 dark:text-gray-500 text-xs">
-                              N/A
-                            </span>
+                            <span className="text-slate-400 text-xs">N/A</span>
                           )}
                         </td>
                       </tr>

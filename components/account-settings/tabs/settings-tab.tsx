@@ -323,7 +323,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                           setShowDeleteConfirmation(false);
                           setConfirmationText("");
                         }}
-                        className="border-gray-300 dark:border-gray-600 w-full sm:w-auto"
+                        className="w-full sm:w-auto"
                       >
                         Cancel
                       </Button>

@@ -102,13 +102,13 @@ export function FiltersSection({
 
             {maxFilters !== -1 && (
               <div className="mt-3">
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                   <span>{subscriptionConfig.name} plan</span>
                   <span>
                     {filtersCount}/{maxFilters}
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                <div className="w-full bg-muted rounded-full h-1.5">
                   <div
                     className={`h-1.5 rounded-full transition-all duration-300 ${
                       isAtLimit ? "bg-destructive" : "bg-emerald-500"
@@ -130,7 +130,6 @@ export function FiltersSection({
                 onClick={() =>
                   setViewMode(viewMode === "all" ? "active" : "all")
                 }
-                className="text-gray-600 dark:text-gray-300"
               >
                 {viewMode === "all" ? (
                   <>
@@ -151,7 +150,7 @@ export function FiltersSection({
               disabled={isAtLimit}
               className={`${
                 isAtLimit
-                  ? "bg-gray-400 dark:bg-gray-500 cursor-not-allowed"
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
                   : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 dark:text-white shadow-lg hover:shadow-xl transition-all duration-300"
               }`}
             >
@@ -173,13 +172,10 @@ export function FiltersSection({
         ) : filters.length === 0 ? (
           /* Empty State - No filters at all */
           <div className="text-center py-12">
-            <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
-              <Plus className="w-10 h-10 text-emerald-600" />
-            </div>
-            <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-3">
+            <h3 className="text-xl font-medium mb-3">
               Create Your First Filter
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Set up search criteria to automatically find apartments that match
               your preferences. You can filter by city, price range, and number
               of rooms.
@@ -189,28 +185,22 @@ export function FiltersSection({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
               <div className="text-center p-4 bg-muted rounded-lg">
                 <MapPin className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Choose Cities
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-sm font-medium">Choose Cities</div>
+                <div className="text-xs text-muted-foreground">
                   Warsaw, Krakow, Gdansk...
                 </div>
               </div>
               <div className="text-center p-4 bg-muted rounded-lg">
                 <DollarSign className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Set Budget
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-sm font-medium">Set Budget</div>
+                <div className="text-xs text-muted-foreground">
                   Maximum price range
                 </div>
               </div>
               <div className="text-center p-4 bg-muted rounded-lg">
                 <Home className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Room Count
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-sm font-medium">Room Count</div>
+                <div className="text-xs text-muted-foreground">
                   Minimum rooms needed
                 </div>
               </div>
@@ -228,17 +218,15 @@ export function FiltersSection({
         ) : (
           /* Empty State - No filters in current view */
           <div className="text-center py-8">
-            <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">
               {viewMode === "active" ? (
-                <Eye className="w-8 h-8 text-gray-400" />
+                <Eye className="w-8 h-8 text-muted-foreground" />
               ) : (
-                <EyeOff className="w-8 h-8 text-gray-400" />
+                <EyeOff className="w-8 h-8 text-muted-foreground" />
               )}
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-              No {viewMode} filters
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <h3 className="text-lg font-medium mb-2">No {viewMode} filters</h3>
+            <p className="text-muted-foreground mb-4">
               {viewMode === "active"
                 ? "All your filters are currently inactive. Activate some filters to start receiving alerts."
                 : "You don't have any inactive filters."}
@@ -246,7 +234,7 @@ export function FiltersSection({
             <Button
               variant="outline"
               onClick={() => setViewMode("all")}
-              className="text-gray-600 dark:text-gray-300"
+              className="text-muted-foreground"
             >
               View All Filters
             </Button>

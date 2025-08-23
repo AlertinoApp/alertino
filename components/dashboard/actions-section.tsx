@@ -400,7 +400,7 @@ export function ActionsSection({
                 size="lg"
                 className={`mb-2 px-8 py-3 text-lg font-medium transition-all duration-200 w-full ${
                   isButtonDisabled
-                    ? "bg-muted text-muted-foreground hover:bg-muted border cursor-not-allowed"
+                    ? "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed"
                     : "bg-gradient-to-r dark:text-white from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:scale-102 shadow-lg hover:shadow-xl transition-all duration-300"
                 }  min-w-[160px]`}
               >
@@ -432,7 +432,7 @@ export function ActionsSection({
                       variant="outline"
                       size="sm"
                       onClick={() => setSelectedFilters([])}
-                      className="h-10 px-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="h-10 px-3"
                     >
                       Clear
                     </Button>

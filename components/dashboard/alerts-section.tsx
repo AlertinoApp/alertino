@@ -300,7 +300,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         {/* Main Search Bar */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search apartments by title..."
               value={searchTerm}
@@ -308,7 +308,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                 setSearchTerm(e.target.value);
                 handleFilterChange();
               }}
-              className="pl-10 h-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+              className="pl-10 h-10 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
@@ -332,7 +332,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
               <Button
                 variant="outline"
                 onClick={clearFilters}
-                className="h-10 px-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                className="h-10 px-3"
               >
                 Clear
               </Button>
@@ -342,14 +342,14 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
         {/* Advanced Filters Panel */}
         {showAdvancedFilters && (
-          <Card className="py-0! border-gray-200 dark:border-gray-600 shadow-sm">
+          <Card className="py-0! shadow-sm">
             <CardContent className="p-4">
               <div className="space-y-4">
                 {/* Filter Controls - All in same grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 text-muted-foreground">
                   {/* Status Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <Bell className="w-3 h-3" />
                       Status
                     </label>
@@ -373,7 +373,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                         </SelectItem>
                         <SelectItem value="not_interested">
                           <div className="flex items-center">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
+                            <div className="w-2 h-2 bg-muted rounded-full mr-2"></div>
                             Archived Only
                           </div>
                         </SelectItem>
@@ -395,7 +395,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* City Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
                       City
                     </label>
@@ -426,7 +426,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Filter Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <Filter className="w-3 h-3" />
                       Filter
                     </label>
@@ -453,7 +453,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Rooms Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <Home className="w-3 h-3" />
                       Rooms
                     </label>
@@ -480,7 +480,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Min Price */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <DollarSign className="w-3 h-3" />
                       Min Price (PLN)
                     </label>
@@ -502,7 +502,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Max Price */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <DollarSign className="w-3 h-3" />
                       Max Price (PLN)
                     </label>
@@ -523,7 +523,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Sort */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1">
                       <SortAsc className="w-3 h-3" />
                       Sort By
                     </label>
@@ -591,18 +591,15 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
         {/* Results Summary */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4 text-sm">
-          <div className="text-gray-600 dark:text-gray-400">
+          <div className="text-muted-foreground">
             Showing{" "}
-            <span className="font-medium text-gray-900 dark:text-gray-100">
-              {paginatedAlerts.length}
-            </span>{" "}
-            of{" "}
-            <span className="font-medium text-gray-900 dark:text-gray-100">
+            <span className="font-medium">{paginatedAlerts.length}</span> of{" "}
+            <span className="font-medium">
               {filteredAndSortedAlerts.length}
             </span>{" "}
             alerts
             {filteredAndSortedAlerts.length !== alerts.length && (
-              <span className="text-blue-600 dark:text-blue-400 ml-1">
+              <span className="text-blue-600 ml-1">
                 (filtered from {alerts.length} total)
               </span>
             )}
@@ -616,7 +613,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
             roomsFilter !== "all" ||
             statusFilter !== "all") && (
             <div className="flex flex-wrap items-center gap-1">
-              <span className="text-gray-500 dark:text-gray-400 text-xs">
+              <span className="text-muted-foreground text-xs">
                 Active filters:
               </span>
               {searchTerm && (
@@ -662,7 +659,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-6">
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 Page {currentPage} of {totalPages}
               </div>
 
@@ -727,14 +724,14 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
       ) : (
         <div className="text-center py-12">
           <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">
-            <Bell className="w-8 h-8 text-gray-400" />
+            <Bell className="w-8 h-8 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-lg font-medium mb-2">
             {filteredAndSortedAlerts.length === 0 && alerts.length > 0
               ? "No alerts match your filters"
               : "No alerts yet"}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-muted-foreground mb-4">
             {filteredAndSortedAlerts.length === 0 && alerts.length > 0
               ? "Try adjusting your search criteria or clearing filters"
               : "Run your alerts to find new apartment listings"}
