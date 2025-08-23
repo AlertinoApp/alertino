@@ -17,7 +17,7 @@ export function HeroSection({ user }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-background via-muted/20 to-emerald-50/30 dark:from-background dark:via-muted/10 dark:to-emerald-950/5 flex items-center">
       {/* Modern geometric background elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Floating orbs */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-emerald-500/8 dark:bg-emerald-400/12 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute top-40 right-32 w-24 h-24 bg-emerald-400/6 dark:bg-emerald-300/10 rounded-full blur-lg animate-pulse delay-1000"></div>
@@ -28,7 +28,7 @@ export function HeroSection({ user }: HeroSectionProps) {
         <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-emerald-50/15 to-transparent dark:from-emerald-950/8 dark:to-transparent"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
         <motion.div
           className="text-center"
           initial={{ opacity: 0 }}

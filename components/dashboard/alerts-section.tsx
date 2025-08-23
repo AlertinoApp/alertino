@@ -270,12 +270,14 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
         {/* Quick Stats */}
         <div className="flex items-center gap-2 mb-4">
-          <Badge
-            variant="secondary"
-            className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
-          >
-            {activeAlerts.length} Active
-          </Badge>
+          {activeAlerts.length > 0 && (
+            <Badge
+              variant="secondary"
+              className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
+            >
+              {activeAlerts.length} Active
+            </Badge>
+          )}
           {newToday.length > 0 && (
             <Badge
               variant="secondary"

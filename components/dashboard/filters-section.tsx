@@ -81,13 +81,15 @@ export function FiltersSection({
 
             {/* Filter Stats Bar */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
-              <Badge
-                variant="secondary"
-                className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
-              >
-                <Eye className="w-3 h-3 mr-1" />
-                {activeFilters.length} Active
-              </Badge>
+              {activeFilters.length > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-600"
+                >
+                  <Eye className="w-3 h-3 mr-1" />
+                  {activeFilters.length} Active
+                </Badge>
+              )}
 
               {inactiveFilters.length > 0 && (
                 <Badge
@@ -191,7 +193,7 @@ export function FiltersSection({
                 </div>
               </div>
               <div className="text-center p-4 bg-muted rounded-lg">
-                <DollarSign className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                <DollarSign className="w-6 h-6 text-orange-600 mx-auto mb-2" />
                 <div className="text-sm font-medium">Set Budget</div>
                 <div className="text-xs text-muted-foreground">
                   Maximum price range

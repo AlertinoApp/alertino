@@ -14,7 +14,6 @@ import { addFilterAction } from "@/lib/actions/filter-actions";
 import { filterSchema } from "@/schemas/filters";
 import { toast } from "sonner";
 import { getSubscriptionConfig } from "@/lib/stripe/plans";
-import { Badge } from "@/components/ui/badge";
 
 interface AddFilterModalProps {
   isOpen: boolean;
@@ -121,18 +120,6 @@ export function AddFilterModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Filter</DialogTitle>
-          {maxFilters !== -1 && (
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-xs">
-                {filtersCount}/{maxFilters} filters used
-              </Badge>
-              {isAtLimit && (
-                <Badge variant="destructive" className="text-xs">
-                  Limit reached
-                </Badge>
-              )}
-            </div>
-          )}
         </DialogHeader>
 
         <form action={handleSubmit} className="space-y-4">

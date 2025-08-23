@@ -58,7 +58,7 @@ export function FilterCard({ filter }: FilterCardProps) {
         className={`hover:shadow-md transition-all duration-200 bg-card ${!isActive ? "opacity-75 bg-muted" : ""}`}
       >
         <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
               <Badge
                 variant="secondary"
