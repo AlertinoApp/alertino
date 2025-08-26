@@ -14,11 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Cookie, Info } from "lucide-react";
 import { toast } from "sonner";
-import {
-  CookieManager,
-  COOKIE_CATEGORIES,
-  type CookiePreferences,
-} from "@/lib/utils/cookie-manager";
+import { ConsentManager as CookieManager } from "@/lib/cookies/consent-manager";
+import { COOKIE_CATEGORIES, type CookiePreferences } from "@/types/cookies";
 
 interface CookiePreferencesModalProps {
   children: React.ReactNode;

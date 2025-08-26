@@ -32,7 +32,7 @@ import {
   deleteAccountAction,
 } from "@/lib/actions/profile-actions";
 import { toast } from "sonner";
-import { CookiePreferencesModal } from "@/components/account-settings/cookie-preferences-modal";
+import { useCookies } from "@/components/cookies/cookie-provider";
 
 interface SettingsTabProps {
   user: SupabaseUser;
@@ -47,6 +47,7 @@ export function SettingsTab({ profile }: SettingsTabProps) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const { openSettings } = useCookies();
 
   const handleEmailToggle = async (enabled: boolean) => {
     setIsLoading(true);
@@ -186,12 +187,10 @@ export function SettingsTab({ profile }: SettingsTabProps) {
                 </p>
               </div>
             </div>
-            <CookiePreferencesModal>
-              <Button variant="outline" size="sm">
-                <Edit className="w-4 h-4 mr-2" />
-                Manage
-              </Button>
-            </CookiePreferencesModal>
+            <Button variant="outline" size="sm" onClick={openSettings}>
+              <Edit className="w-4 h-4 mr-2" />
+              Manage
+            </Button>
           </div>
 
           <Separator />
