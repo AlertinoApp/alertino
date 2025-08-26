@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { contactFormSchema, type ContactFormData } from "@/schemas/contact";
 import { toast } from "sonner";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 export function ContactForm() {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -197,7 +198,7 @@ export function ContactForm() {
           >
             {status === "loading" ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <Spinner className="w-4 h-4 mr-2" />
                 Sending...
               </>
             ) : (

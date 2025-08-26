@@ -11,6 +11,15 @@ Todos:
     ☐ AI integration
     ✔ simplify subscription config @done(25-08-21 15:25)
     ✔ handle expired offers @done(25-08-06 09:58)
+    ☐ cookie banner
+    ✔ review auth flow @done(25-08-26 15:36)
+    ☐ review app in terms of SEO
+    ☐ review app in terms of performance
+    ☐ review app in terms of security
+    ☐ review app in terms of accessibility
+    ☐ review app in terms of best practices
+    ☐ review app in terms of code quality
+    ☐ review app in terms of maintainability
 
 
 UI:
@@ -28,7 +37,7 @@ UI:
     ✔ update upgrade banner colors @done(25-08-21 15:25)
     ✔ use theme colors instead of hardcoded colors @done(25-08-21 15:25)
     ✔ dark mode for whole app @done(25-08-21 17:31)
-    ☐ improve landing page with some fancy animations and background elements from MagicUI
+    ✔ improve landing page with some fancy animations and background elements from MagicUI @done(25-08-23 11:56)
 
 
     

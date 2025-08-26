@@ -3,6 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClientForBrowser } from "@/app/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,14 +17,19 @@ import {
 import { Mail, ArrowLeft, CheckCircle, Facebook, Chrome } from "lucide-react";
 import Link from "next/link";
 import { loginSchema } from "@/schemas/auth";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 export function LoginForm() {
   const supabase = createClientForBrowser();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">(
     "idle"
   );
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Get redirect URL from search params
+  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +47,7 @@ export function LoginForm() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/callback`,
+        emailRedirectTo: `${window.location.origin}/confirm?next=${encodeURIComponent(redirectTo)}`,
       },
     });
 
@@ -60,7 +66,7 @@ export function LoginForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/callback?next=/dashboard`,
+        redirectTo: `${window.location.origin}/confirm?next=${encodeURIComponent(redirectTo)}`,
       },
     });
 
@@ -77,8 +83,8 @@ export function LoginForm() {
       <Card className="shadow-xl border-0">
         <CardContent className="p-8">
           <div className="text-center space-y-6">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-8 h-8 text-emerald-600" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -142,7 +148,7 @@ export function LoginForm() {
           >
             {status === "loading" ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <Spinner className="w-4 h-4 mr-2" />
                 Sending magic link...
               </>
             ) : (

@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Send, CheckCircle, HelpCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { contactFormSchema, type ContactFormData } from "@/schemas/contact";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export function ContactTab() {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -203,7 +204,7 @@ export function ContactTab() {
             >
               {status === "loading" ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  <Spinner className="w-4 h-4 mr-2" />
                   Sending...
                 </>
               ) : (
