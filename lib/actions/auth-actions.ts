@@ -6,44 +6,51 @@ import { redirect } from "next/navigation";
 export async function getAuthenticatedUser() {
   const supabase = await createClientForServer();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (error || !user) {
     redirect("/login");
   }
 
-  return session.user;
+  return user;
 }
 
 export async function getUserAndSubscription() {
   const supabase = await createClientForServer();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  let user = null;
+  let userData = null;
   let subscription = null;
+  let session = null;
 
-  if (session) {
-    const { data: userData } = await supabase
+  if (user && !error) {
+    // Get the session for the authenticated user
+    const { data: sessionData } = await supabase.auth.getSession();
+    session = sessionData.session;
+
+    const { data: userDataResult } = await supabase
       .from("users")
       .select("*")
-      .eq("id", session.user.id)
+      .eq("id", user.id)
       .single();
 
     const { data: subscriptionData } = await supabase
       .from("subscriptions")
       .select("*")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .single();
 
-    user = userData;
+    userData = userDataResult;
     subscription = subscriptionData;
   }
 
-  return { session, user, subscription };
+  return { session, user: userData, subscription };
 }
 
 export async function signOut() {

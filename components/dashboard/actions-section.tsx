@@ -21,6 +21,7 @@ import {
   getRemainingSearchesCount,
   getDailySearchLimit,
 } from "@/lib/utils/subscription-utils";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 interface ActionsSectionProps {
   activeFiltersCount?: number;
@@ -406,7 +407,7 @@ export function ActionsSection({
               >
                 {isRunning ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"></div>
+                    <Spinner className="w-5 h-5 mr-2" />
                     Searching...
                   </>
                 ) : (

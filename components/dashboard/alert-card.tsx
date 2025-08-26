@@ -11,7 +11,6 @@ import {
   Home,
   EyeOff,
   RotateCcw,
-  Loader2,
   Star,
 } from "lucide-react";
 
@@ -25,6 +24,7 @@ import {
 import { Alert } from "@/types/alerts";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 interface AlertCardProps {
   alert: Alert;
@@ -179,7 +179,7 @@ export function AlertCard({ alert }: AlertCardProps) {
               )}
             >
               {isTogglingFavorite ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Spinner className="w-4 h-4" />
               ) : (
                 <Star
                   className={cn("h-4 w-4", isFavorite ? "fill-current" : "")}
@@ -283,7 +283,7 @@ export function AlertCard({ alert }: AlertCardProps) {
               title="Check if this offer is still available"
             >
               {isCheckingExpired ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Spinner className="w-4 h-4 mr-2" />
               ) : (
                 <span>Check Availability</span>
               )}
@@ -324,7 +324,7 @@ export function AlertCard({ alert }: AlertCardProps) {
                 )}
               >
                 {isUpdating ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Spinner className="w-4 h-4" />
                 ) : isCurrentlyNotInterested ? (
                   <>
                     <RotateCcw className="w-4 h-4 mr-1 flex-shrink-0" />

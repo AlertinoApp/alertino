@@ -34,19 +34,37 @@ export async function updateSession(request: NextRequest) {
   // issues with users being randomly logged out.
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
+  // This call refreshes the session if needed and updates cookies
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  // Define public routes that don't require authentication
+  const publicRoutes = [
+    "/",
+    "/login",
+    "/auth",
+    "/confirm",
+    "/error",
+    "/contact",
+    "/help",
+    "/pricing",
+    "/privacy",
+    "/terms",
+  ];
+
+  const isPublicRoute = publicRoutes.some(
+    (route) =>
+      request.nextUrl.pathname === route ||
+      request.nextUrl.pathname.startsWith(route + "/")
+  );
+
+  // Only redirect to login if user is not authenticated and trying to access protected routes
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 

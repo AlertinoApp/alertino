@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import type { Subscription, SubscriptionPlan } from "@/types/subscription";
 import type { Profile } from "@/types/users";
 import { SubscriptionBadge } from "../ui/subscription-badge";
-import { signOut } from "@/lib/actions/auth-actions";
+import { useAuth } from "@/hooks/use-auth";
 import { ThemeToggle } from "../themes/theme-toggle";
 
 interface NavbarProps {
@@ -28,7 +28,7 @@ interface NavbarProps {
 }
 
 export function Navbar({
-  user,
+  user: propUser,
   profile,
   subscription,
   variant = "landing",
@@ -36,6 +36,10 @@ export function Navbar({
   currentPage,
 }: NavbarProps) {
   const router = useRouter();
+  const { user: contextUser, signOut } = useAuth();
+
+  // Use context user if available, otherwise fall back to prop
+  const user = contextUser || propUser;
 
   const subscriptionPlan = (subscription?.plan as SubscriptionPlan) || "free";
   const isPremium = subscriptionPlan === "basic" || subscriptionPlan === "pro";
@@ -174,7 +178,7 @@ export function Navbar({
                       <DropdownMenuItem asChild>
                         <Link
                           href="/pricing"
-                          className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-500 hover:bg-muted"
+                          className="flex items-center w-full px-3 py-2 text-emerald-600 dark:text-emerald-500 hover:text-emerald-600! dark:hover:text-emerald-500! hover:bg-muted"
                         >
                           <Crown className="mr-1 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
                           <span>Upgrade to Pro</span>
@@ -183,15 +187,13 @@ export function Navbar({
                     )}
 
                     <DropdownMenuItem asChild>
-                      <form action={signOut} className="p-0! w-full">
-                        <button
-                          type="submit"
-                          className="flex items-center w-full px-3 py-2 rounded-sm text-destructive hover:bg-muted"
-                        >
-                          <LogOut className="mr-3 h-4 w-4 text-destructive" />
-                          <span>Sign out</span>
-                        </button>
-                      </form>
+                      <button
+                        onClick={signOut}
+                        className="flex items-center w-full px-3 py-2 rounded-sm text-destructive hover:text-destructive! hover:bg-muted"
+                      >
+                        <LogOut className="mr-1 h-4 w-4 text-destructive" />
+                        <span>Sign out</span>
+                      </button>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -199,7 +201,7 @@ export function Navbar({
             ) : (
               <>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => router.push("/login")}
                   className="dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-muted"
                 >
