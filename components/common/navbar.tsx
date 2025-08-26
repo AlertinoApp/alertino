@@ -55,7 +55,10 @@ export function Navbar({
   const displayName = fullName || "User";
 
   return (
-    <header className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 transition-colors">
+    <header
+      id="navigation"
+      className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 transition-colors"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Current Page */}
@@ -116,7 +119,10 @@ export function Navbar({
                       className="relative h-10 w-10 rounded-full hover:bg-muted"
                     >
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={avatarUrl || "/placeholder.svg"} />
+                        <AvatarImage
+                          src={avatarUrl || "/placeholder.svg"}
+                          alt={`${displayName}'s profile picture`}
+                        />
                         <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold">
                           {userInitials}
                         </AvatarFallback>
@@ -131,7 +137,10 @@ export function Navbar({
                     <div className="mb-1 px-3 py-2 border-b border-border">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={avatarUrl || "/placeholder.svg"} />
+                          <AvatarImage
+                            src={avatarUrl || "/placeholder.svg"}
+                            alt={`${displayName}'s profile picture`}
+                          />
                           <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-semibold">
                             {userInitials}
                           </AvatarFallback>

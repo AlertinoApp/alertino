@@ -11,12 +11,14 @@ Todos:
     ☐ AI integration
     ✔ simplify subscription config @done(25-08-21 15:25)
     ✔ handle expired offers @done(25-08-06 09:58)
-    ☐ cookie banner
+    ✔ cookie banner @done(25-08-26 17:02)
     ✔ review auth flow @done(25-08-26 15:36)
-    ☐ review app in terms of SEO
-    ☐ review app in terms of performance
-    ☐ review app in terms of security
-    ☐ review app in terms of accessibility
+    ✔ add cookie policy page @done(25-08-26 17:02)
+    ✔ add GDPR page @done(25-08-26 17:02)
+    ✔ review app in terms of SEO @done(25-08-26 17:13)
+    ✔ review app in terms of performance @done(25-08-26 17:14)
+    ✔ review app in terms of security @done(25-08-26 17:14)
+    ✔ review app in terms of accessibility @done(25-08-26 17:14)
     ☐ review app in terms of best practices
     ☐ review app in terms of code quality
     ☐ review app in terms of maintainability

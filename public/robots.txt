@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /account-settings/
+Disallow: /api/
+Disallow: /checkout-trial/
+
+# Allow important pages
+Allow: /pricing
+Allow: /contact
+Allow: /help
+Allow: /privacy
+Allow: /terms
+Allow: /cookie-policy
+Allow: /gdpr
+
+Sitemap: https://alertino.com/sitemap.xml
