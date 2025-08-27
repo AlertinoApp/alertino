@@ -4,9 +4,19 @@ export interface ScrapingConfig {
   city: string;
   maxPrice?: number;
   minRooms?: number;
+  maxRooms?: number;
+  minPrice?: number;
   maxResults?: number;
-  propertyType?: "apartment" | "house" | "room";
+  propertyType?:
+    | "apartment"
+    | "house"
+    | "room"
+    | "studio"
+    | "loft"
+    | "commercial";
   listingType?: "rent" | "sale";
+  minArea?: number;
+  maxArea?: number;
 }
 
 export interface ScrapingResult {
@@ -32,6 +42,7 @@ export interface ScraperMetadata {
     supportsPriceFilter: boolean;
     supportsRoomFilter: boolean;
     supportsLocationFilter: boolean;
+    supportsAreaFilter: boolean;
   };
 }
 
@@ -102,6 +113,8 @@ export abstract class BaseScraper {
     if (config.listingType && !this.features.supportsListingType) return false;
     if (config.maxPrice && !this.features.supportsPriceFilter) return false;
     if (config.minRooms && !this.features.supportsRoomFilter) return false;
+    if (config.minArea && !this.features.supportsAreaFilter) return false;
+
     return true;
   }
 }

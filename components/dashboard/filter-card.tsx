@@ -5,7 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Edit2, Trash2, MapPin, DollarSign, Home } from "lucide-react";
+import {
+  Edit2,
+  Trash2,
+  MapPin,
+  DollarSign,
+  Home,
+  Building2,
+  Ruler,
+  Tag,
+} from "lucide-react";
 import { EditFilterModal } from "./edit-filter-modal";
 import { DeleteFilterDialog } from "./delete-filter-modal";
 import { toggleFilterStatus } from "@/lib/actions/filter-actions";
@@ -52,13 +61,25 @@ export function FilterCard({ filter }: FilterCardProps) {
     }
   };
 
+  const getPropertyTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      apartment: "Apartment",
+      house: "House",
+      room: "Room",
+      studio: "Studio",
+      loft: "Loft",
+      commercial: "Commercial",
+    };
+    return labels[type] || type;
+  };
+
   return (
     <>
       <Card
         className={`hover:shadow-md transition-all duration-200 bg-card ${!isActive ? "opacity-75 bg-muted" : ""}`}
       >
         <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2">
               <Badge
                 variant="secondary"
@@ -108,27 +129,69 @@ export function FilterCard({ filter }: FilterCardProps) {
               <span className="font-semibold text-lg">{filter.name}</span>
             </div>
 
-            <div
-              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
-            >
-              <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
-              <span className="font-medium capitalize">{filter.city}</span>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm capitalize">{filter.city}</span>
+                </div>
 
-            <div
-              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
-            >
-              <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
-              <span>Max {filter.max_price.toLocaleString()} PLN</span>
-            </div>
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <Tag className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm capitalize">
+                    {filter.listing_type === "rent" ? "For Rent" : "For Sale"}
+                  </span>
+                </div>
 
-            <div
-              className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
-            >
-              <Home className="w-4 h-4 mr-2 text-muted-foreground" />
-              <span>
-                Min {filter.min_rooms} room{filter.min_rooms !== 1 ? "s" : ""}
-              </span>
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <Building2 className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {getPropertyTypeLabel(filter.property_type || "apartment")}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <Home className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {filter.min_rooms} - {filter.max_rooms} room
+                    {(filter.max_rooms || 1) !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <Ruler className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {filter.min_area && filter.min_area > 0
+                      ? `${filter.min_area} - `
+                      : ""}
+                    {filter.max_area} m²
+                  </span>
+                </div>
+
+                <div
+                  className={`flex items-center ${!isActive ? "text-muted-foreground" : "text-foreground"}`}
+                >
+                  <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {filter.min_price && filter.min_price > 0
+                      ? `${filter.min_price.toLocaleString()} - `
+                      : ""}
+                    {filter.max_price.toLocaleString()} PLN
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 

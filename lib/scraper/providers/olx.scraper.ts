@@ -48,6 +48,7 @@ export class OlxScraper extends BaseScraper {
         supportsPriceFilter: true,
         supportsRoomFilter: true,
         supportsLocationFilter: true,
+        supportsAreaFilter: false,
       },
     };
 
@@ -221,6 +222,9 @@ export class OlxScraper extends BaseScraper {
       link,
       city: config.city,
       rooms,
+      listing_type: config.listingType || "rent",
+      property_type: config.propertyType || "apartment",
+      area: 50,
     };
   }
 

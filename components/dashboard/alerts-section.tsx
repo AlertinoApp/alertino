@@ -255,8 +255,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-            <Bell className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+            <Bell className="w-5 h-5 text-purple-600" />
           </div>
           <div>
             <h2 className="text-xl font-semibold text-foreground">
@@ -348,10 +348,10 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
             <CardContent className="p-4">
               <div className="space-y-4">
                 {/* Filter Controls - All in same grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 text-muted-foreground">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                   {/* Status Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <Bell className="w-3 h-3" />
                       Status
                     </label>
@@ -397,7 +397,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* City Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <MapPin className="w-3 h-3" />
                       City
                     </label>
@@ -428,7 +428,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Filter Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <Filter className="w-3 h-3" />
                       Filter
                     </label>
@@ -455,7 +455,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Rooms Filter */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <Home className="w-3 h-3" />
                       Rooms
                     </label>
@@ -482,7 +482,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Min Price */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <DollarSign className="w-3 h-3" />
                       Min Price (PLN)
                     </label>
@@ -504,7 +504,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Max Price */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <DollarSign className="w-3 h-3" />
                       Max Price (PLN)
                     </label>
@@ -525,7 +525,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
 
                   {/* Sort */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
                       <SortAsc className="w-3 h-3" />
                       Sort By
                     </label>

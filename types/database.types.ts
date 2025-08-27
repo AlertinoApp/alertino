@@ -27,6 +27,9 @@ export type Database = {
           status: string;
           title: string;
           user_id: string;
+          listing_type: string;
+          property_type: string;
+          area: number;
         };
         Insert: {
           city: string;
@@ -40,6 +43,9 @@ export type Database = {
           status?: string;
           title: string;
           user_id: string;
+          listing_type: string;
+          property_type: string;
+          area: number;
         };
         Update: {
           city?: string;
@@ -53,6 +59,9 @@ export type Database = {
           status?: string;
           title?: string;
           user_id?: string;
+          listing_type?: string;
+          property_type?: string;
+          area?: number;
         };
         Relationships: [
           {
@@ -77,8 +86,14 @@ export type Database = {
           created_at: string | null;
           id: string;
           is_active: boolean;
+          listing_type: string;
+          property_type: string;
+          min_price: number;
           max_price: number;
           min_rooms: number;
+          max_rooms: number;
+          min_area: number;
+          max_area: number;
           name: string;
           updated_at: string | null;
           user_id: string;
@@ -88,8 +103,14 @@ export type Database = {
           created_at?: string | null;
           id?: string;
           is_active?: boolean;
+          listing_type: string;
+          property_type: string;
+          min_price: number;
           max_price: number;
           min_rooms: number;
+          max_rooms: number;
+          min_area: number;
+          max_area: number;
           name?: string;
           updated_at?: string | null;
           user_id: string;
@@ -99,8 +120,14 @@ export type Database = {
           created_at?: string | null;
           id?: string;
           is_active?: boolean;
+          listing_type?: string;
+          property_type?: string;
+          min_price?: number;
           max_price?: number;
           min_rooms?: number;
+          max_rooms?: number;
+          min_area?: number;
+          max_area?: number;
           name?: string;
           updated_at?: string | null;
           user_id?: string;

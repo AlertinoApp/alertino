@@ -294,6 +294,9 @@ export async function generateAlerts(selectedFilterIds?: string[]) {
                   rooms: listing.rooms,
                   city: listing.city,
                   filter_id: filter.id,
+                  listing_type: listing.listing_type,
+                  property_type: listing.property_type,
+                  area: listing.area,
                 });
 
               if (insertError) {

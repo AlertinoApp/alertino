@@ -9,9 +9,17 @@ export interface Alert {
   status?: "active" | "not_interested" | "expired";
   filter_id?: string | null;
   is_favorite?: boolean;
+  listing_type: "rent" | "sale";
+  property_type:
+    | "apartment"
+    | "house"
+    | "room"
+    | "studio"
+    | "loft"
+    | "commercial";
+  area: number;
   filters?: {
     id: string;
     name: string;
-    city: string;
   } | null;
 }

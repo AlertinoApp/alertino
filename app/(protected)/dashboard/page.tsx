@@ -42,7 +42,16 @@ export default async function DashboardPage() {
       filters (
         id,
         name,
-        city
+        city,
+        listing_type,
+        property_type,
+        min_price,
+        max_price,
+        min_rooms,
+        max_rooms,
+        min_area,
+        max_area,
+        is_active
       )
     `
     )

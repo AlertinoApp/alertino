@@ -45,9 +45,21 @@ export async function getMatchedListings(filter: Filter): Promise<Listing[]> {
 function getExampleMatchedListings(filter: Filter): Listing[] {
   return exampleListings.filter(
     (l) =>
+      // City must match
       normalize(l.city) === normalize(filter.city) &&
+      // Price must be within range
+      l.price >= filter.min_price &&
       l.price <= filter.max_price &&
-      l.rooms >= filter.min_rooms
+      // Rooms must be within range
+      l.rooms >= filter.min_rooms &&
+      l.rooms <= filter.max_rooms &&
+      // Listing type must match
+      l.listing_type === filter.listing_type &&
+      // Property type must match
+      l.property_type === filter.property_type &&
+      // Area must be within range
+      l.area >= filter.min_area &&
+      l.area <= filter.max_area
   );
 }
 
@@ -58,7 +70,15 @@ export async function scrapeFromSpecificSource(
   source: string,
   city: string,
   maxPrice?: number,
-  minRooms?: number
+  minRooms?: number,
+  propertyType:
+    | "apartment"
+    | "house"
+    | "room"
+    | "studio"
+    | "loft"
+    | "commercial" = "apartment",
+  listingType: "rent" | "sale" = "rent"
 ) {
   console.log(`🎯 Scraping only from ${source} for ${city}`);
 
@@ -67,8 +87,8 @@ export async function scrapeFromSpecificSource(
     maxPrice,
     minRooms,
     maxResults: 10,
-    propertyType: "apartment" as const,
-    listingType: "rent" as const,
+    propertyType,
+    listingType,
   };
 
   return await scraperManager.scrapeFromSource(source, config);

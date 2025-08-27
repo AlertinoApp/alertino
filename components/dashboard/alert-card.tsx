@@ -12,6 +12,9 @@ import {
   EyeOff,
   RotateCcw,
   Star,
+  Building2,
+  Ruler,
+  Tag,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -233,44 +236,96 @@ export function AlertCard({ alert }: AlertCardProps) {
         </div>
 
         <div className="space-y-2 sm:space-y-3 mb-4">
-          <div
-            className={cn(
-              "flex items-center text-sm",
-              isCurrentlyNotInterested
-                ? "text-muted-foreground"
-                : "text-foreground"
-            )}
-          >
-            <DollarSign className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
-            <span className="font-semibold">
-              {alert.price.toLocaleString()} PLN
-            </span>
-          </div>
+          {/* Main Property Information - Organized Layout: City, Listing Type, Property Type | Rooms, Area, Price */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm capitalize">{alert.city}</span>
+              </div>
 
-          <div
-            className={cn(
-              "flex items-center text-sm",
-              isCurrentlyNotInterested
-                ? "text-muted-foreground"
-                : "text-foreground"
-            )}
-          >
-            <Home className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
-            <span>
-              {alert.rooms} room{alert.rooms !== 1 ? "s" : ""}
-            </span>
-          </div>
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <Tag className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm capitalize">
+                  {alert.listing_type === "rent" ? "For Rent" : "For Sale"}
+                </span>
+              </div>
 
-          <div
-            className={cn(
-              "flex items-center text-sm",
-              isCurrentlyNotInterested
-                ? "text-muted-foreground"
-                : "text-foreground"
-            )}
-          >
-            <MapPin className="w-4 h-4 mr-2 text-muted-foreground flex-shrink-0" />
-            <span className="capitalize">{alert.city}</span>
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <Building2 className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm">
+                  {alert.property_type === "apartment" && "Apartment"}
+                  {alert.property_type === "house" && "House"}
+                  {alert.property_type === "room" && "Room"}
+                  {alert.property_type === "studio" && "Studio"}
+                  {alert.property_type === "loft" && "Loft"}
+                  {alert.property_type === "commercial" && "Commercial"}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <Home className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm">
+                  {alert.rooms} room{alert.rooms !== 1 ? "s" : ""}
+                </span>
+              </div>
+
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <Ruler className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm">{alert.area} m²</span>
+              </div>
+
+              <div
+                className={cn(
+                  "flex items-center text-sm",
+                  isCurrentlyNotInterested
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+                )}
+              >
+                <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
+                <span className="text-sm">
+                  {alert.price.toLocaleString()} PLN
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 

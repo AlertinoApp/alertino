@@ -54,11 +54,15 @@ export class ScraperManager {
   async scrapeListings(filter: Filter): Promise<Listing[]> {
     const config: ScrapingConfig = {
       city: filter.city,
+      minPrice: filter.min_price,
       maxPrice: filter.max_price,
       minRooms: filter.min_rooms,
+      maxRooms: filter.max_rooms,
+      minArea: filter.min_area,
+      maxArea: filter.max_area,
       maxResults: 10,
-      propertyType: "apartment",
-      listingType: "rent",
+      propertyType: filter.property_type,
+      listingType: filter.listing_type,
     };
 
     const result = await this.scrapeFromAllSources(config);
@@ -220,12 +224,16 @@ export class ScraperManager {
     // 1. Deduplication
     let processed = deduplicateListings(listings);
 
-    // 2. Additional filtering (safety)
+    // 2. Additional filtering using all available criteria
     processed = filterListings(processed, {
-      minPrice: 100, // Minimum 100 PLN
+      minPrice: config.minPrice || 100, // Use filter min price or default to 100 PLN
       maxPrice: config.maxPrice,
       minRooms: config.minRooms,
-      maxRooms: 15, // Maximum 15 rooms (reasonable limit)
+      maxRooms: config.maxRooms || 15, // Use filter max rooms or default to 15
+      minArea: config.minArea,
+      maxArea: config.maxArea,
+      propertyType: config.propertyType,
+      listingType: config.listingType,
       excludeKeywords: ["spam", "fake", "test"], // Basic exclusion words
     });
 

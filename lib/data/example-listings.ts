@@ -7,6 +7,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example1",
     city: "Krakow",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 65,
   },
   {
     title: "Prevent apartment in Gdansk",
@@ -14,6 +17,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example2",
     city: "Gdansk",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 78,
   },
   {
     title: "Avoid apartment in Poznan",
@@ -21,6 +27,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example3",
     city: "Poznan",
     rooms: 1,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 32,
   },
   {
     title: "Something apartment in Krakow",
@@ -28,6 +37,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example4",
     city: "Krakow",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 68,
   },
   {
     title: "Store apartment in Poznan",
@@ -35,6 +47,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example5",
     city: "Poznan",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 45,
   },
   {
     title: "Improve apartment in Krakow",
@@ -42,6 +57,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example6",
     city: "Krakow",
     rooms: 5,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 95,
   },
   {
     title: "Share apartment in Warszawa",
@@ -49,6 +67,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example7",
     city: "Warszawa",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 72,
   },
   {
     title: "Reason apartment in Poznan",
@@ -56,6 +77,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example8",
     city: "Poznan",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 48,
   },
   {
     title: "Animal apartment in Warszawa",
@@ -63,6 +87,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example9",
     city: "Warszawa",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 58,
   },
   {
     title: "Clear apartment in Krakow",
@@ -70,6 +97,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example10",
     city: "Krakow",
     rooms: 1,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 28,
   },
   {
     title: "Son apartment in Krakow",
@@ -77,6 +107,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example11",
     city: "Krakow",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 42,
   },
   {
     title: "Future apartment in Warszawa",
@@ -84,6 +117,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example12",
     city: "Warszawa",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 55,
   },
   {
     title: "Operation apartment in Wroclaw",
@@ -91,6 +127,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example13",
     city: "Wroclaw",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 62,
   },
   {
     title: "Hot apartment in Poznan",
@@ -98,6 +137,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example14",
     city: "Poznan",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 38,
   },
   {
     title: "Ok apartment in Warszawa",
@@ -105,6 +147,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example15",
     city: "Warszawa",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 82,
   },
   {
     title: "Suggest apartment in Krakow",
@@ -112,6 +157,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example16",
     city: "Krakow",
     rooms: 1,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 30,
   },
   {
     title: "Reflect apartment in Krakow",
@@ -119,6 +167,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example17",
     city: "Krakow",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 58,
   },
   {
     title: "Form apartment in Gdansk",
@@ -126,6 +177,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example18",
     city: "Gdansk",
     rooms: 1,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 25,
   },
   {
     title: "Night apartment in Warszawa",
@@ -133,6 +187,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example19",
     city: "Warszawa",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 44,
   },
   {
     title: "Explain apartment in Gdansk",
@@ -140,6 +197,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example20",
     city: "Gdansk",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 76,
   },
   {
     title: "Hear apartment in Gdansk",
@@ -147,6 +207,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example21",
     city: "Gdansk",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 68,
   },
   {
     title: "Five apartment in Poznan",
@@ -154,6 +217,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example22",
     city: "Poznan",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 74,
   },
   {
     title: "Think apartment in Warszawa",
@@ -161,6 +227,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example23",
     city: "Warszawa",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 79,
   },
   {
     title: "Ability apartment in Warszawa",
@@ -168,6 +237,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example24",
     city: "Warszawa",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 71,
   },
   {
     title: "Story apartment in Krakow",
@@ -175,6 +247,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example25",
     city: "Krakow",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 40,
   },
   {
     title: "Hundred apartment in Wroclaw",
@@ -182,6 +257,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example26",
     city: "Wroclaw",
     rooms: 4,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 88,
   },
   {
     title: "American apartment in Poznan",
@@ -189,6 +267,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example27",
     city: "Poznan",
     rooms: 5,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 102,
   },
   {
     title: "Case apartment in Gdansk",
@@ -196,6 +277,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example28",
     city: "Gdansk",
     rooms: 2,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 36,
   },
   {
     title: "Whose apartment in Wroclaw",
@@ -203,6 +287,9 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example29",
     city: "Wroclaw",
     rooms: 3,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 54,
   },
   {
     title: "Social apartment in Krakow",
@@ -210,5 +297,8 @@ export const exampleListings: Listing[] = [
     link: "https://www.olx.pl/example30",
     city: "Krakow",
     rooms: 1,
+    listing_type: "rent",
+    property_type: "apartment",
+    area: 35,
   },
 ];
