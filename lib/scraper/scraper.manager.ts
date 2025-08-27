@@ -122,7 +122,16 @@ export class ScraperManager {
       try {
         console.log(`🔍 [${scraper.name}] Starting scrape...`);
 
-        const result = await scraper.scrape(config);
+        // Add timeout to individual scraper operations
+        const scraperPromise = scraper.scrape(config);
+        const timeoutPromise = new Promise<ScrapingResult>((_, reject) => {
+          setTimeout(
+            () => reject(new Error(`Scraper timeout after 30 seconds`)),
+            30000
+          );
+        });
+
+        const result = await Promise.race([scraperPromise, timeoutPromise]);
 
         if (result.listings.length > 0) {
           allListings.push(...result.listings);
@@ -140,20 +149,41 @@ export class ScraperManager {
           allErrors.push(...result.errors);
         }
       } catch (error) {
-        const errorMsg = `${scraper.name}: ${String(error)}`;
+        const errorMsg = `${scraper.name}: ${error instanceof Error ? error.message : String(error)}`;
         console.error(`❌ Error scraping ${scraper.name}:`, error);
         allErrors.push(errorMsg);
+
+        // Continue with other scrapers even if one fails
+        continue;
       }
     }
 
-    // Process results
-    const processedListings = this.processListings(allListings, config);
-    const duplicatesRemoved = allListings.length - processedListings.length;
+    // Process results with error handling
+    let processedListings: Listing[] = [];
+    let duplicatesRemoved = 0;
+
+    try {
+      processedListings = this.processListings(allListings, config);
+      duplicatesRemoved = allListings.length - processedListings.length;
+    } catch (error) {
+      const errorMsg = `Failed to process listings: ${error instanceof Error ? error.message : String(error)}`;
+      console.error(`❌ ${errorMsg}`);
+      allErrors.push(errorMsg);
+
+      // Fallback to unprocessed listings if processing fails
+      processedListings = allListings;
+    }
+
     const totalProcessingTime = Date.now() - startTime;
 
     // Save to cache if we have results
     if (processedListings.length > 0) {
-      scrapingCache.set(cacheKey, processedListings);
+      try {
+        scrapingCache.set(cacheKey, processedListings);
+      } catch (error) {
+        console.error(`❌ Failed to cache results: ${error}`);
+        // Don't add to errors as caching failure shouldn't break the operation
+      }
     }
 
     // Log statistics
