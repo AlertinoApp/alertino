@@ -25,6 +25,7 @@ import {
   Home,
   ChevronLeft,
   ChevronRight,
+  Building2,
 } from "lucide-react";
 import { Alert } from "@/types/alerts";
 
@@ -48,8 +49,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState<string>("all");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
-  const [roomsFilter, setRoomsFilter] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<string>("all");
+  const [propertyType, setPropertyType] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [sortField, setSortField] = useState<SortField>("created_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -72,6 +73,14 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
       )
       .sort((a, b) => a.name.localeCompare(b.name));
     return filters;
+  }, [alerts]);
+
+  // Get unique property types for filter dropdown
+  const uniquePropertyTypes = useMemo(() => {
+    const propertyTypes = [
+      ...new Set(alerts.map((alert) => alert.property_type || "apartment")),
+    ].sort();
+    return propertyTypes;
   }, [alerts]);
 
   // Compute stats for badges
@@ -116,16 +125,31 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         return false;
       }
 
-      // Price range filter
-      if (priceRange.min && alert.price < parseInt(priceRange.min)) {
-        return false;
-      }
-      if (priceRange.max && alert.price > parseInt(priceRange.max)) {
-        return false;
+      // Date range filter
+      if (dateRange !== "all") {
+        const alertDate = new Date(alert.created_at);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - alertDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        switch (dateRange) {
+          case "today":
+            if (diffDays > 1) return false;
+            break;
+          case "week":
+            if (diffDays > 7) return false;
+            break;
+          case "month":
+            if (diffDays > 30) return false;
+            break;
+        }
       }
 
-      // Rooms filter
-      if (roomsFilter !== "all" && alert.rooms !== parseInt(roomsFilter)) {
+      // Property type filter
+      if (
+        propertyType !== "all" &&
+        (alert.property_type || "apartment") !== propertyType
+      ) {
         return false;
       }
 
@@ -220,8 +244,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
     searchTerm,
     selectedCity,
     selectedFilter,
-    priceRange,
-    roomsFilter,
+    dateRange,
+    propertyType,
     statusFilter,
     sortField,
     sortDirection,
@@ -244,8 +268,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
     setSearchTerm("");
     setSelectedCity("all");
     setSelectedFilter("all");
-    setPriceRange({ min: "", max: "" });
-    setRoomsFilter("all");
+    setDateRange("all");
+    setPropertyType("all");
     setStatusFilter("all");
     setCurrentPage(1);
   };
@@ -327,9 +351,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
             {(searchTerm ||
               selectedCity !== "all" ||
               selectedFilter !== "all" ||
-              priceRange.min ||
-              priceRange.max ||
-              roomsFilter !== "all" ||
+              dateRange !== "all" ||
+              propertyType !== "all" ||
               statusFilter !== "all") && (
               <Button
                 variant="outline"
@@ -395,6 +418,33 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                     </Select>
                   </div>
 
+                  {/* Filter Filter */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
+                      <Filter className="w-3 h-3" />
+                      Filter
+                    </label>
+                    <Select
+                      value={selectedFilter}
+                      onValueChange={(value) => {
+                        setSelectedFilter(value);
+                        handleFilterChange();
+                      }}
+                    >
+                      <SelectTrigger className="w-full h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Filters</SelectItem>
+                        {uniqueFilters.map((filter) => (
+                          <SelectItem key={filter.id} value={filter.id}>
+                            {filter.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   {/* City Filter */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-1 text-foreground">
@@ -426,16 +476,16 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                     </Select>
                   </div>
 
-                  {/* Filter Filter */}
+                  {/* Property Type Filter */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-1 text-foreground">
-                      <Filter className="w-3 h-3" />
-                      Filter
+                      <Building2 className="w-3 h-3" />
+                      Property Type
                     </label>
                     <Select
-                      value={selectedFilter}
+                      value={propertyType}
                       onValueChange={(value) => {
-                        setSelectedFilter(value);
+                        setPropertyType(value);
                         handleFilterChange();
                       }}
                     >
@@ -443,26 +493,30 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Filters</SelectItem>
-                        {uniqueFilters.map((filter) => (
-                          <SelectItem key={filter.id} value={filter.id}>
-                            {filter.name}
+                        <SelectItem value="all">All Types</SelectItem>
+                        {uniquePropertyTypes.map((type) => (
+                          <SelectItem
+                            key={type}
+                            value={type}
+                            className="capitalize"
+                          >
+                            {type}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Rooms Filter */}
+                  {/* Date Range Filter */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-1 text-foreground">
-                      <Home className="w-3 h-3" />
-                      Rooms
+                      <Calendar className="w-3 h-3" />
+                      Date Range
                     </label>
                     <Select
-                      value={roomsFilter}
+                      value={dateRange}
                       onValueChange={(value) => {
-                        setRoomsFilter(value);
+                        setDateRange(value);
                         handleFilterChange();
                       }}
                     >
@@ -470,57 +524,12 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Any</SelectItem>
-                        <SelectItem value="1">1 Room</SelectItem>
-                        <SelectItem value="2">2 Rooms</SelectItem>
-                        <SelectItem value="3">3 Rooms</SelectItem>
-                        <SelectItem value="4">4 Rooms</SelectItem>
-                        <SelectItem value="5">5+ Rooms</SelectItem>
+                        <SelectItem value="all">All Time</SelectItem>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="week">Last 7 Days</SelectItem>
+                        <SelectItem value="month">Last 30 Days</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  {/* Min Price */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
-                      <DollarSign className="w-3 h-3" />
-                      Min Price (PLN)
-                    </label>
-                    <Input
-                      min={0}
-                      type="number"
-                      placeholder="Min price"
-                      value={priceRange.min}
-                      onChange={(e) => {
-                        setPriceRange((prev) => ({
-                          ...prev,
-                          min: e.target.value,
-                        }));
-                        handleFilterChange();
-                      }}
-                      className="h-9"
-                    />
-                  </div>
-
-                  {/* Max Price */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-1 text-foreground">
-                      <DollarSign className="w-3 h-3" />
-                      Max Price (PLN)
-                    </label>
-                    <Input
-                      type="number"
-                      placeholder="Max price"
-                      value={priceRange.max}
-                      onChange={(e) => {
-                        setPriceRange((prev) => ({
-                          ...prev,
-                          max: e.target.value,
-                        }));
-                        handleFilterChange();
-                      }}
-                      className="h-9"
-                    />
                   </div>
 
                   {/* Sort */}
@@ -610,9 +619,8 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
           {/* Active Filters Summary */}
           {(searchTerm ||
             selectedCity !== "all" ||
-            priceRange.min ||
-            priceRange.max ||
-            roomsFilter !== "all" ||
+            dateRange !== "all" ||
+            propertyType !== "all" ||
             statusFilter !== "all") && (
             <div className="flex flex-wrap items-center gap-1">
               <span className="text-muted-foreground text-xs">
@@ -634,14 +642,19 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
                   {statusFilter === "not_interested" ? "Archived" : "Active"}
                 </Badge>
               )}
-              {roomsFilter !== "all" && (
+              {dateRange !== "all" && (
                 <Badge variant="secondary" className="text-xs">
-                  Rooms: {roomsFilter}
+                  Date:{" "}
+                  {dateRange === "today"
+                    ? "Today"
+                    : dateRange === "week"
+                      ? "Last 7 Days"
+                      : "Last 30 Days"}
                 </Badge>
               )}
-              {(priceRange.min || priceRange.max) && (
-                <Badge variant="secondary" className="text-xs">
-                  Price: {priceRange.min || "0"} - {priceRange.max || "∞"} PLN
+              {propertyType !== "all" && (
+                <Badge variant="secondary" className="text-xs capitalize">
+                  Type: {propertyType}
                 </Badge>
               )}
             </div>
