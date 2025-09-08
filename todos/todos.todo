@@ -4,10 +4,8 @@ Todos:
     ✔ implement favorite alerts @done(25-08-05 23:10)
     ✔ remove filter and associated alerts @done(25-08-06 10:16)
     ✔ update filtering section to handle new fields e.g. dropdown for filter alerts from specific filter, default ‘All’ @done(25-08-05 19:42)
-    ☐ implement admin?
     ☐ implement cron job
     ✔ extend filtering (min 5 filters) @done(25-08-27 19:09)
-    ☐ updating filter removes all alerts from that filter
     ☐ AI integration
     ✔ simplify subscription config @done(25-08-21 15:25)
     ✔ handle expired offers @done(25-08-06 09:58)
@@ -19,9 +17,6 @@ Todos:
     ✔ review app in terms of performance @done(25-08-26 17:14)
     ✔ review app in terms of security @done(25-08-26 17:14)
     ✔ review app in terms of accessibility @done(25-08-26 17:14)
-    ☐ review app in terms of best practices
-    ☐ review app in terms of code quality
-    ☐ review app in terms of maintainability
     ✔ update alerts filtering @done(25-08-28 12:09)
 
 
