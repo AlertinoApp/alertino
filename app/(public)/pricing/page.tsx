@@ -1,6 +1,5 @@
 import { PricingSection } from "@/components/pricing/pricing-section";
 import { PricingFAQ } from "@/components/pricing/pricing-faq";
-import { Navbar } from "@/components/common/navbar";
 import { getUserAndSubscription } from "@/lib/actions/auth-actions";
 import type { Metadata } from "next";
 
@@ -16,15 +15,12 @@ export const metadata: Metadata = {
 };
 
 export default async function PricingPage() {
-  const { session, user, subscription } = await getUserAndSubscription();
+  const { session } = await getUserAndSubscription();
 
   return (
-    <div className="min-h-screen bg-background transition-colors">
-      <Navbar user={session?.user} profile={user} subscription={subscription} />
-      <div className="pt-20">
-        <PricingSection user={session?.user} />
-        <PricingFAQ />
-      </div>
+    <div className="pt-20">
+      <PricingSection user={session?.user} />
+      <PricingFAQ />
     </div>
   );
 }
