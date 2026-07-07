@@ -169,9 +169,8 @@ export function OverviewTab({
     });
 
     try {
-      await subscribeToAction("basic", "month");
-      toast.dismiss(loadingToast);
-      setIsUpgradeModalOpen(false);
+      const { url } = await subscribeToAction("basic", "month");
+      window.location.href = url;
     } catch (error) {
       console.error("Failed to start Basic plan:", error);
       toast.dismiss(loadingToast);
@@ -189,8 +188,8 @@ export function OverviewTab({
     });
 
     try {
-      await subscribeToAction("basic", "month");
-      toast.dismiss(loadingToast);
+      const { url } = await subscribeToAction("basic", "month");
+      window.location.href = url;
     } catch (error) {
       console.error("Failed to start trial:", error);
       toast.dismiss(loadingToast);
@@ -208,8 +207,8 @@ export function OverviewTab({
     });
 
     try {
-      await subscribeToAction("pro", "month");
-      toast.dismiss(loadingToast);
+      const { url } = await subscribeToAction("pro", "month");
+      window.location.href = url;
     } catch (error) {
       console.error("Failed to upgrade to Pro:", error);
       toast.dismiss(loadingToast);

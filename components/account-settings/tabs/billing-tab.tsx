@@ -83,7 +83,8 @@ export function BillingTab({ subscription, trialInfo }: BillingTabProps) {
 
   const handleManageSubscription = async () => {
     try {
-      await managePlanAction();
+      const { url } = await managePlanAction();
+      window.location.href = url;
     } catch (error) {
       console.error("Failed to open Stripe portal:", error);
 

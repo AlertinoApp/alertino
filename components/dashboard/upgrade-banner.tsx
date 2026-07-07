@@ -241,8 +241,8 @@ export function UpgradeBanner({
 
     try {
       const priceId = getPriceId("basic", "month");
-      await createCheckoutSessionAction(priceId);
-      toast.dismiss(loadingToast);
+      const { url } = await createCheckoutSessionAction(priceId);
+      window.location.href = url;
     } catch (error) {
       console.error("Failed to start free trial:", error);
       toast.dismiss(loadingToast);

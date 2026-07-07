@@ -189,17 +189,13 @@ export function PricingSection({ user, trialInfo }: PricingSectionProps) {
                             try {
                               const planType =
                                 plan.name.toLowerCase() as SubscriptionPlan;
-                              // Only Basic plan can have trial
-                              if (planType === "basic" && canStartTrial) {
-                                const priceId = getPriceId("basic", interval);
+                              const priceId =
+                                planType === "pro"
+                                  ? getPriceId("pro", interval)
+                                  : getPriceId("basic", interval);
+                              const { url } =
                                 await createCheckoutSessionAction(priceId);
-                              } else if (planType === "pro") {
-                                const priceId = getPriceId("pro", interval);
-                                await createCheckoutSessionAction(priceId);
-                              } else {
-                                const priceId = getPriceId("basic", interval);
-                                await createCheckoutSessionAction(priceId);
-                              }
+                              window.location.href = url;
                             } catch (error) {
                               console.error(
                                 "Failed to create checkout session:",

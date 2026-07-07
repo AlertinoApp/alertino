@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClientForServer } from "@/app/utils/supabase/server";
 import { getAuthenticatedUser } from "./auth-actions";
 import {
@@ -35,7 +34,7 @@ export async function createCheckoutSessionAction(priceId: string) {
     throw new Error("Failed to create checkout session");
   }
 
-  redirect(checkoutSession.url);
+  return { url: checkoutSession.url };
 }
 
 export async function subscribeToAction(
@@ -43,7 +42,7 @@ export async function subscribeToAction(
   interval: SubscriptionInterval
 ) {
   const priceId = getPriceId(plan, interval);
-  await createCheckoutSessionAction(priceId);
+  return createCheckoutSessionAction(priceId);
 }
 
 export async function getTrialInfoAction(): Promise<TrialInfo> {
@@ -94,9 +93,9 @@ export async function createPortalSessionAction() {
     throw new Error("Failed to create portal session");
   }
 
-  redirect(portalSession.url);
+  return { url: portalSession.url };
 }
 
 export async function managePlanAction() {
-  await createPortalSessionAction();
+  return createPortalSessionAction();
 }
